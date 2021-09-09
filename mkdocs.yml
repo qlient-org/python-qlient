@@ -8,6 +8,10 @@ nav:
   - install.md
   - Usage:
       - usage/client.md
+      - usage/settings.md
+      - usage/schema.md
+      - usage/cache.md
+      - usage/transport.md
 
 repo_name: qlient/python-qlient
 repo_url: https://github.com/qlient/python-qlient
@@ -20,6 +24,9 @@ theme:
     secondary: cyan
     accent: cyan
 
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
 
 plugins:
   - search
