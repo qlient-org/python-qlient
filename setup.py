@@ -10,10 +10,12 @@ from setuptools import setup
 
 PROJECT_DIR = Path(__file__).resolve().parent
 
-ABOUT_PATH = PROJECT_DIR / "qlient" / "__about__.py"
+ABOUT_PATH = PROJECT_DIR / "src" / "qlient" / "__about__.py"
 README_PATH = PROJECT_DIR / "README.md"
 REQUIREMENTS_PATH = PROJECT_DIR / "requirements.txt"
-TEST_REQUIREMENTS_PATH = PROJECT_DIR / "requirements.test.txt"
+TEST_REQUIREMENTS_PATH = PROJECT_DIR / "requirements" / "test.txt"
+DEV_REQUIREMENTS_PATH = PROJECT_DIR / "requirements" / "dev.txt"
+DOCS_REQUIREMENTS_PATH = PROJECT_DIR / "requirements" / "docs.txt"
 
 
 def read_about() -> dict:
@@ -40,6 +42,8 @@ ABOUT = read_about()
 README = README_PATH.read_text(encoding="UTF-8")
 INSTALL_REQUIRES = read_requirements_file(REQUIREMENTS_PATH)
 TEST_REQUIRES = read_requirements_file(TEST_REQUIREMENTS_PATH)
+DEV_REQUIRES = read_requirements_file(DEV_REQUIREMENTS_PATH)
+DOCS_REQUIRES = read_requirements_file(DOCS_REQUIREMENTS_PATH)
 
 PACKAGES = ["qlient"]
 
@@ -52,12 +56,18 @@ setup(
     author=ABOUT["__author__"],
     author_email=ABOUT["__author_email__"],
     url=ABOUT["__url__"],
+    package_dir={"": "src"},
     packages=PACKAGES,
     package_data={"": ["LICENSE"]},
-    package_dir={"qlient": "qlient"},
     include_package_data=True,
+    python_requires=">=3.6",
     install_requires=INSTALL_REQUIRES,
     test_requires=TEST_REQUIRES,
+    extras_require={
+        "test": TEST_REQUIRES,
+        "dev": DEV_REQUIRES,
+        "docs": DOCS_REQUIRES,
+    },
     license=ABOUT["__license__"],
     zip_safe=False,
     classifiers=[
