@@ -1,0 +1,7 @@
+/venv/
+/env/
+/virtualenv/
+/.idea/
+/build/
+/dist/
+/*.egg-info/
