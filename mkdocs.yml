@@ -1,0 +1,25 @@
+site_name: python-qlient
+site_url: https://python.qlient.org/
+site_description: A fast and modern graphql client library designed with simplicity in mind.
+strict: true
+
+nav:
+  - Overview: index.md
+  - install.md
+  - Usage:
+      - usage/client.md
+
+repo_name: qlient/python-qlient
+repo_url: https://github.com/qlient/python-qlient
+
+theme:
+  name: 'material'
+  palette:
+    scheme: default
+    primary: black
+    secondary: cyan
+    accent: cyan
+
+
+plugins:
+  - search
