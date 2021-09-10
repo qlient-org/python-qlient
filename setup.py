@@ -48,7 +48,7 @@ DOCS_REQUIRES = read_requirements_file(DOCS_REQUIREMENTS_PATH)
 PACKAGES = ["qlient"]
 
 setup(
-    name=ABOUT["__title__"],
+    name=ABOUT["__package_name__"],
     version=ABOUT["__version__"],
     description=ABOUT["__description__"],
     long_description=README,

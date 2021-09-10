@@ -13,8 +13,8 @@ nav:
       - usage/cache.md
       - usage/transport.md
 
-repo_name: qlient/python-qlient
-repo_url: https://github.com/qlient/python-qlient
+repo_name: qlient-org/python-qlient
+repo_url: https://github.com/qlient-org/python-qlient
 
 theme:
   name: 'material'
