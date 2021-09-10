@@ -3,7 +3,7 @@ import unittest
 
 class LoaderTestCase(unittest.TestCase):
     def test_is_local_path(self):
-        from qlient.loader import is_local_path
+        from qlient.schema.loader import is_local_path
         assert is_local_path(".")
 
         assert not is_local_path("http://test.test/graphql")
