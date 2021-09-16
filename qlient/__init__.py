@@ -6,3 +6,4 @@
 """
 from qlient.client import Client
 from qlient.schema import Schema
+from qlient.transport import Transport

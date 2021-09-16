@@ -132,14 +132,16 @@ def read_local_schema(location: str) -> Dict:
         return json.load(schema_file)
 
 
-def load_remote_schema(transport: Transport) -> Dict:
+def load_remote_schema(endpoint: str, transport: Transport) -> Dict:
     """ Load the schema remotely from the graphql api
 
+    :param endpoint: holds the endpoint of the file
     :param transport: holds the transport to use for querying the graphql api
     :return:
     """
-    LOGGER.debug(f"Loading remote schema from `{transport.endpoint}`")
+    LOGGER.debug(f"Loading remote schema from `{endpoint}`")
     return transport.send_query(
+        endpoint=endpoint,
         operation_name=INTROSPECTION_OPERATION_NAME,
         query=INTROSPECTION_QUERY,
         variables={}
@@ -162,7 +164,7 @@ def load_schema(location: str, transport: Transport, cache: Optional[Cache]) -> 
     if is_local_path(location):
         schema = read_local_schema(location)
     else:
-        schema = load_remote_schema(transport)
+        schema = load_remote_schema(location, transport)
         schema = schema.get("data", {}).get("__schema", {})
     if cache:
         cache.put(location, schema)

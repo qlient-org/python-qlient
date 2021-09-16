@@ -19,20 +19,20 @@ class Transport:
 
     _default_session = Session
 
-    def __init__(self, endpoint: str, session: Optional[Session] = None):
-        self.endpoint: str = endpoint
+    def __init__(self, session: Optional[Session] = None):
         self.session: Session = session or self._default_session()
 
-    def send_query(self, operation_name: str, query: str, variables: Dict) -> Dict:
+    def send_query(self, endpoint: str, operation_name: str, query: str, variables: Dict) -> Dict:
         """ Send a query to the graphql endpoint
 
+        :param endpoint: holds the endpoint to send the query to
         :param operation_name: holds the name of the operation
         :param query: holds the query
         :param variables: holds variables that should be sent with in the query
         :return: the response parsed as dictionary
         """
         query_response: Response = self.session.post(
-            self.endpoint,
+            endpoint,
             json={
                 "query": query,
                 "operationName": operation_name,

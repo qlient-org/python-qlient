@@ -36,6 +36,6 @@ class Client:
             raise ValueError("Parameter `endpoint` must be a URL.")
         self.endpoint: str = endpoint
         self.settings: Settings = settings or self._default_settings()
-        self.transport: Transport = transport or self._default_transport(self.endpoint)
+        self.transport: Transport = transport or self._default_transport()
         self.cache: Optional[Cache] = cache
         self.schema: Schema = schema or Schema(self.endpoint, self.transport, self.settings, self.cache)

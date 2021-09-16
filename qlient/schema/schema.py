@@ -27,7 +27,7 @@ class Schema:
             cache: Optional[Cache] = None
     ):
         self.location: str = str(location)
-        self.transport: Transport = transport or Transport(location)
+        self.transport: Transport = transport or Transport()
         self.settings: Settings = settings or Settings()
         self.cache: Optional[Cache] = cache
 
