@@ -4,8 +4,9 @@
 :created: 10.09.2021
 :copyright: Swisscom
 """
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
+from qlient.exceptions import NoTypesFound
 from qlient.schema.models import Type, Directive
 
 
@@ -52,12 +53,40 @@ def extract_subscription_type(schema: Dict, types: Optional[Dict[str, Type]]) ->
     return extract_type(subscription_type, types)
 
 
-def parse_types(schema: Dict) -> Optional[Dict[str, Type]]:
-    return None
+def parse_types(schema: Dict) -> Dict[str, Type]:
+    types_list: List[Dict] = schema.get("types", [])
+    if not types_list:
+        raise NoTypesFound(schema)
+
+    types_list: List[Type] = [
+        Type(**type_dict)
+        for type_dict in types_list
+        if type_dict
+    ]
+
+    return {
+        type.name: type
+        for type in types_list
+        if type
+    }
 
 
 def parse_directives(schema: Dict) -> Optional[Dict[str, Directive]]:
-    return None
+    directives_list: List[Dict] = schema.get("directives", [])
+    if not directives_list:
+        return None
+
+    directives_list: List[Directive] = [
+        Directive(**directive_dict)
+        for directive_dict in directives_list
+        if directive_dict
+    ]
+
+    return {
+        directive.name: directive
+        for directive in directives_list
+        if directive
+    }
 
 
 def parse_schema(schema: Dict) -> ParseResult:
