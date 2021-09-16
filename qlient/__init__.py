@@ -5,3 +5,4 @@
 :copyright: Swisscom
 """
 from qlient.client import Client
+from qlient.schema import Schema

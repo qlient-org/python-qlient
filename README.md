@@ -1,5 +1,7 @@
 # Qlient: Python GraphQL Client
 
+[![qlient-org](https://circleci.com/gh/qlient-org/python-qlient.svg?style=svg)](https://circleci.com/gh/qlient-org/python-qlient)
+
 A fast and modern graphql client designed with simplicity in mind.
 
 ## Help
