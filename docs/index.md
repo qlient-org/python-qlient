@@ -7,12 +7,6 @@
 
 A fast and modern graphql client designed with simplicity in mind.
 
-## Installation
-
-```shell script
-pip install python-qlient
-```
-
 ## Quick Start
 
 ````python
