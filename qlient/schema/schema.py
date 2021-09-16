@@ -36,8 +36,8 @@ class Schema:
         self.query_type: Optional[Type] = None
         self.mutation_type: Optional[Type] = None
         self.subscription_type: Optional[Type] = None
-        self.types: Optional[List[Type]] = None
-        self.directives: Optional[List[Directive]] = None
+        self.types: Optional[Dict[str, Type]] = None
+        self.directives: Optional[Dict[str, Directive]] = None
 
         self.introspect()  # prepare the schema for further usage
 

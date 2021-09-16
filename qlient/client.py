@@ -9,6 +9,7 @@ from typing import Optional
 
 from qlient import validators, __about__
 from qlient.cache import Cache
+from qlient.proxy import QueryService, MutationService
 from qlient.schema import Schema
 from qlient.settings import Settings
 from qlient.transport import Transport
@@ -39,3 +40,18 @@ class Client:
         self.transport: Transport = transport or self._default_transport()
         self.cache: Optional[Cache] = cache
         self.schema: Schema = schema or Schema(self.endpoint, self.transport, self.settings, self.cache)
+
+        self._query_service: Optional[QueryService] = None
+        self._mutation_service: Optional[MutationService] = None
+
+    @property
+    def query(self) -> QueryService:
+        if self._query_service is None:
+            self._query_service = QueryService(self)
+        return self._query_service
+
+    @property
+    def mutation(self) -> MutationService:
+        if self._mutation_service is None:
+            self._mutation_service = MutationService(self)
+        return self._mutation_service

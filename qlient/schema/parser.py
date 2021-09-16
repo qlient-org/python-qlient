@@ -24,7 +24,7 @@ class ParseResult:
         self.query_type: Optional[Type] = query_type
         self.mutation_type: Optional[Type] = mutation_type
         self.subscription_type: Optional[Type] = subscription_type
-        self.types: Optional[Dict[str, Type]] = types
+        self.types: Dict[str, Type] = types
         self.directives: Optional[Dict[str, Directive]] = directives
 
 
