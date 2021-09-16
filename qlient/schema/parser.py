@@ -1,4 +1,4 @@
-""" 
+""" This file contains the graphql schema parser functions
 
 :author: Daniel Seifert
 :created: 10.09.2021
