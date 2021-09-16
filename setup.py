@@ -68,7 +68,7 @@ setup(
         "dev": DEV_REQUIRES,
         "docs": DOCS_REQUIRES,
     },
-    keywords="python graphql graph query language ql client requests api query mutation subscription",
+    keywords=ABOUT["__keywords__"],
     license=ABOUT["__license__"],
     zip_safe=False,
     classifiers=[
