@@ -8,6 +8,7 @@ nav:
   - install.md
   - Usage:
       - usage/client.md
+      - usage/proxy.md
       - usage/settings.md
       - usage/schema.md
       - usage/cache.md

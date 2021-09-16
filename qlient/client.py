@@ -46,12 +46,24 @@ class Client:
 
     @property
     def query(self) -> QueryService:
+        """ Cached property for the query service
+
+        If the :ref:`_query_service` is None, create a new QueryService.
+
+        :return: the query service in use
+        """
         if self._query_service is None:
             self._query_service = QueryService(self)
         return self._query_service
 
     @property
     def mutation(self) -> MutationService:
+        """ Cached property for the mutation service
+
+        if the ref:`_mutation_service` is None, create a new MutationService.
+
+        :return: the mutation service to use
+        """
         if self._mutation_service is None:
             self._mutation_service = MutationService(self)
         return self._mutation_service
