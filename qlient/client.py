@@ -27,6 +27,7 @@ class Client:
     def __init__(
             self,
             endpoint: str,
+            schema: Optional[Schema] = None,
             transport: Optional[Transport] = None,
             settings: Optional[Settings] = None,
             cache: Optional[Cache] = None
@@ -37,4 +38,4 @@ class Client:
         self.settings: Settings = settings or self._default_settings()
         self.transport: Transport = transport or self._default_transport(self.endpoint)
         self.cache: Optional[Cache] = cache
-        self.schema: Schema = Schema(self.endpoint, transport=self.transport, settings=self.settings, cache=self.cache)
+        self.schema: Schema = schema or Schema(self.endpoint, self.transport, self.settings, self.cache)

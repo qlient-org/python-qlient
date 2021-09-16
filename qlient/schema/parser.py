@@ -54,6 +54,18 @@ def extract_subscription_type(schema: Dict, types: Optional[Dict[str, Type]]) ->
 
 
 def parse_types(schema: Dict) -> Dict[str, Type]:
+    """ Parse/Extract all types from the schema
+
+    The types are required.
+    Everything in GraphQL is a type.
+    A string for example is a scalar and a scalar is a type.
+
+    This function returns a dictionary where each Type is associated with its name.
+    This is possible due to the fact that a type name must be unique.
+
+    :param schema: holds the schema to parse
+    :return: holds a dictionary where each type name is mapped to it's parsed type
+    """
     types_list: List[Dict] = schema.get("types", [])
     if not types_list:
         raise NoTypesFound(schema)
@@ -72,6 +84,15 @@ def parse_types(schema: Dict) -> Dict[str, Type]:
 
 
 def parse_directives(schema: Dict) -> Optional[Dict[str, Directive]]:
+    """ Parse the directives of the schema
+
+    A directive is an identifier preceded by a @ character,
+    optionally followed by a list of named arguments,
+    which can appear after almost any form of syntax in the GraphQL query or schema languages.
+
+    :param schema: holds the schema to parse
+    :return: either None or a dictionary of directive names matching the directive
+    """
     directives_list: List[Dict] = schema.get("directives", [])
     if not directives_list:
         return None
