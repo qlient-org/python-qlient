@@ -95,8 +95,8 @@ class MutationService(ServiceProxy):
         if not isinstance(client, Client):
             raise TypeError(f"client must be a Client")
         self.client: Client = client
-        queries = {
+        mutations = {
             field.name: Mutation(field)
             for field in self.client.schema.mutation_type.fields
         }
-        super(MutationService, self).__init__(queries)
+        super(MutationService, self).__init__(mutations)
