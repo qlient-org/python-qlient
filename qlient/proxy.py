@@ -49,10 +49,6 @@ class ServiceProxy(abc.ABC):
 
     def __init__(self, client):
         """ Instantiate a new instance of ServiceProxy """
-        super(ServiceProxy, self).__init__()
-        from qlient.client import Client
-        if not isinstance(client, Client):
-            raise TypeError(f"client must be of type {Client.__name__}")
         self.client = client
         self.operations: Dict[str, Operation] = self.get_bindings()
 
@@ -88,7 +84,14 @@ class ServiceProxy(abc.ABC):
         """ Return the names of the operations. """
         return list(itertools.chain(dir(super()), self.operations))
 
-    def __call__(self, operation: str, query: str, variables: Optional[Dict] = None, *args, **kwargs) -> Dict:
+    def __call__(
+            self,
+            query: str,
+            operation: Optional[str] = None,
+            variables: Optional[Dict] = None,
+            *args,
+            **kwargs
+    ) -> Dict:
         """ Send a query to the graphql server """
         return self.client.transport.send_query(
             endpoint=self.client.endpoint,
