@@ -50,6 +50,15 @@ class TypeRef:
         self.name = name
         self.of_type = self.parse(ofType) if ofType else None
 
+    def __str__(self) -> str:
+        """ Return a simple string representation of the type ref instance """
+        return repr(self)
+
+    def __repr__(self) -> str:
+        """ Return a more detailed string representation of the type ref instance """
+        class_name = self.__class__.__name__
+        return f"<{class_name}(kind=`{self.kind}`, name=`{self.name}`, ofType={self.of_type})>"
+
 
 class Input:
     """ Represents a basic graphql Input """
@@ -97,6 +106,15 @@ class Input:
         self.type = TypeRef.parse(type) if type else None
         self.default_value = defaultValue
 
+    def __str__(self) -> str:
+        """ Return a simple string representation of the input instance """
+        return repr(self)
+
+    def __repr__(self) -> str:
+        """ Return a more detailed string representation of the input instance """
+        class_name = self.__class__.__name__
+        return f"<{class_name}(name=`{self.name}`, type={self.type})>"
+
 
 class Directive:
     """ Represents a basic graphql Directive """
@@ -142,6 +160,15 @@ class Directive:
         self.description: Optional[str] = description
         self.locations: Optional[List[str]] = locations
         self.args: List[Input] = Input.parse_list(args)
+
+    def __str__(self) -> str:
+        """ Return a simple string representation of the directive instance """
+        return repr(self)
+
+    def __repr__(self) -> str:
+        """ Return a more detailed string representation of the directive instance """
+        class_name = self.__class__.__name__
+        return f"<{class_name}(name=`{self.name}`, locations={self.locations})>"
 
 
 class Field:
@@ -195,6 +222,15 @@ class Field:
         self.is_deprecated: Optional[bool] = isDeprecated
         self.deprecation_reason: Optional[str] = deprecationReason
 
+    def __str__(self) -> str:
+        """ Return a simple string representation of the field instance """
+        return repr(self)
+
+    def __repr__(self) -> str:
+        """ Return a more detailed string representation of the field instance """
+        class_name = self.__class__.__name__
+        return f"<{class_name}(name=`{self.name}`, type={self.type})>"
+
 
 class EnumValue:
     """ Represents a basic graphql enum value """
@@ -236,6 +272,15 @@ class EnumValue:
         self.description: Optional[str] = description
         self.is_deprecated: Optional[bool] = isDeprecated
         self.deprecation_reason: Optional[str] = deprecationReason
+
+    def __str__(self) -> str:
+        """ Return a simple string representation of the enum value instance """
+        return repr(self)
+
+    def __repr__(self) -> str:
+        """ Return a more detailed string representation of the enum value instance """
+        class_name = self.__class__.__name__
+        return f"<{class_name}(name=`{self.name}`)>"
 
 
 class Type:
@@ -282,3 +327,12 @@ class Type:
         self.interfaces: List[TypeRef] = TypeRef.parse_list(interfaces)
         self.enum_values: List[EnumValue] = EnumValue.parse_list(enumValues)
         self.possible_types: List[TypeRef] = TypeRef.parse_list(possibleTypes)
+
+    def __str__(self) -> str:
+        """ Return a simple string representation of the type instance """
+        return repr(self)
+
+    def __repr__(self) -> str:
+        """ Return a more detailed string representation of the type instance """
+        class_name = self.__class__.__name__
+        return f"<{class_name}(name=`{self.name}`)>"

@@ -5,7 +5,7 @@
 :copyright: Swisscom
 """
 import logging
-from typing import Optional, Dict, List
+from typing import Optional, Dict
 
 from qlient import __about__
 from qlient.cache import Cache
@@ -58,3 +58,12 @@ class Schema:
         self.types = parse_result.types
         self.directives = parse_result.directives
         self.logger.debug("Schema successfully introspected")
+
+    def __str__(self) -> str:
+        """ Return a simple string representation of the schema instance """
+        return repr(self)
+
+    def __repr__(self) -> str:
+        """ Return a more detailed string representation of the schema instance """
+        class_name = self.__class__.__name__
+        return f"<{class_name}(query_type={self.query_type}, mutation_type={self.mutation_type}, subscription_type={self.subscription_type})>"

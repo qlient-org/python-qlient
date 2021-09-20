@@ -4,37 +4,28 @@
 :created: 16.09.2021
 :copyright: Swisscom
 """
+import abc
 import itertools
-import logging
-from typing import Dict, Iterable, Any, Optional
+from typing import Dict, Iterable, Optional
 
-from qlient import __about__
 from qlient.schema.models import Field
 
 
 class Operation:
     """ Base class for all graphql operations """
 
-    logger = logging.getLogger(__about__.__title__)
-
-    def __init__(self, service: "ServiceProxy", operation_field: Field):
-        if not isinstance(service, ServiceProxy):
-            raise TypeError(f"Argument service must be of type {ServiceProxy.__name__}")
-        self.service_proxy: "ServiceProxy" = service
+    def __init__(self, operation_field: Field):
         self.type: Field = operation_field
 
     def __str__(self) -> str:
-        """ Return a simple string representation of this class. """
+        """ Return a simple string representation of this instance """
         class_name = self.__class__.__name__
         return f"{class_name}(`{self.type.name}`)"
 
     def __repr__(self) -> str:
-        """ Return a more detailed string representation of this class """
+        """ Return a detailed string representation of this instance """
         class_name = self.__class__.__name__
-        return f"<{class_name}(type={self.type}, service={self.service_proxy})>"
-
-    def __call__(self, *args, **kwargs):
-        pass
+        return f"{class_name}(type={self.type})"
 
 
 class Query(Operation):
@@ -49,25 +40,25 @@ class Subscription(Operation):
     """ Represents the operation proxy for subscriptions """
 
 
-class ServiceProxy:
+class ServiceProxy(abc.ABC):
     """ Base class for all service proxies """
 
-    logger = logging.getLogger(__about__.__title__)
+    @abc.abstractmethod
+    def get_bindings(self) -> Dict[str, Operation]:
+        """ Abstract base method to get the service bindings """
 
-    def __init__(self, client, bindings: Dict[str, Operation]):
-        """
-        Instantiate a new instance of ServiceProxy
-        :param bindings: holds a dictionary with all available operations
-        """
-        from qlient.client import Client  # only for type check
+    def __init__(self, client):
+        """ Instantiate a new instance of ServiceProxy """
+        super(ServiceProxy, self).__init__()
+        from qlient.client import Client
         if not isinstance(client, Client):
             raise TypeError(f"client must be of type {Client.__name__}")
-        self.client: Client = client
-        self.bindings: Dict[str, Operation] = bindings
+        self.client = client
+        self.operations: Dict[str, Operation] = self.get_bindings()
 
     def __getattr__(self, key: str) -> Operation:
-        """
-        Return the OperationProxy for the given key.
+        """ Return the OperationProxy for the given key.
+
         :param key: holds the operation key
         :return: the according OperationProxy
         :raises: AttributeError when the no operation with that key exists.
@@ -75,14 +66,14 @@ class ServiceProxy:
         return self[key]
 
     def __getitem__(self, key: str) -> Operation:
-        """
-        Return the OperationProxy for the given key.
+        """ Return the OperationProxy for the given key.
+
         :param key: holds the operation key
         :return: the according OperationProxy
         :raises: AttributeError when the no operation with that key exists.
         """
         try:
-            return self.bindings[key]
+            return self.operations[key]
         except KeyError:
             self.__missing__(key)
 
@@ -91,11 +82,11 @@ class ServiceProxy:
 
     def __iter__(self):
         """ Return iterator for the services and their callables. """
-        return iter(self.bindings.items())
+        return iter(self.operations.items())
 
     def __dir__(self) -> Iterable[str]:
         """ Return the names of the operations. """
-        return list(itertools.chain(dir(super()), self.bindings))
+        return list(itertools.chain(dir(super()), self.operations))
 
     def __call__(self, operation: str, query: str, variables: Optional[Dict] = None, *args, **kwargs) -> Dict:
         """ Send a query to the graphql server """
@@ -107,45 +98,39 @@ class ServiceProxy:
         )
 
     def __str__(self) -> str:
-        """ Return a simple string representation of this class """
+        """ Return a simple string representation of this instance """
         class_name = self.__class__.__name__
-        bindings = list(self.bindings.keys())
-        return f"{class_name}(bindings={bindings})"
+        return f"{class_name}(bindings={len(self.operations)})"
 
     def __repr__(self) -> str:
-        """ Return a more detailed version of this instance """
+        """ Return a detailed string representation of this instance """
         class_name = self.__class__.__name__
-        bindings = list(self.bindings.keys())
-        return f"<{class_name}(client={self.client}, bindings={bindings})>"
+        return f"{class_name}(bindings={list(self.operations.keys())})"
 
 
 class QueryService(ServiceProxy):
     """ Represents the query service """
 
-    def __init__(self, client: Any):
-        from qlient.client import Client  # only for type check
-        if not isinstance(client, Client):
-            raise TypeError(f"client must be of type {Client.__name__}")
+    def get_bindings(self) -> Dict[str, Operation]:
+        """ Method to get the query service bindings """
+        bindings = {}
+        if not self.client.schema.query_type:
+            return bindings
 
-        bindings = {
-            field.name: Query(self, field)
-            for field in self.client.schema.query_type.fields
-        }
-
-        super(QueryService, self).__init__(client, bindings)
+        for field in self.client.schema.query_type.fields:
+            bindings[field.name] = Query(field)
+        return bindings
 
 
 class MutationService(ServiceProxy):
     """ Represents the mutation service """
 
-    def __init__(self, client: Any):
-        from qlient.client import Client  # only for type check
-        if not isinstance(client, Client):
-            raise TypeError(f"client must be of type {Client.__name__}")
+    def get_bindings(self) -> Dict[str, Operation]:
+        """ Method to get the mutation service bindings """
+        bindings = {}
+        if not self.client.schema.query_type:
+            return bindings
 
-        bindings = {
-            field.name: Mutation(self, field)
-            for field in self.client.schema.mutation_type.fields
-        }
-
-        super(MutationService, self).__init__(client, bindings)
+        for field in self.client.schema.mutation_type.fields:
+            bindings[field.name] = Mutation(field)
+        return bindings

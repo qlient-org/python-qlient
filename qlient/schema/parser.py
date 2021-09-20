@@ -37,20 +37,29 @@ def extract_type(type_name: str, types: Optional[Dict[str, Type]]) -> Optional[T
 
 def extract_query_type(schema: Dict, types: Optional[Dict[str, Type]]) -> Optional[Type]:
     """ Extract the name of the query type from the schema """
-    query_type = schema.get("queryType", {}).get("name")
-    return extract_type(query_type, types)
+    query_type: Optional[Dict] = schema.get("queryType")
+    if not query_type:
+        return None
+    query_type_name: Optional[str] = query_type.get("name")
+    return extract_type(query_type_name, types)
 
 
 def extract_mutation_type(schema: Dict, types: Optional[Dict[str, Type]]) -> Optional[Type]:
     """ Extract the name of the mutation type from the schema """
-    mutation_type = schema.get("mutationType", {}).get("name")
-    return extract_type(mutation_type, types)
+    mutation_type: Optional[Dict] = schema.get("mutationType")
+    if not mutation_type:
+        return None
+    mutation_type_name: Optional[str] = mutation_type.get("name")
+    return extract_type(mutation_type_name, types)
 
 
 def extract_subscription_type(schema: Dict, types: Optional[Dict[str, Type]]) -> Optional[Type]:
     """ Extract the name of the subscription type from the schema """
-    subscription_type = schema.get("subscriptionType", {}).get("name")
-    return extract_type(subscription_type, types)
+    subscription_type: Optional[Dict] = schema.get("subscriptionType")
+    if not subscription_type:
+        return None
+    subscription_type_name: Optional[str] = subscription_type.get("name")
+    return extract_type(subscription_type_name, types)
 
 
 def parse_types(schema: Dict) -> Dict[str, Type]:
