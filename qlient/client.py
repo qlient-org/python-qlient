@@ -67,3 +67,20 @@ class Client:
         if self._mutation_service is None:
             self._mutation_service = MutationService(self)
         return self._mutation_service
+
+    def __str__(self) -> str:
+        """ Return a simple string representation of the client """
+        class_name = self.__class__.__name__
+        return f"{class_name}(endpoint=`{self.endpoint}`)"
+
+    def __repr__(self) -> str:
+        """ Return a detailed string representation of the client """
+        class_name = self.__class__.__name__
+        props = ", ".join([
+            f"endpoint=`{self.endpoint}`",
+            f"settings={self.settings}",
+            f"transport={self.transport}",
+            f"cache={self.cache}",
+            f"schema={self.schema}"
+        ])
+        return f"<{class_name}({props})>"
