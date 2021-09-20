@@ -40,3 +40,13 @@ class InMemoryCache(Cache):
         :return:
         """
         return self.cache.get(url)
+
+    def __str__(self) -> str:
+        """ Return a simple string representation of this instance """
+        class_name = self.__class__.__name__
+        return f"{class_name}(items={len(self.cache)})"
+
+    def __repr__(self) -> str:
+        """ Return a more detailed string representation of this instance """
+        class_name = self.__class__.__name__
+        return f"<{class_name}(cache={self.cache})>"
