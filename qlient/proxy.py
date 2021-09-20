@@ -80,10 +80,15 @@ class QueryService(ServiceProxy):
     """ Represents the query service """
 
     def __init__(self, client: Any):
+        from qlient.client import Client  # only for type check
+        if not isinstance(client, Client):
+            raise TypeError(f"client must be of type {Client.__name__}")
+
         bindings = {
             field.name: Query(field)
             for field in self.client.schema.query_type.fields
         }
+
         super(QueryService, self).__init__(client, bindings)
 
 
@@ -91,8 +96,13 @@ class MutationService(ServiceProxy):
     """ Represents the mutation service """
 
     def __init__(self, client: Any):
+        from qlient.client import Client  # only for type check
+        if not isinstance(client, Client):
+            raise TypeError(f"client must be of type {Client.__name__}")
+
         bindings = {
             field.name: Mutation(field)
             for field in self.client.schema.mutation_type.fields
         }
+
         super(MutationService, self).__init__(client, bindings)
