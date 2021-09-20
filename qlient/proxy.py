@@ -32,12 +32,16 @@ class Subscription(Operation):
 class ServiceProxy:
     """ Base class for all service proxies """
 
-    def __init__(self, operations: Dict[str, Operation]):
+    def __init__(self, client, bindings: Dict[str, Operation]):
         """
         Instantiate a new instance of ServiceProxy
-        :param operations: holds a dictionary with all available services
+        :param bindings: holds a dictionary with all available operations
         """
-        self.operations: Dict[str, Operation] = operations
+        from qlient.client import Client  # only for type check
+        if not isinstance(client, Client):
+            raise TypeError(f"client must be of type {Client.__name__}")
+        self.client: Client = client
+        self.bindings: Dict[str, Operation] = bindings
 
     def __getattr__(self, key: str) -> Operation:
         """
@@ -56,7 +60,7 @@ class ServiceProxy:
         :raises: AttributeError when the no operation with that key exists.
         """
         try:
-            return self.operations[key]
+            return self.bindings[key]
         except KeyError:
             self.__missing__(key)
 
@@ -65,38 +69,30 @@ class ServiceProxy:
 
     def __iter__(self):
         """ Return iterator for the services and their callables. """
-        return iter(self.operations.items())
+        return iter(self.bindings.items())
 
     def __dir__(self) -> Iterable[str]:
         """ Return the names of the operations. """
-        return list(itertools.chain(dir(super()), self.operations))
+        return list(itertools.chain(dir(super()), self.bindings))
 
 
 class QueryService(ServiceProxy):
     """ Represents the query service """
 
     def __init__(self, client: Any):
-        from qlient.client import Client  # only for type check
-        if not isinstance(client, Client):
-            raise TypeError(f"client must be a Client")
-        self.client: Client = client
-        queries = {
+        bindings = {
             field.name: Query(field)
             for field in self.client.schema.query_type.fields
         }
-        super(QueryService, self).__init__(queries)
+        super(QueryService, self).__init__(client, bindings)
 
 
 class MutationService(ServiceProxy):
     """ Represents the mutation service """
 
     def __init__(self, client: Any):
-        from qlient.client import Client  # only for type check
-        if not isinstance(client, Client):
-            raise TypeError(f"client must be a Client")
-        self.client: Client = client
-        mutations = {
+        bindings = {
             field.name: Mutation(field)
             for field in self.client.schema.mutation_type.fields
         }
-        super(MutationService, self).__init__(mutations)
+        super(MutationService, self).__init__(client, bindings)
