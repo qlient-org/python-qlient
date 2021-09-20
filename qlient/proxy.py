@@ -5,7 +5,7 @@
 :copyright: Swisscom
 """
 import itertools
-from typing import Dict, Iterable, Any
+from typing import Dict, Iterable, Any, Optional
 
 from qlient.schema.models import Field
 
@@ -13,7 +13,10 @@ from qlient.schema.models import Field
 class Operation:
     """ Base class for all graphql operations """
 
-    def __init__(self, operation_field: Field):
+    def __init__(self, service: "ServiceProxy", operation_field: Field):
+        if not isinstance(service, ServiceProxy):
+            raise TypeError(f"Argument service must be of type {ServiceProxy.__name__}")
+        self.service_proxy: "ServiceProxy" = service
         self.type: Field = operation_field
 
 
@@ -75,6 +78,15 @@ class ServiceProxy:
         """ Return the names of the operations. """
         return list(itertools.chain(dir(super()), self.bindings))
 
+    def __call__(self, operation: str, query: str, variables: Optional[Dict] = None, *args, **kwargs) -> Dict:
+        """ Send a query to the graphql server """
+        return self.client.transport.send_query(
+            endpoint=self.client.endpoint,
+            operation_name=operation,
+            query=query,
+            variables=variables
+        )
+
 
 class QueryService(ServiceProxy):
     """ Represents the query service """
@@ -85,7 +97,7 @@ class QueryService(ServiceProxy):
             raise TypeError(f"client must be of type {Client.__name__}")
 
         bindings = {
-            field.name: Query(field)
+            field.name: Query(self, field)
             for field in self.client.schema.query_type.fields
         }
 
@@ -101,7 +113,7 @@ class MutationService(ServiceProxy):
             raise TypeError(f"client must be of type {Client.__name__}")
 
         bindings = {
-            field.name: Mutation(field)
+            field.name: Mutation(self, field)
             for field in self.client.schema.mutation_type.fields
         }
 
