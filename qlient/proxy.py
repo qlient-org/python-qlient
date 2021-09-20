@@ -5,19 +5,36 @@
 :copyright: Swisscom
 """
 import itertools
+import logging
 from typing import Dict, Iterable, Any, Optional
 
+from qlient import __about__
 from qlient.schema.models import Field
 
 
 class Operation:
     """ Base class for all graphql operations """
 
+    logger = logging.getLogger(__about__.__title__)
+
     def __init__(self, service: "ServiceProxy", operation_field: Field):
         if not isinstance(service, ServiceProxy):
             raise TypeError(f"Argument service must be of type {ServiceProxy.__name__}")
         self.service_proxy: "ServiceProxy" = service
         self.type: Field = operation_field
+
+    def __str__(self) -> str:
+        """ Return a simple string representation of this class. """
+        class_name = self.__class__.__name__
+        return f"{class_name}(`{self.type.name}`)"
+
+    def __repr__(self) -> str:
+        """ Return a more detailed string representation of this class """
+        class_name = self.__class__.__name__
+        return f"<{class_name}(type={self.type}, service={self.service_proxy})>"
+
+    def __call__(self, *args, **kwargs):
+        pass
 
 
 class Query(Operation):
@@ -34,6 +51,8 @@ class Subscription(Operation):
 
 class ServiceProxy:
     """ Base class for all service proxies """
+
+    logger = logging.getLogger(__about__.__title__)
 
     def __init__(self, client, bindings: Dict[str, Operation]):
         """
@@ -86,6 +105,18 @@ class ServiceProxy:
             query=query,
             variables=variables
         )
+
+    def __str__(self) -> str:
+        """ Return a simple string representation of this class """
+        class_name = self.__class__.__name__
+        bindings = list(self.bindings.keys())
+        return f"{class_name}(bindings={bindings})"
+
+    def __repr__(self) -> str:
+        """ Return a more detailed version of this instance """
+        class_name = self.__class__.__name__
+        bindings = list(self.bindings.keys())
+        return f"<{class_name}(client={self.client}, bindings={bindings})>"
 
 
 class QueryService(ServiceProxy):

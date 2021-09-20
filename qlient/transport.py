@@ -31,6 +31,9 @@ class Transport:
         :param variables: holds variables that should be sent with in the query
         :return: the response parsed as dictionary
         """
+        self.logger.info(f"Sending operation `{operation_name}` to `{endpoint}`")
+        self.logger.debug(f"Query: {query}")
+        self.logger.debug(f"Variables: {variables}")
         query_response: Response = self.session.post(
             endpoint,
             json={
