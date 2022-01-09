@@ -37,9 +37,19 @@ class Fields:
         self.sub_fields: Dict[str, "Fields"] = _sub_fields
 
     def __and__(self, other) -> "Fields":
+        """ Synthetic sugar method which essentially just does the __add__
+
+        :param other: holds the other instance to add to this instance
+        :return: a new Fields instance with the added properties
+        """
         return self + other
 
     def __add__(self, other) -> "Fields":
+        """ Add another object to this fields
+
+        :param other: the object to add
+        :return: a new instance of this class with the added fields
+        """
         if isinstance(other, self.__class__):
             args = list(set(self.fields + other.fields))
             kwargs = {**self.sub_fields, **other.sub_fields}
@@ -52,6 +62,11 @@ class Fields:
             return self.__class__(*self.fields, **{**self.sub_fields, **other})
 
     def __sub__(self, other) -> "Fields":
+        """ Subtract another object from this fields
+
+        :param other: holds the object to subtract
+        :return: a new instance of this class with subtracted fields
+        """
         if isinstance(other, self.__class__):
             args = list(set(self.fields) - set(other.fields))
             kwargs = {**self.sub_fields}
