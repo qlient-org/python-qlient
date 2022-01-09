@@ -13,4 +13,19 @@ __author__ = "Daniel Seifert"
 __author_email__ = "support@qlient.org"
 __version__ = "2.0.0"
 __license__ = "MIT"
-__keywords__ = "python graphql graph query language ql qlient client requests api query mutation subscription service consumer subscriber"
+__keywords__ = " ".join([
+    "python",
+    "graphql",
+    "ql",
+    "qlient",
+    "client",
+    "web",
+    "requests",
+    "api",
+    "query",
+    "mutation",
+    "subscription",
+    "service",
+    "consumer",
+    "subscriber"
+])
