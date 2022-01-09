@@ -31,7 +31,7 @@ class Client:
             schema: Optional[Schema] = None,
             transport: Optional[Transport] = None,
             settings: Optional[Settings] = None,
-            cache: Optional[Cache] = None
+            cache: Optional[Cache] = None,
     ):
         if not validators.is_url(endpoint):
             raise ValueError("Parameter `endpoint` must be a URL.")

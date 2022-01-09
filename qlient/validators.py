@@ -13,7 +13,7 @@ IP_MIDDLE_OCTET = r"(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5]))"
 IP_LAST_OCTET = r"(?:\.(?:0|[1-9]\d?|1\d\d|2[0-4]\d|25[0-5]))"
 
 URL_REGEX = re.compile(  # noqa: W605
-    "".join([  # formatter f**ks up everything when using string concatenation
+    "".join([  # formatter messes up everything when using string concatenation
         r"^",
         # protocol identifier,
         r"(?:(?:https?|ftp)://)",
@@ -111,3 +111,17 @@ def is_url(value: str) -> bool:
     if value is None:
         return False
     return bool(URL_PATTERN.match(value))
+
+
+def is_local_path(location: str) -> bool:
+    """ Check if the given location is a local path
+
+    :param location: holds the location of the schema definition
+    :return: True if the schema is a local path
+    """
+    import pathlib
+    try:
+        return pathlib.Path(location).exists()
+    except OSError:
+        # when something goes wrong, the location is most likely not a local file
+        return False

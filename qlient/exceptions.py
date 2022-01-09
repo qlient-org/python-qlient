@@ -8,7 +8,7 @@ from typing import Dict
 
 
 class QlientException(Exception):
-    """ Base class for client exceptions """
+    """ Base class for qlient exceptions """
 
 
 class SchemaException(QlientException):
@@ -20,8 +20,16 @@ class SchemaException(QlientException):
 
 
 class SchemaParseException(SchemaException):
-    """ This exception gets thrown when the parses was unable to parse the graphql schema """
+    """ This exception gets thrown when the parser was unable to parse the graphql schema """
 
 
 class NoTypesFound(SchemaParseException):
     """ Indicates that the schema does not have any types defined """
+
+
+class SchemaDetectionException(QlientException):
+    """ Indicates a failure in detecting the schema provider """
+
+    def __init__(self, location: str, *args):
+        self.location: str = location
+        super(SchemaDetectionException, self).__init__(*args)
