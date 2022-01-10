@@ -8,6 +8,7 @@ import abc
 import itertools
 from typing import Dict, Iterable, Optional
 
+from qlient.qb import TypedGQLQueryBuilder, Fields
 from qlient.schema.models import Field
 
 
@@ -16,45 +17,69 @@ class Operation:
 
     def __init__(self, proxy: "ServiceProxy", operation_field: Field):
         self._proxy: "ServiceProxy" = proxy
-        self.type: Field = operation_field
+        self.operation_field: Field = operation_field
+        self.query_builder: TypedGQLQueryBuilder = TypedGQLQueryBuilder(self.operation_type, self.operation_field)
+        self._variables: Dict = {}
+
+    def select(self, *args, **kwargs) -> "Operation":
+        self.query_builder.fields(*args, **kwargs)
+        return self
+
+    def variables(self, **kwargs) -> "Operation":
+        self._variables = self.query_builder.variables(**kwargs)
+        return self
+
+    def execute(self) -> Dict:
+        return self.__call__()
 
     def __str__(self) -> str:
         """ Return a simple string representation of this instance """
         class_name = self.__class__.__name__
-        return f"{class_name}(`{self.type.name}`)"
+        return f"{class_name}(`{self.operation_field.name}`)"
 
     def __repr__(self) -> str:
         """ Return a detailed string representation of this instance """
         class_name = self.__class__.__name__
-        return f"{class_name}(type={self.type})"
+        return f"{class_name}(field={self.operation_field})"
+
+    @property
+    def operation_type(self) -> str:
+        """ Return the operation type.
+
+        :return: Either query, mutation or subscription (Depends on the class name)
+        """
+        return self.__class__.__name__.lower()
+
+    @property
+    def query(self) -> str:
+        return self.query_builder.build()
 
     def __call__(
             self,
-            _fields: Optional = None,
+            _fields: Optional[Fields] = None,
             **kwargs
-    ):
-        raise NotImplementedError
+    ) -> Dict:
+        if _fields:
+            self.select(_fields)
+        if kwargs:
+            self.variables(**kwargs)
+        return self._proxy(
+            query=self.query,
+            operation=self.operation_field.name,
+            variables=self._variables
+        )
 
 
 class Query(Operation):
     """ Represents the operation proxy for queries """
 
-    def __call__(self, *args, **kwargs):
-        pass
-
 
 class Mutation(Operation):
     """ Represents the operation proxy for mutations """
 
-    def __call__(self, *args, **kwargs):
-        raise NotImplementedError
-
 
 class Subscription(Operation):
     """ Represents the operation proxy for subscriptions """
-
-    def __call__(self, *args, **kwargs):
-        raise NotImplementedError
 
 
 class ServiceProxy(abc.ABC):

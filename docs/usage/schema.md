@@ -1,5 +1,7 @@
 # Schema
 
+The schema is a core part of graphql.
+
 ## Custom Schema
 
 In some cases, for example when the introspection has been disabled on the graphql api, you'd want to manually create

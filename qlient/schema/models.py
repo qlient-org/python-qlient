@@ -59,6 +59,15 @@ class TypeRef:
         class_name = self.__class__.__name__
         return f"<{class_name}(kind=`{self.kind}`, name=`{self.name}`, ofType={self.of_type})>"
 
+    @property
+    def graphql_representation(self) -> str:
+        representation = self.of_type.graphql_representation if self.of_type else self.name
+        if self.kind == "NON_NULL":
+            representation = f"{representation}!"
+        if self.kind == "LIST":
+            representation = f"[{representation}]"
+        return representation
+
 
 class Input:
     """ Represents a basic graphql Input """
