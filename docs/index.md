@@ -7,10 +7,55 @@
 
 A fast and modern graphql client designed with simplicity in mind.
 
+## Quick introduction
+
 ## Quick Start
 
-````python
-from qlient import Client
+```python
+from qlient import Client, Fields
 
 client = Client("https://api.spacex.land/graphql/")
-````
+
+mission_fields = Fields("mission_id", "mission_name")
+rocket_fields = Fields("rocket_name", fairings="ship")
+
+result = client.query.launchesPast(
+    limit=3,
+    _fields=Fields(mission_fields, rocket=rocket_fields)
+)
+print(result)
+```
+
+```json
+{
+  "data": {
+    "launchesPast": [
+      {
+        "mission_name": "Starlink-15 (v1.0)",
+        "rocket": {
+          "rocket_name": "Falcon 9",
+          "fairings": {
+            "ship": "GOMSCHIEF"
+          }
+        }
+      },
+      {
+        "mission_name": "Sentinel-6 Michael Freilich",
+        "rocket": {
+          "rocket_name": "Falcon 9",
+          "fairings": {
+            "ship": null
+          }
+        }
+      },
+      {
+        "mission_name": "Crew-1",
+        "rocket": {
+          "rocket_name": "Falcon 9",
+          "fairings": null
+        }
+      }
+    ]
+  }
+}
+```

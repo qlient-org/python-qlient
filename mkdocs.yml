@@ -8,6 +8,7 @@ nav:
   - install.md
   - Usage:
       - usage/client.md
+      - usage/fields.md
       - usage/proxy.md
       - usage/settings.md
       - usage/schema.md
@@ -32,6 +33,7 @@ markdown_extensions:
 
 plugins:
   - search
+  - mike
 
 extra:
   version:

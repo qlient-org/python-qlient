@@ -10,7 +10,7 @@ from typing import Optional, Dict
 from qlient import __about__
 from qlient.cache import Cache
 from qlient.schema.models import Type, Directive
-from qlient.schema.providers import SchemaProvider
+from qlient.schema.providers import SchemaProvider, detect_schema_provider
 from qlient.settings import Settings
 from qlient.transport import Transport
 
@@ -22,7 +22,7 @@ class Schema:
 
     def __init__(
             self,
-            location: str,
+            location: Optional[str] = None,
             transport: Optional[Transport] = None,
             settings: Optional[Settings] = None,
             cache: Optional[Cache] = None,
@@ -32,7 +32,7 @@ class Schema:
         self.transport: Transport = transport or Transport()
         self.settings: Settings = settings or Settings()
         self.cache: Optional[Cache] = cache
-        self.schema_provider: Optional[SchemaProvider] = provider
+        self.schema_provider: SchemaProvider = provider or detect_schema_provider(location, transport)
 
         self.schema: Optional[Dict] = None
 
@@ -48,7 +48,7 @@ class Schema:
         """ Load the schema definition """
         self.logger.debug("Schema introspection started")
         from qlient.schema.loader import load_schema
-        self.schema: Dict = load_schema(self.schema_provider, self.location, self.transport, self.cache)
+        self.schema: Dict = load_schema(self.schema_provider, self.location, self.cache)
         self.logger.debug("Schema loaded")
 
         from qlient.schema.parser import parse_schema, ParseResult

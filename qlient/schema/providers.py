@@ -1,10 +1,12 @@
 import abc
 import logging
 import pathlib
-from typing import Dict, Union
+from typing import Dict, Union, Optional
 
-import qlient.transport
 from qlient import __about__
+from qlient.exceptions import SchemaDetectionException
+from qlient.transport import Transport
+from qlient.validators import is_local_path, is_url
 
 LOGGER = logging.getLogger(__about__.__title__)
 
@@ -121,9 +123,9 @@ class RemoteSchemaProvider(SchemaProvider):
             }
             """
 
-    def __init__(self, endpoint: str, transport: qlient.transport.Transport):
+    def __init__(self, endpoint: str, transport: Transport):
         self.endpoint: str = endpoint
-        self.transport: qlient.transport.Transport = transport
+        self.transport: Transport = transport
 
     def load_schema(self) -> Dict:
         LOGGER.debug(f"Loading remote schema from `{self.endpoint}`")
@@ -134,3 +136,13 @@ class RemoteSchemaProvider(SchemaProvider):
             variables={}
         )
         return schema_response.get("data", {}).get("__schema", {})
+
+
+def detect_schema_provider(location: Optional[str], transport: Transport) -> Optional[SchemaProvider]:
+    if not location:
+        raise SchemaDetectionException("No location was provided")
+    if is_local_path(location):
+        return LocalSchemaProvider(location)
+    if is_url(location):
+        return RemoteSchemaProvider(location, transport)
+    raise SchemaDetectionException("Failed to identify whether location is local path or remote url.")

@@ -1,6 +1,6 @@
 # Schema
 
-The schema is a core part of graphql.
+The schema describes what operations can be made, which inputs can be given and which return values are expected.
 
 ## Custom Schema
 
@@ -35,3 +35,7 @@ remote_schema = Schema(location="https://my-schema-provider.com")
 
 client = Client(endpoint="https://my-graphql-api.com", schema=remote_schema)
 ````
+
+### My schema is neither on my filesystem, nor on any remote
+
+Do not fear, solution is near. have a look at the [documentation for schema providers](schema_providers.md)
