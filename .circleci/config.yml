@@ -6,15 +6,15 @@ orbs:
 workflows:
   test:
     jobs:
-      - test:python36
-      - test:python37
-      - test:python38
-      - test:python39
-      - test:python310
+      - test-python36
+      - test-python37
+      - test-python38
+      - test-python39
+      - test-python310
 
 
 jobs:
-  test:python36:
+  test-python36:
     docker:
       - image: cimg/python:3.6
     steps:
@@ -25,7 +25,7 @@ jobs:
           name: Run tests
           command: python -m pytest
 
-  test:python37:
+  test-python37:
     docker:
       - image: cimg/python:3.7
     steps:
@@ -36,7 +36,7 @@ jobs:
           name: Run tests
           command: python -m pytest
 
-  test:python38:
+  test-python38:
     docker:
       - image: cimg/python:3.8
     steps:
@@ -47,7 +47,7 @@ jobs:
           name: Run tests
           command: python -m pytest
 
-  test:python39:
+  test-python39:
     docker:
       - image: cimg/python:3.9
     steps:
@@ -58,7 +58,7 @@ jobs:
           name: Run tests
           command: python -m pytest
 
-  test:python310:
+  test-python310:
     docker:
       - image: cimg/python:3.10
     steps:
