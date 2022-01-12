@@ -6,7 +6,7 @@
 """
 import abc
 import itertools
-from typing import Dict, Iterable, Optional
+from typing import Dict, Iterable, Optional, List
 
 from qlient.qb import TypedGQLQueryBuilder, Fields
 from qlient.schema.models import Field
@@ -150,7 +150,11 @@ class ServiceProxy(abc.ABC):
     def __repr__(self) -> str:
         """ Return a detailed string representation of this instance """
         class_name = self.__class__.__name__
-        return f"{class_name}(bindings={list(self.operations.keys())})"
+        return f"{class_name}(bindings={self.supported_bindings})"
+
+    @property
+    def supported_bindings(self) -> List[str]:
+        return list(self.operations.keys())
 
 
 class QueryService(ServiceProxy):

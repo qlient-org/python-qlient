@@ -3,10 +3,36 @@ name = "python-qlient"
 version = "2.0.0"
 description = "A fast and modern graphql client designed with simplicity in mind."
 authors = ["Daniel Seifert <info@danielseifert.ch>"]
+maintainers = ["Daniel Seifert <info@danielseifert.ch>"]
 license = "MIT"
+readme = "README.md"
+homepage = "https://python.qlient.org"
+repository = "https://github.com/qlient-org/python-qlient"
+documentation = "https://python.qlient.org"
+keywords = ["graphql", "client", "api", "query", "mutation"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+packages = [
+    { include = "qlient" }
+]
+include = [
+    "docs/*"
+]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.6"
 requests = "^2.27.1"
 
 [tool.poetry.dev-dependencies]

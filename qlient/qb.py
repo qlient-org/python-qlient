@@ -24,10 +24,10 @@ class Fields:
                 _fields.append(arg)
                 continue
             if isinstance(arg, list):
-                _fields += self.__class__(*arg).fields # noqa
+                _fields += self.__class__(*arg).fields  # noqa
                 continue
             if isinstance(arg, dict):
-                _sub_fields.update(self.__class__(**arg).sub_fields) # noqa
+                _sub_fields.update(self.__class__(**arg).sub_fields)  # noqa
                 continue
             raise TypeError(f"Can't handle type `{type(arg).__name__}`")
 
@@ -100,6 +100,12 @@ class Fields:
         for name, fields in self.sub_fields.items():
             builder.append(f"{name} {{ {str(fields)} }}")
         return " ".join(builder)
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, self.__class__):
+            return False
+
+        return self.fields == other.fields and self.sub_fields == other.sub_fields
 
 
 class GQLQueryBuilder:
