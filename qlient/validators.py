@@ -5,14 +5,13 @@ URL Validator:
 
 :author: Daniel Seifert
 :created: 10.09.2021
-:copyright: Swisscom
 """
 import re
 
 IP_MIDDLE_OCTET = r"(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5]))"
 IP_LAST_OCTET = r"(?:\.(?:0|[1-9]\d?|1\d\d|2[0-4]\d|25[0-5]))"
 
-URL_REGEX = re.compile(  # noqa: W605
+URL_PATTERN = re.compile(  # noqa: W605
     "".join([  # formatter messes up everything when using string concatenation
         r"^",
         # protocol identifier,
@@ -98,8 +97,6 @@ URL_REGEX = re.compile(  # noqa: W605
     ]),
     re.UNICODE | re.IGNORECASE
 )
-
-URL_PATTERN = re.compile(URL_REGEX)
 
 
 def is_url(value: str) -> bool:

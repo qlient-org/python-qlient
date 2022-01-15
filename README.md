@@ -23,4 +23,48 @@ pip install python-qlient
 from qlient import Client
 
 client = Client("https://api.spacex.land/graphql/")
+
+res = client.query.launchesPast(
+    # spacex graphql input fields
+    find={"mission_name": "Starlink"},
+    limit=5,
+    sort="mission_name",
+    
+    # qlient specific
+    _fields=["mission_name", "launch_success", "launch_year"]
+)
+````
+`res` will look something like this.
+````json
+{
+  "data": {
+    "launchesPast": [
+      {
+        "mission_name": "Paz / Starlink Demo",
+        "launch_success": true,
+        "launch_year": "2018"
+      },
+      {
+        "mission_name": "Starlink 1",
+        "launch_success": true,
+        "launch_year": "2019"
+      },
+      {
+        "mission_name": "Starlink 2",
+        "launch_success": true,
+        "launch_year": "2020"
+      },
+      {
+        "mission_name": "Starlink 3",
+        "launch_success": true,
+        "launch_year": "2020"
+      },
+      {
+        "mission_name": "Starlink 4",
+        "launch_success": true,
+        "launch_year": "2020"
+      }
+    ]
+  }
+}
 ````

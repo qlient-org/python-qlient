@@ -2,20 +2,17 @@
 
 :author: Daniel Seifert
 :created: 09.09.2021
-:copyright: Swisscom
 """
 import logging
 from typing import Optional, Dict
 
 from requests import Session, Response
 
-from qlient import __about__
-
 
 class Transport:
     """ This class is used for sending the request """
 
-    logger = logging.getLogger(__about__.__title__)
+    logger = logging.getLogger("qlient")
 
     _default_session = Session
 

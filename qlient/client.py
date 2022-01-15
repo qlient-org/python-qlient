@@ -1,13 +1,12 @@
-""" 
+""" This file contains the graphql client
 
 :author: Daniel Seifert
 :created: 09.09.2021
-:copyright: Swisscom
 """
 import logging
 from typing import Optional
 
-from qlient import validators, __about__
+from qlient import validators
 from qlient.cache import Cache
 from qlient.proxy import QueryService, MutationService
 from qlient.schema import Schema
@@ -20,7 +19,7 @@ class Client:
 
     """
 
-    logger = logging.getLogger(__about__.__title__)
+    logger = logging.getLogger("qlient")
 
     _default_transport = Transport  # holds the default transport factory
     _default_settings = Settings  # holds the default settings factory
@@ -33,10 +32,11 @@ class Client:
             settings: Optional[Settings] = None,
             cache: Optional[Cache] = None,
     ):
-        if not validators.is_url(endpoint):
-            raise ValueError("Parameter `endpoint` must be a URL.")
-        self.endpoint: str = endpoint
         self.settings: Settings = settings or self._default_settings()
+        if self.settings.validate_url:
+            if not validators.is_url(endpoint):
+                raise ValueError("Parameter `endpoint` must be a URL.")
+        self.endpoint: str = endpoint
         self.transport: Transport = transport or self._default_transport()
         self.cache: Optional[Cache] = cache
         self.schema: Schema = schema or Schema(self.endpoint, self.transport, self.settings, self.cache)

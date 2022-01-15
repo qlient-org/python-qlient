@@ -2,7 +2,6 @@
 
 :author: Daniel Seifert
 :created: 16.09.2021
-:copyright: Swisscom
 """
 import abc
 import itertools
@@ -18,7 +17,14 @@ class Operation:
     def __init__(self, proxy: "ServiceProxy", operation_field: Field):
         self._proxy: "ServiceProxy" = proxy
         self.operation_field: Field = operation_field
-        self.query_builder: TypedGQLQueryBuilder = TypedGQLQueryBuilder(self.operation_type, self.operation_field)
+
+        self.query_builder: TypedGQLQueryBuilder = TypedGQLQueryBuilder(
+            self.operation_type,
+            self.operation_field.name,
+            self.operation_field.inputs,
+            self._proxy.client.schema.types_registry.get(self.operation_field.output_type_name),
+            self._proxy.client.settings
+        )
         self._variables: Dict = {}
 
     def select(self, *args, **kwargs) -> "Operation":
@@ -91,7 +97,8 @@ class ServiceProxy(abc.ABC):
 
     def __init__(self, client):
         """ Instantiate a new instance of ServiceProxy """
-        self.client = client
+        from qlient.client import Client  # type hint here due to circular dependency
+        self.client: Client = client
         self.operations: Dict[str, Operation] = self.get_bindings()
 
     def __getattr__(self, key: str) -> Operation:

@@ -1,14 +1,18 @@
+""" This file contains the different schema providers
+
+:author: Daniel Seifert
+:created: 13.01.2022
+"""
 import abc
 import logging
 import pathlib
 from typing import Dict, Union, Optional
 
-from qlient import __about__
 from qlient.exceptions import SchemaDetectionException
 from qlient.transport import Transport
 from qlient.validators import is_local_path, is_url
 
-LOGGER = logging.getLogger(__about__.__title__)
+LOGGER = logging.getLogger("qlient")
 
 
 class SchemaProvider(abc.ABC):

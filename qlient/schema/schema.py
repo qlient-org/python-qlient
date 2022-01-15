@@ -2,12 +2,10 @@
 
 :author: Daniel Seifert
 :created: 16.09.2021
-:copyright: Swisscom
 """
 import logging
 from typing import Optional, Dict
 
-from qlient import __about__
 from qlient.cache import Cache
 from qlient.schema.models import Type, Directive
 from qlient.schema.providers import SchemaProvider, detect_schema_provider
@@ -18,7 +16,7 @@ from qlient.transport import Transport
 class Schema:
     """ Represents a graphql schema """
 
-    logger = logging.getLogger(__about__.__title__)
+    logger = logging.getLogger("qlient")
 
     def __init__(
             self,
@@ -39,8 +37,8 @@ class Schema:
         self.query_type: Optional[Type] = None
         self.mutation_type: Optional[Type] = None
         self.subscription_type: Optional[Type] = None
-        self.types: Optional[Dict[str, Type]] = None
-        self.directives: Optional[Dict[str, Directive]] = None
+        self.types_registry: Optional[Dict[str, Type]] = None
+        self.directives_registry: Optional[Dict[str, Directive]] = None
 
         self.introspect()  # prepare the schema for further usage
 
@@ -58,8 +56,8 @@ class Schema:
         self.query_type = parse_result.query_type
         self.mutation_type = parse_result.mutation_type
         self.subscription_type = parse_result.subscription_type
-        self.types = parse_result.types
-        self.directives = parse_result.directives
+        self.types_registry = parse_result.types
+        self.directives_registry = parse_result.directives
         self.logger.debug("Schema successfully introspected")
 
     def __str__(self) -> str:

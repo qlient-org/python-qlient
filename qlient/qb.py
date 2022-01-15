@@ -1,47 +1,76 @@
-from typing import Optional, List, Dict, Any
+""" This file contains the query builder and fields
 
-from qlient.schema.models import Field, Input
+:author: Daniel Seifert
+:created: 13.01.2022
+"""
+from typing import Optional, List, Dict, Any, Tuple
+
+from qlient.schema.models import Input, Type
+from qlient.settings import Settings
 
 
 class Fields:
-    """
-    Fields(a, b, c) -> Fields(a, b, c)
-    Fields(a, b, c=Fields(d, e, f)) -> Fields(a, b, c=Fields(d, e, f))
-    Fields(Fields(a, b), Fields(c, d, e=f)) -> Fields(a, b, c, d, e=f)
-    foo = Fields(a, b) & Fields(c, d) -> Fields(a, b, c, d)
-    """
+    @classmethod
+    def parse_args(
+            cls,
+            args: Tuple[Any],
+            fields: List[str] = None,
+            sub_fields: Dict[str, "Fields"] = None
+    ) -> Tuple[List[str], Dict[str, "Fields"]]:
+        fields = fields or []
+        sub_fields = sub_fields or {}
+        for arg in args:
+            if isinstance(arg, cls):
+                fields += arg.fields  # noqa
+                sub_fields.update(arg.sub_fields)  # noqa
+                continue
+            if isinstance(arg, str):
+                arg = arg.strip()
+                if not arg:
+                    continue
+                fields.append(arg)
+                continue
+            if isinstance(arg, list):
+                fields += cls(*arg).fields  # noqa
+                continue
+            if isinstance(arg, dict):
+                sub_fields.update(cls(**arg).sub_fields)  # noqa
+                continue
+            raise TypeError(f"Can't handle type `{type(arg).__name__}`")
+
+        fields = list(dict.fromkeys(fields))  # drop duplicates but preserve order
+        return fields, sub_fields
+
+    @classmethod
+    def parse_kwargs(
+            cls,
+            kwargs: Dict[Any, Any],
+            fields: List[str] = None,
+            sub_fields: Dict[str, "Fields"] = None
+    ) -> Tuple[List[str], Dict[str, "Fields"]]:
+        fields = fields or []
+        sub_fields = sub_fields or {}
+        for key, value in kwargs.items():
+            if isinstance(value, str):
+                value = Fields(value)
+            if isinstance(value, list):
+                value = cls(*value)
+            if isinstance(value, dict):
+                value = cls(**value)
+            if isinstance(value, cls):
+                sub_fields[key] = value
+                continue
+            raise TypeError(f"Can't handle type `{type(value).__name__}`")
+        return fields, sub_fields
 
     def __init__(self, *args, **kwargs):
         _fields: List[str] = []
         _sub_fields: Dict[str, "Fields"] = {}
 
-        for arg in args:
-            if isinstance(arg, self.__class__):
-                _fields += arg.fields  # noqa
-                _sub_fields.update(arg.sub_fields)  # noqa
-                continue
-            if isinstance(arg, str):
-                _fields.append(arg)
-                continue
-            if isinstance(arg, list):
-                _fields += self.__class__(*arg).fields  # noqa
-                continue
-            if isinstance(arg, dict):
-                _sub_fields.update(self.__class__(**arg).sub_fields)  # noqa
-                continue
-            raise TypeError(f"Can't handle type `{type(arg).__name__}`")
+        _fields, _sub_fields = self.parse_args(args, _fields, _sub_fields)
+        _fields, _sub_fields = self.parse_kwargs(kwargs, _fields, _sub_fields)
 
-        for key, value in kwargs.items():
-            if isinstance(value, str):
-                value = Fields(value)
-            if isinstance(value, list):
-                value = self.__class__(*value)
-            if isinstance(value, self.__class__):
-                _sub_fields[key] = value
-                continue
-            raise TypeError(f"Can't handle type `{type(value).__name__}`")
-
-        self.fields: List[str] = list(set(_fields))
+        self.fields: List[str] = _fields
         self.sub_fields: Dict[str, "Fields"] = _sub_fields
 
     def __and__(self, other) -> "Fields":
@@ -58,16 +87,22 @@ class Fields:
         :param other: the object to add
         :return: a new instance of this class with the added fields
         """
-        if isinstance(other, self.__class__):
-            args = list(set(self.fields + other.fields))
-            kwargs = {**self.sub_fields, **other.sub_fields}
-            return self.__class__(*args, **kwargs)
+        if other is None:
+            return self.__class__(*self.fields, **self.sub_fields)
         if isinstance(other, str):
-            return self.__class__(*list(self.fields + [other]), **self.sub_fields)
-        if isinstance(other, list):
-            return self.__class__(*list(self.fields + other), **self.sub_fields)
+            other = Fields(other)
+        if isinstance(other, (list, tuple)):
+            other = Fields(*other)
         if isinstance(other, dict):
-            return self.__class__(*self.fields, **{**self.sub_fields, **other})
+            other = Fields(**other)
+        if isinstance(other, self.__class__):
+            args = self.fields + other.fields
+            kwargs = {**self.sub_fields}
+            for key, value in other.sub_fields.items():
+                if key not in kwargs:
+                    kwargs[key] = self.__class__()
+                kwargs[key] += value
+            return self.__class__(*args, **kwargs)
 
     def __sub__(self, other) -> "Fields":
         """ Subtract another object from this fields
@@ -75,31 +110,39 @@ class Fields:
         :param other: holds the object to subtract
         :return: a new instance of this class with subtracted fields
         """
-        if isinstance(other, self.__class__):
-            args = list(set(self.fields) - set(other.fields))
-            kwargs = {**self.sub_fields}
-            for key in other.sub_fields:
-                if key not in kwargs:
-                    continue
-                del kwargs[key]
-            return self.__class__(*args, **kwargs)
-        if isinstance(other, str):
-            return self.__class__(*list(set(self.fields) - set(other)), **self.sub_fields)
-        if isinstance(other, list):
-            return self.__class__(*list(set(self.fields) - set(other)), **self.sub_fields)
+        if other is None:
+            return self.__class__(*self.fields, **self.sub_fields)
         if isinstance(other, dict):
+            other = Fields(**other)
+        if isinstance(other, (list, tuple)):
+            other = Fields(*other)
+        if isinstance(other, str):
+            other = Fields(other)
+        if isinstance(other, self.__class__):
+            args = [field for field in self.fields if field not in other.fields]
             kwargs = {**self.sub_fields}
-            for key in other:
+            for key, value in other.sub_fields.items():
                 if key not in kwargs:
                     continue
-                del kwargs[key]
-            return self.__class__(*self.fields, **kwargs)
+                kwargs[key] -= value
+
+                # if the key is empty after subtraction, delete it
+                if not kwargs[key]:
+                    del kwargs[key]
+            return self.__class__(*args, **kwargs)
+
+    def __bool__(self) -> bool:
+        return bool(self.fields) or bool(self.sub_fields)
 
     def __str__(self) -> str:
         builder = list(self.fields)
         for name, fields in self.sub_fields.items():
             builder.append(f"{name} {{ {str(fields)} }}")
         return " ".join(builder)
+
+    def __repr__(self) -> str:
+        class_name = self.__class__.__name__
+        return f"<{class_name}(gql='{str(self)}')>"
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, self.__class__):
@@ -176,12 +219,6 @@ class GQLQueryBuilder:
         self.operation_field = operation
         return self
 
-    def query(self, **kwargs) -> "GQLQueryBuilder":
-        return self.operation("query", **kwargs)
-
-    def mutation(self, **kwargs) -> "GQLQueryBuilder":
-        return self.operation("mutation", **kwargs)
-
     def build(self) -> str:
         query_parts = []
         query_parts.append(self.operation_field)
@@ -199,15 +236,27 @@ class GQLQueryBuilder:
 class TypedGQLQueryBuilder:
     KEY_PREFIX = "$"
 
-    def __init__(self, operation_type: str, operation_field: Field):
+    def __init__(
+            self,
+            operation_type: str,
+            operation_name: str,
+            operation_inputs: Dict[str, Input],
+            operation_output: Optional[Type],
+            settings: Settings,
+    ):
+        self.settings: Settings = settings
         self.op_type: str = operation_type
-        self.op_field: Field = operation_field
-        self.op_inputs: Dict[str, Input] = {_input.name: _input for _input in self.op_field.args}
+        self.op_name: str = operation_name
+        self.op_inputs: Dict[str, Input] = operation_inputs
+        self.op_output: Optional[Type] = operation_output
         self.builder: GQLQueryBuilder = GQLQueryBuilder()
-        self.builder.operation(self.op_type, self.op_field.name)
-        self.builder.action(self.op_field.name)
+        self.builder.operation(self.op_type, self.op_name)
+        self.builder.action(self.op_name)
 
     def fields(self, *args, **kwargs):
+        if self.settings.validate_fields and self.op_output is not None:
+            # do input field validation
+            pass
         self.builder.fields(*args, **kwargs)
 
     def variables(self, **kwargs) -> Dict:
@@ -215,15 +264,16 @@ class TypedGQLQueryBuilder:
         action_variables = {}
 
         for key, value in kwargs.items():
-            if key not in self.op_inputs:
-                raise KeyError(f"Input `{key}` not supported for {self.op_type} operation `{self.op_field.name}`")
+            if self.settings.validate_variables:
+                if key not in self.op_inputs:
+                    raise KeyError(f"Input `{key}` not supported for {self.op_type} operation `{self.op_name}`")
             _input: Input = self.op_inputs[key]
             prefixed_key = f"{self.KEY_PREFIX}{key}"
             operation_variables[prefixed_key] = _input.type.graphql_representation
             action_variables[key] = prefixed_key
 
-        self.builder.operation(self.op_type, self.op_field.name, operation_variables)
-        self.builder.action(self.op_field.name, action_variables)
+        self.builder.operation(self.op_type, self.op_name, operation_variables)
+        self.builder.action(self.op_name, action_variables)
         return kwargs
 
     def build(self) -> str:

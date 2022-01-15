@@ -10,6 +10,7 @@ help:
 	@echo " install		install packages and prepare environment"
 	@echo " clean		remove all temporary files"
 	@echo " test		run all the tests"
+	@echo " report		print coverage report"
 	@echo " shell		open a Poetry shell"
 
 
@@ -28,7 +29,12 @@ clean:
 
 .PHONY: test
 test: $(INSTALL_STAMP)
-	$(POETRY) run pytest
+	$(POETRY) run coverage run -m pytest
+
+
+.PHONY: report
+report: $(INSTALL_STAMP)
+	$(POETRY) run coverage report
 
 
 .PHONY: shell

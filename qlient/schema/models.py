@@ -2,9 +2,11 @@
 
 :author: Daniel Seifert
 :created: 09.09.2021
-:copyright: Swisscom
 """
 from typing import Optional, Dict, List, Any, Union
+
+NON_NULL_KIND = "NON_NULL"
+LIST_KIND = "LIST"
 
 
 class TypeRef:
@@ -62,11 +64,15 @@ class TypeRef:
     @property
     def graphql_representation(self) -> str:
         representation = self.of_type.graphql_representation if self.of_type else self.name
-        if self.kind == "NON_NULL":
+        if self.kind == NON_NULL_KIND:
             representation = f"{representation}!"
-        if self.kind == "LIST":
+        if self.kind == LIST_KIND:
             representation = f"[{representation}]"
         return representation
+
+    @property
+    def final_type_name(self):
+        return self.name if self.of_type is None else self.of_type.final_type_name
 
 
 class Input:
@@ -239,6 +245,16 @@ class Field:
         """ Return a more detailed string representation of the field instance """
         class_name = self.__class__.__name__
         return f"<{class_name}(name=`{self.name}`, type={self.type})>"
+
+    @property
+    def inputs(self) -> Dict[str, Input]:
+        return {_input.name: _input for _input in self.args}
+
+    @property
+    def output_type_name(self) -> Optional[str]:
+        if self.type is None:
+            return None
+        return self.type.final_type_name
 
 
 class EnumValue:

@@ -2,16 +2,14 @@
 
 :author: Daniel Seifert
 :created: 10.09.2021
-:copyright: Swisscom
 """
 import logging
 from typing import Dict, Optional
 
-from qlient import __about__
 from qlient.cache import Cache
 from qlient.schema.providers import SchemaProvider
 
-LOGGER = logging.getLogger(__about__.__title__)
+LOGGER = logging.getLogger("qlient")
 
 
 def load_schema(
