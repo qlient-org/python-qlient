@@ -26,7 +26,8 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-            poetry install
+            pip install cleo tomlkit jsonschema pyparsing keyring pkginfo cachecontrol cachy html5lib lockfile
+            python -m poetry install
 
       # Save's the specified path as a cache. This is the path Poetry uses to install the dependencies
       # So if you don't install anything new, this folder won't change and the cache will be effective
@@ -40,7 +41,7 @@ jobs:
       - run:
           name: Run Pytest, report coverage
           command: |
-            poetry run coverage run --omit="/home/circleci/.cache/pypoetry/virtualenvs" -m pytest
+            python -m poetry run coverage run --omit="/home/circleci/.cache/pypoetry/virtualenvs" -m pytest
 
 # In the workflows section, we specify when we want to run the jobs defined
 workflows:
