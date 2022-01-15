@@ -29,12 +29,26 @@ res = client.query.launchesPast(
     find={"mission_name": "Starlink"},
     limit=5,
     sort="mission_name",
-    
+
     # qlient specific
     _fields=["mission_name", "launch_success", "launch_year"]
 )
 ````
-`res` will look something like this.
+
+which sends the following query
+
+```gql
+query launchesPast($find: LaunchFind, $limit: Int, $sort: String) {
+  launchesPast(find: $find, limit: $limit, sort: $sort) {
+    mission_name
+    launch_success
+    launch_year
+  }
+}
+```
+
+to the server and return this body:
+
 ````json
 {
   "data": {
