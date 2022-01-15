@@ -44,6 +44,25 @@ jobs:
             python -m poetry run coverage run --omit="/home/circleci/.cache/pypoetry/virtualenvs" -m pytest
             python -m poetry run coverage report
 
+  # This is the definition of another job, the one we use to publish the package to PyPI
+  deployment:
+
+    # Same environment
+    docker:
+      - image: circleci/python:3.7
+
+    steps:
+
+      # Gets the code
+      - checkout
+
+      # Use `poetry publish` to Publish the package using username and password from CircleCI environment variables
+      # Which can be configured inside CircleCI's interface
+      - run:
+          name: Push to PyPI
+          command: |
+            poetry publish --build --username "${PYPI_USERNAME}" --password "${PYPI_PASSWORD}" --no-interaction
+
 # In the workflows section, we specify when we want to run the jobs defined
 workflows:
   version: 2
@@ -52,3 +71,25 @@ workflows:
   build-and-test-workflow:
     jobs:
       - build-and-test
+
+    # The deployment workflow publishes the package
+  deployment-workflow:
+    jobs:
+
+      # Runs build and test, but now just on Git tags (created from a GitHub release)
+      - build-and-test:
+          filters:
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
+
+      # Runs the deployment job, just with the tags as well
+      - deployment:
+          requires:
+            - build-and-test
+          filters:
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
