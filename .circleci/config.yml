@@ -26,6 +26,7 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
+            pip install --upgrade poetry
             python -m poetry install
 
       # Save's the specified path as a cache. This is the path Poetry uses to install the dependencies
