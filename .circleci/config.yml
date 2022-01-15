@@ -1,70 +1,43 @@
-version: 2.1
-
-orbs:
-  python: circleci/python@1.4
-
-workflows:
-  test:
-    jobs:
-      - test-python36
-      - test-python37
-      - test-python38
-      - test-python39
-      - test-python310
-
+version: 2
 
 jobs:
-  test-python36:
-    docker:
-      - image: cimg/python:3.6
-    steps:
-      - checkout
-      - python/install-packages:
-          pkg-manager: pip
-      - run:
-          name: Run tests
-          command: python -m pytest
 
-  test-python37:
+  # Building and testing the project
+  # Useful when a PR is open, for example
+  build-and-test:
+    # Our environment, Python 3.6.8
     docker:
-      - image: cimg/python:3.7
-    steps:
-      - checkout
-      - python/install-packages:
-          pkg-manager: pip
-      - run:
-          name: Run tests
-          command: python -m pytest
+      - image: circleci/python:3.6.8
 
-  test-python38:
-    docker:
-      - image: cimg/python:3.8
+    # The steps for our build-and-test
     steps:
+      # Get the code
       - checkout
-      - python/install-packages:
-          pkg-manager: pip
-      - run:
-          name: Run tests
-          command: python -m pytest
 
-  test-python39:
-    docker:
-      - image: cimg/python:3.9
-    steps:
-      - checkout
-      - python/install-packages:
-          pkg-manager: pip
-      - run:
-          name: Run tests
-          command: python -m pytest
+      # Cache can be tricky at first, but this means
+      # Please, restore my cache (what is actually on the cache will be defined later)
+      # if the text key `deps-{{ checksum "poetry.lock" }}` changes (and it WILL change everytime poetry.lock is updated since we rely on its checksum)
+      # and poetry.lock is updated every time we add a new dependency to our project
+      - restore_cache:
+          keys:
+            - deps-{{ checksum "poetry.lock" }}
 
-  test-python310:
-    docker:
-      - image: cimg/python:3.10
-    steps:
-      - checkout
-      - python/install-packages:
-          pkg-manager: pip
+      # Let's install the dependencies
       - run:
-          name: Run tests
-          command: python -m pytest
+          name: Install Dependencies
+          command: |
+            poetry install
+
+      # Save's the specified path as a cache. This is the path Poetry uses to install the dependencies
+      # So if you don't install anything new, this folder won't change and the cache will be effective
+      - save_cache:
+          key: deps-{{ checksum "poetry.lock" }}
+          paths:
+            - /home/circleci/.cache/pypoetry/virtualenvs
+
+      # Last step, runs our tests ommiting the dependencies path (so we don't take their coverage into account)
+      # And send our coverage somewhere, in this case, coveralls
+      - run:
+          name: Run Pytest, report coverage
+          command: |
+            poetry run coverage run --omit="/home/circleci/.cache/pypoetry/virtualenvs" -m pytest
