@@ -41,3 +41,12 @@ jobs:
           name: Run Pytest, report coverage
           command: |
             poetry run coverage run --omit="/home/circleci/.cache/pypoetry/virtualenvs" -m pytest
+
+# In the workflows section, we specify when we want to run the jobs defined
+workflows:
+  version: 2
+
+  # The build-and-test we will run EVERYTIME a piece of code changes
+  build-and-test-workflow:
+    jobs:
+      - build-and-test
