@@ -4,6 +4,7 @@
 /.idea/
 /build/
 /dist/
+/.pytest_cache/**
 /*.egg-info/
 .install.stamp
 .coverage
