@@ -4,10 +4,10 @@ This package is build with [poetry](https://python-poetry.org/) so installation 
 
 * **Using `pip`**
 ```shell
-pip install python-qlient
+pip install qlient
 ```
 
 * **Using `poetry`**
 ```shell
-poetry add python-qlient
+poetry add qlient
 ```

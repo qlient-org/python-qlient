@@ -14,7 +14,7 @@ See [documentation](https://python.qlient.org) for more details
 ## Installation
 
 ```shell script
-pip install python-qlient
+pip install qlient
 ```
 
 ## Quick Start
