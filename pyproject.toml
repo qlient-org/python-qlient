@@ -6,9 +6,9 @@ authors = ["Daniel Seifert <info@danielseifert.ch>"]
 maintainers = ["Daniel Seifert <info@danielseifert.ch>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://python.qlient.org"
+homepage = "https://qlient-org.github.io/python-qlient/"
 repository = "https://github.com/qlient-org/python-qlient"
-documentation = "https://python.qlient.org"
+documentation = "https://qlient-org.github.io/python-qlient/"
 keywords = ["graphql", "client", "api", "query", "mutation"]
 classifiers = [
     "Development Status :: 3 - Alpha",

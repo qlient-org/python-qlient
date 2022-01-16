@@ -1,5 +1,5 @@
 site_name: python-qlient
-site_url: https://python.qlient.org/
+site_url: https://qlient-org.github.io/python-qlient/
 site_description: A fast and modern graphql client library designed with simplicity in mind.
 strict: true
 

@@ -9,7 +9,7 @@ A fast and modern graphql client designed with simplicity in mind.
 
 ## Help
 
-See [documentation](https://python.qlient.org) for more details
+See [documentation](https://qlient-org.github.io/python-qlient/) for more details
 
 ## Installation
 
