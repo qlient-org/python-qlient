@@ -4,7 +4,7 @@ jobs:
 
   # Building and testing the project
   # Useful when a PR is open, for example
-  build-and-test:
+  test:
     # Our environment, Python 3.7
     docker:
       - image: circleci/python:3.7
@@ -44,8 +44,19 @@ jobs:
             python -m poetry run coverage run --omit="/home/circleci/.cache/pypoetry/virtualenvs" -m pytest
             python -m poetry run coverage report
 
+  # create the GitHub release
+  release:
+
+    # Same environment
+    docker:
+      - image: circleci/python:3.7
+
+    steps:
+      - checkout
+
+
   # This is the definition of another job, the one we use to publish the package to PyPI
-  deployment:
+  publish:
 
     # Same environment
     docker:
@@ -70,26 +81,24 @@ workflows:
   # The build-and-test we will run EVERYTIME a piece of code changes
   build-and-test-workflow:
     jobs:
-      - build-and-test
+      - test
 
     # The deployment workflow publishes the package
-  deployment-workflow:
+  release-and-publish:
     jobs:
+      - release:
+          filters:
+            branches:
+              only: main
 
       # Runs build and test, but now just on Git tags (created from a GitHub release)
-      - build-and-test:
-          filters:
-            tags:
-              only: /v[0-9]+(\.[0-9]+)*/
-            branches:
-              ignore: /.*/
+      - test
 
       # Runs the deployment job, just with the tags as well
-      - deployment:
+      - publish:
           requires:
-            - build-and-test
+            - release
+            - test
           filters:
-            tags:
-              only: /v[0-9]+(\.[0-9]+)*/
             branches:
-              ignore: /.*/
+              only: main

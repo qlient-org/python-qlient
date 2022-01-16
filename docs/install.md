@@ -1,7 +1,13 @@
 # Installation
 
-This package uses ``setuptools`` so it can be easily installed like so:
+This package is build with [poetry](https://python-poetry.org/) so installation is as you might expect.
 
+* **Using `pip`**
 ```shell
 pip install python-qlient
+```
+
+* **Using `poetry`**
+```shell
+poetry add python-qlient
 ```
