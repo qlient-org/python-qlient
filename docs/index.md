@@ -11,51 +11,66 @@ A fast and modern graphql client designed with simplicity in mind.
 
 ## Quick Start
 
-```python
-from qlient import Client, Fields
+````python
+from qlient import Client
 
 client = Client("https://api.spacex.land/graphql/")
 
-mission_fields = Fields("mission_id", "mission_name")
-rocket_fields = Fields("rocket_name", fairings="ship")
+res = client.query.launchesPast(
+    # spacex graphql input fields
+    find={"mission_name": "Starlink"},
+    limit=5,
+    sort="mission_name",
 
-result = client.query.launchesPast(
-    limit=3,
-    _fields=Fields(mission_fields, rocket=rocket_fields)
+    # qlient specific
+    _fields=["mission_name", "launch_success", "launch_year"]
 )
-print(result)
+````
+
+which sends the following query
+
+```gql
+query launchesPast($find: LaunchFind, $limit: Int, $sort: String) {
+  launchesPast(find: $find, limit: $limit, sort: $sort) {
+    mission_name
+    launch_success
+    launch_year
+  }
+}
 ```
 
-```json
+to the server and return this body:
+
+````json
 {
   "data": {
     "launchesPast": [
       {
-        "mission_name": "Starlink-15 (v1.0)",
-        "rocket": {
-          "rocket_name": "Falcon 9",
-          "fairings": {
-            "ship": "GOMSCHIEF"
-          }
-        }
+        "mission_name": "Paz / Starlink Demo",
+        "launch_success": true,
+        "launch_year": "2018"
       },
       {
-        "mission_name": "Sentinel-6 Michael Freilich",
-        "rocket": {
-          "rocket_name": "Falcon 9",
-          "fairings": {
-            "ship": null
-          }
-        }
+        "mission_name": "Starlink 1",
+        "launch_success": true,
+        "launch_year": "2019"
       },
       {
-        "mission_name": "Crew-1",
-        "rocket": {
-          "rocket_name": "Falcon 9",
-          "fairings": null
-        }
+        "mission_name": "Starlink 2",
+        "launch_success": true,
+        "launch_year": "2020"
+      },
+      {
+        "mission_name": "Starlink 3",
+        "launch_success": true,
+        "launch_year": "2020"
+      },
+      {
+        "mission_name": "Starlink 4",
+        "launch_success": true,
+        "launch_year": "2020"
       }
     ]
   }
 }
-```
+````
