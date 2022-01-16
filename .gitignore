@@ -8,3 +8,4 @@
 /*.egg-info/
 .install.stamp
 .coverage
+/site/**
