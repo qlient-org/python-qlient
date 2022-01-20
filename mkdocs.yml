@@ -30,11 +30,8 @@ theme:
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
+  - pymdownx.extra
 
 plugins:
+  - include-markdown
   - search
-  - mike
-
-extra:
-  version:
-    provider: mike

@@ -11,21 +11,9 @@ A fast and modern graphql client designed with simplicity in mind.
 
 ## Quick Start
 
-````python
-from qlient import Client
-
-client = Client("https://api.spacex.land/graphql/")
-
-res = client.query.launchesPast(
-    # spacex graphql input fields
-    find={"mission_name": "Starlink"},
-    limit=5,
-    sort="mission_name",
-
-    # qlient specific
-    _fields=["mission_name", "launch_success", "launch_year"]
-)
-````
+```python
+{% include "./examples/index_quick_start.py" %}
+```
 
 which sends the following query
 
