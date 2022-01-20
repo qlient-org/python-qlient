@@ -20,9 +20,9 @@ from qlient.schema.providers import SchemaProvider
 
 class MySchemaProvider(SchemaProvider):
 
-  def load_schema(self) -> Dict:
-    # do some logic that loads your schema
-    return {...}
+    def load_schema(self) -> Dict:
+        # do some logic that loads your schema
+        return {...}
 
 
 my_schema = Schema(provider=MySchemaProvider())
