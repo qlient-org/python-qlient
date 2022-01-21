@@ -1,0 +1,7 @@
+query launchesPast($find: LaunchFind, $limit: Int, $sort: String) {
+    launchesPast(find: $find, limit: $limit, sort: $sort) {
+        mission_name
+        launch_success
+        launch_year
+    }
+}

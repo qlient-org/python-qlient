@@ -1,4 +1,4 @@
-site_name: python-qlient
+site_name: qlient
 site_url: https://qlient-org.github.io/python-qlient/
 site_description: A fast and modern graphql client library designed with simplicity in mind.
 strict: true
@@ -22,10 +22,22 @@ repo_url: https://github.com/qlient-org/python-qlient
 theme:
   name: 'material'
   palette:
-    scheme: default
-    primary: black
-    secondary: cyan
-    accent: cyan
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+      primary: black
+      secondary: cyan
+      accent: cyan
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+      primary: black
+      secondary: cyan
+      accent: cyan
 
 markdown_extensions:
   - pymdownx.highlight
