@@ -6,11 +6,10 @@
 import abc
 import logging
 import pathlib
-from typing import Dict, Union, Optional
+from typing import Union
 
-from qlient.exceptions import SchemaDetectionException
+from qlient.schema.models import RawSchema
 from qlient.transport import Transport
-from qlient.validators import is_local_path, is_url
 
 LOGGER = logging.getLogger("qlient")
 
@@ -18,7 +17,7 @@ LOGGER = logging.getLogger("qlient")
 class SchemaProvider(abc.ABC):
 
     @abc.abstractmethod
-    def load_schema(self) -> Dict:
+    def load_schema(self) -> RawSchema:
         raise NotImplementedError
 
 
@@ -27,7 +26,7 @@ class LocalSchemaProvider(SchemaProvider):
     def __init__(self, filepath: Union[str, pathlib.Path]):
         self.filepath: pathlib.Path = pathlib.Path(filepath)
 
-    def load_schema(self) -> Dict:
+    def load_schema(self) -> RawSchema:
         LOGGER.debug(f"Reading local schema from `{self.filepath}`")
         import json
         with self.filepath.open("r") as schema_file_buffer:
@@ -127,11 +126,16 @@ class RemoteSchemaProvider(SchemaProvider):
             }
             """
 
-    def __init__(self, endpoint: str, transport: Transport):
+    def __init__(self, endpoint: str, transport: Transport, introspect: bool = True):
+        self.should_introspect: bool = introspect
         self.endpoint: str = endpoint
         self.transport: Transport = transport
 
-    def load_schema(self) -> Dict:
+    def load_schema(self) -> RawSchema:
+        if not self.should_introspect:
+            LOGGER.warning("Schema introspection was disabled by user.")
+            return {}
+
         LOGGER.debug(f"Loading remote schema from `{self.endpoint}`")
         schema_response = self.transport.send_query(
             endpoint=self.endpoint,
@@ -139,14 +143,4 @@ class RemoteSchemaProvider(SchemaProvider):
             query=self.INTROSPECTION_QUERY,
             variables={}
         )
-        return schema_response.get("data", {}).get("__schema", {})
-
-
-def detect_schema_provider(location: Optional[str], transport: Transport) -> Optional[SchemaProvider]:
-    if not location:
-        raise SchemaDetectionException("No location was provided")
-    if is_local_path(location):
-        return LocalSchemaProvider(location)
-    if is_url(location):
-        return RemoteSchemaProvider(location, transport)
-    raise SchemaDetectionException("Failed to identify whether location is local path or remote url.")
+        return schema_response["data"]["__schema"]

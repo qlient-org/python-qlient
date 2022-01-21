@@ -10,6 +10,7 @@ from qlient import validators
 from qlient.cache import Cache
 from qlient.proxy import QueryService, MutationService
 from qlient.schema import Schema
+from qlient.schema.providers import RemoteSchemaProvider
 from qlient.settings import Settings
 from qlient.transport import Transport
 
@@ -36,10 +37,18 @@ class Client:
         if self.settings.validate_url:
             if not validators.is_url(endpoint):
                 raise ValueError("Parameter `endpoint` must be a URL.")
+
         self.endpoint: str = endpoint
         self.transport: Transport = transport or self._default_transport()
         self.cache: Optional[Cache] = cache
-        self.schema: Schema = schema or Schema(self.endpoint, self.transport, self.settings, self.cache)
+
+        if schema is None:
+            schema_provider = RemoteSchemaProvider(self.endpoint, self.transport, introspect=self.settings.introspect)
+            schema = Schema(schema_provider, self.endpoint)
+        if not isinstance(schema, Schema):
+            raise TypeError(f"Schem must be of type `{Schema.__name__}`")
+
+        self.schema: Schema = schema
 
         self._query_service: Optional[QueryService] = None
         self._mutation_service: Optional[MutationService] = None

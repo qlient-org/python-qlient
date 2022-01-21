@@ -10,10 +10,12 @@ class Settings:
 
     def __init__(
             self,
+            introspect: bool = True,
             validate_url: bool = True,
             validate_variables: bool = True,
             validate_fields: bool = True
     ):
+        self.introspect: bool = introspect
         self.validate_url: bool = validate_url
         self.validate_variables: bool = validate_variables
         self.validate_fields: bool = validate_fields

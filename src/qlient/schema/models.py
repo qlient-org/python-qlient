@@ -8,6 +8,8 @@ from typing import Optional, Dict, List, Any, Union
 NON_NULL_KIND = "NON_NULL"
 LIST_KIND = "LIST"
 
+RawSchema = Dict[str, Any]
+
 
 class TypeRef:
     """ Represents a basic graphql Type Reference """
