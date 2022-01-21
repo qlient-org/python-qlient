@@ -9,8 +9,8 @@ from typing import Optional
 from qlient import validators
 from qlient.cache import Cache
 from qlient.proxy import QueryService, MutationService
-from qlient.schema.schema import Schema
 from qlient.schema.providers import RemoteSchemaProvider
+from qlient.schema.schema import Schema
 from qlient.settings import Settings
 from qlient.transport import Transport
 
@@ -43,8 +43,8 @@ class Client:
         self.cache: Optional[Cache] = cache
 
         if schema is None:
-            schema_provider = RemoteSchemaProvider(self.endpoint, self.transport, introspect=self.settings.introspect)
-            schema = Schema(schema_provider, self.endpoint)
+            remote_provider = RemoteSchemaProvider(self.endpoint, self.transport, introspect=self.settings.introspect)
+            schema = Schema(remote_provider, self.endpoint, settings=self.settings, cache=self.cache)
         if not isinstance(schema, Schema):
             raise TypeError(f"Schem must be of type `{Schema.__name__}`")
 
