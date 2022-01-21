@@ -14,8 +14,8 @@ from qlient.schema.models import Field
 class Operation:
     """ Base class for all graphql operations """
 
-    def __init__(self, proxy: "ServiceProxy", operation_field: Field):
-        self._proxy: "ServiceProxy" = proxy
+    def __init__(self, proxy: "OperationProxy", operation_field: Field):
+        self._proxy: "OperationProxy" = proxy
         self.operation_field: Field = operation_field
 
         self.query_builder: TypedGQLQueryBuilder = TypedGQLQueryBuilder(
@@ -88,7 +88,7 @@ class Subscription(Operation):
     """ Represents the operation proxy for subscriptions """
 
 
-class ServiceProxy(abc.ABC):
+class OperationProxy(abc.ABC):
     """ Base class for all service proxies """
 
     @abc.abstractmethod
@@ -164,7 +164,7 @@ class ServiceProxy(abc.ABC):
         return list(self.operations.keys())
 
 
-class QueryService(ServiceProxy):
+class QueryService(OperationProxy):
     """ Represents the query service """
 
     def get_bindings(self) -> Dict[str, Operation]:
@@ -178,7 +178,7 @@ class QueryService(ServiceProxy):
         return bindings
 
 
-class MutationService(ServiceProxy):
+class MutationService(OperationProxy):
     """ Represents the mutation service """
 
     def get_bindings(self) -> Dict[str, Operation]:
