@@ -5,5 +5,5 @@
 """
 from qlient.client import Client
 from qlient.qb import Fields
-from qlient.schema import Schema
+from qlient.schema.schema import Schema
 from qlient.transport import Transport

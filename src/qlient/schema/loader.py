@@ -14,24 +14,24 @@ LOGGER = logging.getLogger("qlient")
 
 def load_schema(
         provider: SchemaProvider,
-        location: str,
+        cache_key: str,
         cache: Optional[Cache]
 ) -> Dict:
     """ Load the schema either from cache, disk or api
 
     :param provider: holds either None or the schema provider
-    :param location: holds the location of the schema
+    :param cache_key: holds the location of the schema
     :param cache: holds the cache that contains the schema
     :return: the schema
     """
-    schema: Optional[Dict] = cache.get(location) if cache else None
+    schema: Optional[Dict] = cache.get(cache_key) if cache else None
     if schema is not None:
-        LOGGER.debug(f"Returning schema `{location}` from cache")
+        LOGGER.debug(f"Returning schema `{cache_key}` from cache")
         return schema
 
     schema = provider.load_schema()
 
     if cache:
-        cache.put(location, schema)
+        cache[cache_key] = schema
 
     return schema

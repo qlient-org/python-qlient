@@ -9,7 +9,7 @@ from typing import Optional
 from qlient import validators
 from qlient.cache import Cache
 from qlient.proxy import QueryService, MutationService
-from qlient.schema import Schema
+from qlient.schema.schema import Schema
 from qlient.schema.providers import RemoteSchemaProvider
 from qlient.settings import Settings
 from qlient.transport import Transport
