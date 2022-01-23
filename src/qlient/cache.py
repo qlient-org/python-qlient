@@ -48,18 +48,23 @@ class InMemoryCache(Cache):
     __memory__ = {}
 
     def __setitem__(self, url: str, schema: RawSchema):
+        logger.debug(f"In-Memory caching schema for url `{url}`")
         self.__memory__.__setitem__(url, schema)
 
     def __delitem__(self, url: str):
+        logger.debug(f"In-Memory deleting schema for url `{url}`")
         self.__memory__.__delitem__(url)
 
     def __getitem__(self, url: str) -> RawSchema:
+        logger.debug(f"In-Memory getting schema for url `{url}`")
         return self.__memory__.__getitem__(url)
 
     def __len__(self) -> int:
+        logger.debug(f"In-Memory counting records")
         return self.__memory__.__len__()
 
     def __iter__(self) -> Iterator[Tuple[str, RawSchema]]:
+        logger.debug(f"In-Memory iterating records")
         return self.__memory__.__iter__()
 
 
@@ -122,24 +127,27 @@ class SqliteCache(Cache):
 
     @contextmanager
     def connect(self) -> sqlite3.Connection:
+        logger.debug(f"Creating sqlite3 connection to {self.path}")
         with self.__lock:
             connection = sqlite3.connect(self.path, detect_types=sqlite3.PARSE_DECLTYPES)
             yield connection
             connection.close()
 
     def create_cache_table_if_not_exists(self):
+        logger.debug(f"Creating table {self.TABLE_NAME}")
         with self.connect() as connection:
             cursor = connection.cursor()
             cursor.execute(self.TABLE_STMT)
             connection.commit()
 
     def __setitem__(self, url: str, schema: RawSchema):
-        logger.debug(f"Caching schema for url `{url}`")
+        logger.debug(f"Sqlite caching schema for url `{url}`")
         encoded_schema = self._encode_schema(schema)
 
         with self.connect() as connection:
             cursor = connection.cursor()
             # Delete the old record to prevent a duplicate key
+            # we do not use the delete function here because we don't want to open another connection
             cursor.execute(self.DELETE_STMT, (url,))
             # Insert the new record into the cache
             cursor.execute(self.INSERT_STMT, (url, encoded_schema, datetime.datetime.utcnow()))
@@ -147,14 +155,14 @@ class SqliteCache(Cache):
             connection.commit()
 
     def __delitem__(self, url: str):
-        logger.debug(f"Deleting schema for url `{url}`")
+        logger.debug(f"Sqlite deleting schema for url `{url}`")
         with self.connect() as connection:
             cursor = connection.cursor()
             cursor.execute(self.DELETE_STMT, (url,))
             connection.commit()
 
     def __getitem__(self, url: str) -> RawSchema:
-        logger.debug(f"Selecting schema for url `{url}`")
+        logger.debug(f"Sqlite selecting schema for url `{url}`")
         with self.connect() as connection:
             cursor = connection.cursor()
             cursor.execute(self.SELECT_STMT, (url,))
@@ -168,7 +176,7 @@ class SqliteCache(Cache):
         return decoded_schema
 
     def __len__(self) -> int:
-        logger.debug(f"Counting rows in `{self.TABLE_NAME}`")
+        logger.debug(f"Sqlite counting records in `{self.TABLE_NAME}`")
         with self.connect() as connection:
             cursor = connection.cursor()
             cursor.execute(self.LENGTH_STMT)
@@ -177,7 +185,7 @@ class SqliteCache(Cache):
         return int(result_row[0])
 
     def __iter__(self) -> Iterator[Tuple[str, RawSchema]]:
-        logger.debug(f"Iterating rows in `{self.TABLE_NAME}`")
+        logger.debug(f"Sqlite iterating records in `{self.TABLE_NAME}`")
         with self.connect() as connection:
             cursor = connection.cursor()
             cursor.execute(self.ITER_STMT)
