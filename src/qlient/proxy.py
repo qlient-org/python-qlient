@@ -5,10 +5,10 @@
 """
 import abc
 import itertools
-from typing import Dict, Iterable, Optional, List
+from typing import Dict, Iterable, Optional, List, Type
 
 from qlient.qb import TypedGQLQueryBuilder, Fields
-from qlient.response import QlientResponse
+from qlient.response import GraphQLResponse
 from qlient.schema.types import Field
 
 
@@ -36,7 +36,7 @@ class Operation:
         self._variables = self.query_builder.variables(**kwargs)
         return self
 
-    def execute(self) -> QlientResponse:
+    def execute(self) -> GraphQLResponse:
         return self.__call__()
 
     def __str__(self) -> str:
@@ -65,7 +65,7 @@ class Operation:
             self,
             _fields: Optional[Fields] = None,
             **kwargs
-    ) -> QlientResponse:
+    ) -> GraphQLResponse:
         if _fields:
             self.select(_fields)
         if kwargs:
@@ -101,6 +101,7 @@ class OperationProxy(abc.ABC):
         from qlient.client import Client  # type hint here due to circular dependency
         self.client: Client = client
         self.operations: Dict[str, Operation] = self.get_bindings()
+        self.response_type: Type[GraphQLResponse] = self.client.settings.response_type
 
     def __getattr__(self, key: str) -> Operation:
         """ Return the OperationProxy for the given key.
@@ -141,9 +142,9 @@ class OperationProxy(abc.ABC):
             variables: Optional[Dict] = None,
             *args,
             **kwargs
-    ) -> QlientResponse:
+    ) -> GraphQLResponse:
         """ Send a query to the graphql server """
-        return QlientResponse(self.client.transport.send_query(
+        return self.response_type(self.client.transport.send_query(
             endpoint=self.client.endpoint,
             operation_name=operation,
             query=query,

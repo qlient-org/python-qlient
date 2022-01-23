@@ -8,6 +8,8 @@ import logging
 import pathlib
 from typing import Union
 
+import requests
+
 from qlient.schema.types import RawSchema
 from qlient.transport import Transport
 
@@ -146,11 +148,11 @@ class RemoteSchemaProvider(SchemaProvider):
             return {}
 
         LOGGER.debug(f"Loading remote schema from `{self.endpoint}`")
-        from qlient.response import QlientResponse
-        schema_response: QlientResponse = QlientResponse(self.transport.send_query(
+        schema_response: requests.Response = self.transport.send_query(
             endpoint=self.endpoint,
             operation_name=self.INTROSPECTION_OPERATION_NAME,
             query=self.INTROSPECTION_QUERY,
             variables={}
-        ))
-        return schema_response.data["__schema"]
+        )
+        schema_content = schema_response.json()
+        return schema_content["data"]["__schema"]
