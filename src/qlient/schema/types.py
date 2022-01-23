@@ -3,18 +3,27 @@
 :author: Daniel Seifert
 :created: 09.09.2021
 """
+import enum
 from typing import Optional, Dict, List, Any, Union
 
-NON_NULL_KIND = "NON_NULL"
-LIST_KIND = "LIST"
-
 RawSchema = Dict[str, Any]
+
+
+class Kind(enum.Enum):
+    OBJECT = "OBJECT"
+    SCALAR = "SCALAR"
+    NON_NULL = "NON_NULL"
+    LIST = "LIST"
+    INTERFACE = "INTERFACE"
+    ENUM = "ENUM"
+    INPUT_OBJECT = "INPUT_OBJECT"
+    UNION = "UNION"
 
 
 class TypeRef:
     """ Represents a basic graphql Type Reference """
 
-    kind: Optional[str]
+    kind: Optional[Kind]
     name: Optional[str]
     of_type: Optional["TypeRef"]
 
@@ -46,11 +55,11 @@ class TypeRef:
 
     def __init__(
             self,
-            kind: Optional[str] = None,
+            kind: Optional[Kind] = None,
             name: Optional[str] = None,
             ofType: Optional["TypeRef"] = None
     ):
-        self.kind = kind
+        self.kind = Kind(kind) if kind else None
         self.name = name
         self.of_type = self.parse(ofType) if ofType else None
 
@@ -61,14 +70,14 @@ class TypeRef:
     def __repr__(self) -> str:
         """ Return a more detailed string representation of the type ref instance """
         class_name = self.__class__.__name__
-        return f"<{class_name}(kind=`{self.kind}`, name=`{self.name}`, ofType={self.of_type})>"
+        return f"<{class_name}(kind=`{self.kind.name}`, name=`{self.name}`, ofType={self.of_type})>"
 
     @property
     def graphql_representation(self) -> str:
         representation = self.of_type.graphql_representation if self.of_type else self.name
-        if self.kind == NON_NULL_KIND:
+        if self.kind == Kind.NON_NULL:
             representation = f"{representation}!"
-        if self.kind == LIST_KIND:
+        if self.kind == Kind.LIST:
             representation = f"[{representation}]"
         return representation
 
@@ -313,7 +322,7 @@ class EnumValue:
 class Type:
     """ Represents a basic graphql Type """
 
-    kind: Optional[str]
+    kind: Optional[Kind]
     name: Optional[str]
     description: Optional[str]
     fields: Optional[List[Field]]
@@ -337,7 +346,7 @@ class Type:
 
     def __init__(
             self,
-            kind: Optional[str] = None,
+            kind: Optional[Kind] = None,
             name: Optional[str] = None,
             description: Optional[str] = None,
             fields: Optional[List[Union[Field, Dict]]] = None,
@@ -346,7 +355,7 @@ class Type:
             enumValues: Optional[List[Union[EnumValue, Dict]]] = None,
             possibleTypes: Optional[List[Union[TypeRef, Dict]]] = None
     ):
-        self.kind: Optional[str] = kind
+        self.kind: Optional[Kind] = Kind(kind) if kind else None
         self.name: Optional[str] = name
         self.description: Optional[str] = description
         self.fields: List[Field] = Field.parse_list(fields)
