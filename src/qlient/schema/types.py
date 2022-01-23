@@ -55,7 +55,7 @@ class TypeRef:
 
     def __init__(
             self,
-            kind: Optional[Kind] = None,
+            kind: Union[str, Kind, None] = None,
             name: Optional[str] = None,
             ofType: Optional["TypeRef"] = None
     ):
@@ -346,7 +346,7 @@ class Type:
 
     def __init__(
             self,
-            kind: Optional[Kind] = None,
+            kind: Union[str, Kind, None] = None,
             name: Optional[str] = None,
             description: Optional[str] = None,
             fields: Optional[List[Union[Field, Dict]]] = None,
