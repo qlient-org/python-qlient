@@ -146,10 +146,11 @@ class RemoteSchemaProvider(SchemaProvider):
             return {}
 
         LOGGER.debug(f"Loading remote schema from `{self.endpoint}`")
-        schema_response = self.transport.send_query(
+        from qlient.response import QlientResponse
+        schema_response: QlientResponse = QlientResponse(self.transport.send_query(
             endpoint=self.endpoint,
             operation_name=self.INTROSPECTION_OPERATION_NAME,
             query=self.INTROSPECTION_QUERY,
             variables={}
-        )
-        return schema_response["data"]["__schema"]
+        ))
+        return schema_response.data["__schema"]

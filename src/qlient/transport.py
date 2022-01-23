@@ -6,7 +6,8 @@
 import logging
 from typing import Optional, Dict
 
-from requests import Session, Response
+import requests
+from requests import Session
 
 
 class Transport:
@@ -19,7 +20,7 @@ class Transport:
     def __init__(self, session: Optional[Session] = None):
         self.session: Session = session or self._default_session()
 
-    def send_query(self, endpoint: str, operation_name: str, query: str, variables: Dict) -> Dict:
+    def send_query(self, endpoint: str, operation_name: str, query: str, variables: Dict) -> requests.Response:
         """ Send a query to the graphql endpoint
 
         :param endpoint: holds the endpoint to send the query to
@@ -31,7 +32,7 @@ class Transport:
         self.logger.info(f"Sending operation `{operation_name}` to `{endpoint}`")
         self.logger.debug(f"Query: {query}")
         self.logger.debug(f"Variables: {variables}")
-        query_response: Response = self.session.post(
+        return self.session.post(
             endpoint,
             json={
                 "query": query,
@@ -39,8 +40,6 @@ class Transport:
                 "variables": variables
             }
         )
-        query_response.raise_for_status()
-        return query_response.json()
 
     def __str__(self) -> str:
         """ Return a simple string representation of the transport instance """

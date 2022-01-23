@@ -8,6 +8,7 @@ import itertools
 from typing import Dict, Iterable, Optional, List
 
 from qlient.qb import TypedGQLQueryBuilder, Fields
+from qlient.response import QlientResponse
 from qlient.schema.types import Field
 
 
@@ -35,7 +36,7 @@ class Operation:
         self._variables = self.query_builder.variables(**kwargs)
         return self
 
-    def execute(self) -> Dict:
+    def execute(self) -> QlientResponse:
         return self.__call__()
 
     def __str__(self) -> str:
@@ -64,7 +65,7 @@ class Operation:
             self,
             _fields: Optional[Fields] = None,
             **kwargs
-    ) -> Dict:
+    ) -> QlientResponse:
         if _fields:
             self.select(_fields)
         if kwargs:
@@ -140,14 +141,14 @@ class OperationProxy(abc.ABC):
             variables: Optional[Dict] = None,
             *args,
             **kwargs
-    ) -> Dict:
+    ) -> QlientResponse:
         """ Send a query to the graphql server """
-        return self.client.transport.send_query(
+        return QlientResponse(self.client.transport.send_query(
             endpoint=self.client.endpoint,
             operation_name=operation,
             query=query,
             variables=variables
-        )
+        ))
 
     def __str__(self) -> str:
         """ Return a simple string representation of this instance """
