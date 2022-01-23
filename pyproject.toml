@@ -33,6 +33,7 @@ include = [
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
 requests = "^2.27.1"
+platformdirs = "^2.4.1"
 
 [tool.poetry.dev-dependencies]
 coverage = "^6.2"
