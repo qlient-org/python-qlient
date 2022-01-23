@@ -8,9 +8,9 @@ def test_type_ref_empty():
 
 
 def test_type_ref_values():
-    from qlient.schema.types import TypeRef
+    from qlient.schema.types import TypeRef, Kind
     type_ref = TypeRef(kind="NON_NULL", name="String")
-    assert type_ref.kind == "NON_NULL"
+    assert type_ref.kind == Kind.NON_NULL
     assert type_ref.name == "String"
     assert type_ref.of_type is None
     assert type_ref.graphql_representation == "String!"
@@ -18,9 +18,9 @@ def test_type_ref_values():
 
 
 def test_type_ref_nested():
-    from qlient.schema.types import TypeRef
+    from qlient.schema.types import TypeRef, Kind
     type_ref = TypeRef(kind="NON_NULL", name=None, ofType=TypeRef(kind="LIST", name="String"))
-    assert type_ref.kind == "NON_NULL"
+    assert type_ref.kind == Kind.NON_NULL
     assert type_ref.name is None
     assert isinstance(type_ref.of_type, TypeRef)
     assert type_ref.graphql_representation == "[String]!"
@@ -28,9 +28,9 @@ def test_type_ref_nested():
 
 
 def test_type_ref_parse():
-    from qlient.schema.types import TypeRef
+    from qlient.schema.types import TypeRef, Kind
     type_ref = TypeRef.parse({"kind": "NON_NULL", "name": "String"})
-    assert type_ref.kind == "NON_NULL"
+    assert type_ref.kind == Kind.NON_NULL
     assert type_ref.name == "String"
     assert type_ref.of_type is None
     assert type_ref.graphql_representation == "String!"
