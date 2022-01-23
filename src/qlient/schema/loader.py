@@ -17,7 +17,7 @@ def load_schema(
         cache_key: str,
         cache: Optional[Cache]
 ) -> Dict:
-    """ Load the schema either from cache, disk or api
+    """ Load the schema from the given provider
 
     :param provider: holds either None or the schema provider
     :param cache_key: holds the location of the schema
@@ -26,7 +26,9 @@ def load_schema(
     """
     schema: Optional[Dict] = cache.get(cache_key) if cache else None
     if schema is not None:
-        LOGGER.debug(f"Returning schema `{cache_key}` from cache")
+        # if schema is not None, this means that the cache is also not None.
+        # Therefore, it is safe to access to cache properties
+        LOGGER.debug(f"Returning schema `{cache_key}` from cache `{cache.__class__.__name__}`")
         return schema
 
     schema = provider.load_schema()
