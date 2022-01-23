@@ -4,7 +4,7 @@ Proxying is a really important part of this library and i am not talking about s
 
 It enables us to create callable instance that execute a given query.
 
-## Service Proxy
+## Dynamic query generation and execution
 
 For each operation there is a specific service proxy. the `client.query` is of type `QueryService` and
 the `client.mutation` is of type `MutationService`.
@@ -16,6 +16,15 @@ client = ...
 
 print(client.query.supported_bindings)
 # ["launchesPast", "landpads", "..."]
+```
+
+## Sending custom queries
+
+If you do not want to use the dynamic query generation and execution but rather write and execute your own queries, you
+can do that like so:
+
+```python 
+{% include "../examples/proxy_operation_proxy_custom_query.py" %}
 ```
 
 ## Operation

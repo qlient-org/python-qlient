@@ -10,6 +10,7 @@ nav:
       - usage/client.md
       - usage/fields.md
       - usage/proxy.md
+      - usage/response.md
       - usage/settings.md
       - usage/schema.md
       - usage/schema_providers.md
