@@ -29,32 +29,20 @@ class Schema:
         self.settings: Settings = settings or Settings()
         self.cache: Optional[Cache] = cache
 
-        self.schema: Optional[Dict] = None
-
-        self.query_type: Optional[Type] = None
-        self.mutation_type: Optional[Type] = None
-        self.subscription_type: Optional[Type] = None
-        self.types_registry: Optional[Dict[str, Type]] = None
-        self.directives_registry: Optional[Dict[str, Directive]] = None
-
-        self.introspect()  # prepare the schema for further usage
-
-    def introspect(self):
-        """ Load the schema definition """
         self.logger.debug("Schema introspection started")
         from qlient.schema.loader import load_schema
-        self.schema: Dict = self.schema or load_schema(self.schema_provider, self.endpoint, self.cache)
+        self.schema: Dict = load_schema(self.schema_provider, self.endpoint, self.cache)
         self.logger.debug("Schema loaded")
 
         from qlient.schema.parser import parse_schema, ParseResult
         parse_result: ParseResult = parse_schema(self.schema)
         self.logger.debug("Schema parsed")
 
-        self.query_type = parse_result.query_type
-        self.mutation_type = parse_result.mutation_type
-        self.subscription_type = parse_result.subscription_type
-        self.types_registry = parse_result.types
-        self.directives_registry = parse_result.directives
+        self.query_type: Optional[Type] = parse_result.query_type
+        self.mutation_type: Optional[Type] = parse_result.mutation_type
+        self.subscription_type: Optional[Type] = parse_result.subscription_type
+        self.types_registry: Dict[str, Type] = parse_result.types
+        self.directives_registry: Dict[str, Directive] = parse_result.directives
         self.logger.debug("Schema successfully introspected")
 
     def __str__(self) -> str:
