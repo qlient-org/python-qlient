@@ -7,7 +7,7 @@ import logging
 from typing import Optional, Dict
 
 from qlient.cache import Cache
-from qlient.schema.models import Type, Directive
+from qlient.schema.types import Type, Directive
 from qlient.schema.providers import SchemaProvider
 from qlient.settings import Settings
 

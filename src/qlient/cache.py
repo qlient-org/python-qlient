@@ -17,7 +17,7 @@ from typing import Iterator, Optional, Tuple
 
 import platformdirs
 
-from qlient.schema.models import RawSchema
+from qlient.schema.types import RawSchema
 
 logger = logging.getLogger("qlient")
 

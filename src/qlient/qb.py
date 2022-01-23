@@ -5,7 +5,7 @@
 """
 from typing import Optional, List, Dict, Any, Tuple
 
-from qlient.schema.models import Input, Type
+from qlient.schema.types import Input, Type
 from qlient.settings import Settings
 
 

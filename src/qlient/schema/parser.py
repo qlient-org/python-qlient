@@ -6,7 +6,7 @@
 from typing import Dict, Optional, List
 
 from qlient.exceptions import NoTypesFound
-from qlient.schema.models import Type, Directive
+from qlient.schema.types import Type, Directive
 
 
 class ParseResult:

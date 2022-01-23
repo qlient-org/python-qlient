@@ -8,7 +8,7 @@ import logging
 import pathlib
 from typing import Union
 
-from qlient.schema.models import RawSchema
+from qlient.schema.types import RawSchema
 from qlient.transport import Transport
 
 LOGGER = logging.getLogger("qlient")

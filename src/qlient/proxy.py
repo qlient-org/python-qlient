@@ -8,7 +8,7 @@ import itertools
 from typing import Dict, Iterable, Optional, List
 
 from qlient.qb import TypedGQLQueryBuilder, Fields
-from qlient.schema.models import Field
+from qlient.schema.types import Field
 
 
 class Operation:
