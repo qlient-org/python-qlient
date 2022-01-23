@@ -85,9 +85,9 @@ def parse_types(schema: Dict) -> Dict[str, Type]:
     ]
 
     return {
-        type.name: type
-        for type in types_list
-        if type
+        _type.name: _type
+        for _type in types_list
+        if _type
     }
 
 
