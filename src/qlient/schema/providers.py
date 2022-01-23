@@ -21,6 +21,15 @@ class SchemaProvider(abc.ABC):
         raise NotImplementedError
 
 
+class RawSchemaProvider(SchemaProvider):
+
+    def __init__(self, raw_schema: RawSchema):
+        self.raw_schema = raw_schema
+
+    def load_schema(self) -> RawSchema:
+        return self.raw_schema
+
+
 class LocalSchemaProvider(SchemaProvider):
 
     def __init__(self, filepath: Union[str, pathlib.Path]):
