@@ -64,7 +64,7 @@ class Operation:
     def __call__(
             self,
             _fields: Optional[Fields] = None,
-            _response_type: Optional[GraphQLResponse] = None,
+            _response_type: Optional[Type[GraphQLResponse]] = None,
             **kwargs
     ) -> GraphQLResponse:
         if _fields:
