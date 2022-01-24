@@ -1,13 +1,15 @@
-from qlient import Client
+from qlient import Client, GraphQLResponse
 
-client = Client("https://api.spacex.land/graphql/")
+client = Client("https://swapi-graphql.netlify.app/.netlify/functions/index")
 
-res = client.query.launchesPast(
-    # spacex graphql input fields
-    find={"mission_name": "Starlink"},
-    limit=5,
-    sort="mission_name",
+res: GraphQLResponse = client.query.film(
+    # swapi graphql input fields
+    id="ZmlsbXM6MQ==",
 
     # qlient specific
-    _fields=["mission_name", "launch_success", "launch_year"]
+    _fields=["id", "title", "episodeID"]
 )
+
+print(res.query)  # query film($id: ID) { film(id: $id) { id title episodeID } }
+print(res.variables)  # {'id': 'ZmlsbXM6MQ=='}
+print(res.data)  # {'film': {'id': 'ZmlsbXM6MQ==', 'title': 'A New Hope', 'episodeID': 4}}

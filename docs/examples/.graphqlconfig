@@ -1,10 +1,10 @@
 {
-  "name": "SpaceX GraphQL API",
-  "schemaPath": "spacex-schema.graphql",
+  "name": "SWAPI GraphQL API",
+  "schemaPath": "swapi-schema.graphql",
   "extensions": {
     "endpoints": {
       "Default GraphQL Endpoint": {
-        "url": "https://api.spacex.land/graphql/",
+        "url": "https://swapi-graphql.netlify.app/.netlify/functions/index",
         "introspect": true
       }
     }

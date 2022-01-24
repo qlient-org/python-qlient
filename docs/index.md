@@ -7,9 +7,14 @@ A fast and modern graphql client designed with simplicity in mind.
 **Highlights**:
 
 * Automatic graphql query generation.
-* Offline Query validation
+* Offline query validation
 * Build on top of [requests](https://docs.python-requests.org).
 * Tested with [hypothesis](https://hypothesis.readthedocs.io).
+
+## Quick Introduction
+
+`qlient` inspects the GraphQL schema and generates the corresponding code to use the operations and types in the schema.
+This provides an easy to use programmatic interface to a GraphQL API.
 
 ## Example
 
@@ -24,16 +29,5 @@ What's going on here:
 * When instantiating a new Client, the schema will be automatically resolved from the server and introspected to build
   the operation proxies.
 * Then a query will be constructed using the given `kwargs` for variables and special variable `_fields` for field
-  selection. The generated query will look like this:
-
-```graphql 
-{% include "./examples/index_quick_start_query.graphql" %}
-```
-
-* Then the query is sent to the server and a response is returned:
-
-````json 
-{
-  % include "./examples/index_quick_start_response.json" %
-}
-````
+  selection.
+* Now, the query combined with the given variables is sent to the server and a response is returned.

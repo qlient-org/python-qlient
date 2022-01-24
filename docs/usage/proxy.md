@@ -24,7 +24,7 @@ If you do not want to use the dynamic query generation and execution but rather 
 can do that like so:
 
 ```python 
-{% include "../examples/proxy_operation_proxy_custom_query.py" %}
+{% include "../examples/usage_proxy_custom_query.py" %}
 ```
 
 ## Operation
