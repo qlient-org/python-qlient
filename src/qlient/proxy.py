@@ -64,6 +64,7 @@ class Operation:
     def __call__(
             self,
             _fields: Optional[Fields] = None,
+            _response_type: Optional[GraphQLResponse] = None,
             **kwargs
     ) -> GraphQLResponse:
         if _fields:
@@ -73,7 +74,8 @@ class Operation:
         return self._proxy(
             query=self.query,
             operation=self.operation_field.name,
-            variables=self._variables
+            variables=self._variables,
+            response_type=_response_type
         )
 
 
@@ -140,11 +142,13 @@ class OperationProxy(abc.ABC):
             query: str,
             operation: Optional[str] = None,
             variables: Optional[Dict] = None,
+            response_type: Optional[Type[GraphQLResponse]] = None,
             *args,
             **kwargs
     ) -> GraphQLResponse:
         """ Send a query to the graphql server """
-        return self.response_type(self.client.transport.send_query(
+        response_type = response_type or self.response_type
+        return response_type(self.client.transport.send_query(
             endpoint=self.client.endpoint,
             operation_name=operation,
             query=query,
