@@ -26,14 +26,3 @@ def test_settings_validate_fields():
     from qlient.settings import Settings
     settings = Settings(validate_fields=False)
     assert settings.validate_fields is False
-
-
-def test_settings_response_type():
-    from qlient.response import BaseResponse
-    class TestResponse(BaseResponse):
-        def __init__(self, response):
-            super(TestResponse, self).__init__(response)
-
-    from qlient.settings import Settings
-    settings = Settings(response_type=TestResponse)
-    assert settings.response_type == TestResponse

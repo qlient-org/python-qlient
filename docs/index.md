@@ -8,8 +8,7 @@ A fast and modern graphql client designed with simplicity in mind.
 
 * Automatic graphql query generation.
 * Offline query validation
-* Build on top of [requests](https://docs.python-requests.org).
-* Tested with [hypothesis](https://hypothesis.readthedocs.io).
+* Support for different Backends
 
 ## Quick Introduction
 
@@ -22,7 +21,7 @@ This provides an easy to use programmatic interface to a GraphQL API.
 {% include "./examples/index_quick_start.py" %}
 ```
 
-_(This script is complete and should run "as is")_
+{% include "./examples/script_legend.md" %}
 
 What's going on here:
 

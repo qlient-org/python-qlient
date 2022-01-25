@@ -4,47 +4,41 @@
 :created: 09.09.2021
 """
 import logging
-from typing import Optional
+from typing import Optional, Union
 
-from qlient import validators
+from qlient.backend import Backend, HTTPBackend
 from qlient.cache import Cache
 from qlient.proxy import QueryService, MutationService
-from qlient.schema.providers import RemoteSchemaProvider
+from qlient.schema.providers import BackendSchemaProvider
 from qlient.schema.schema import Schema
 from qlient.settings import Settings
-from qlient.transport import Transport
+
+logger = logging.getLogger("qlient")
 
 
 class Client:
-    """ This class represents the base qlient Client.
-
-    """
-
-    logger = logging.getLogger("qlient")
-
-    _default_transport = Transport  # holds the default transport factory
-    _default_settings = Settings  # holds the default settings factory
+    """ This class represents the base qlient Client. """
 
     def __init__(
             self,
-            endpoint: str,
+            backend: Union[str, Backend],
             schema: Optional[Schema] = None,
-            transport: Optional[Transport] = None,
             settings: Optional[Settings] = None,
             cache: Optional[Cache] = None,
     ):
-        self.settings: Settings = settings or self._default_settings()
-        if self.settings.validate_url:
-            if not validators.is_url(endpoint):
-                raise ValueError("Parameter `endpoint` must be a URL.")
+        self.settings: Settings = settings or Settings()
 
-        self.endpoint: str = endpoint
-        self.transport: Transport = transport or self._default_transport()
+        if isinstance(backend, str):
+            backend = HTTPBackend(backend)
+        if not isinstance(backend, Backend):
+            raise TypeError(f"backend must be of type `{Backend.__name__}`")
+
+        self.backend: Backend = backend
         self.cache: Optional[Cache] = cache
 
         if schema is None:
-            remote_provider = RemoteSchemaProvider(self.endpoint, self.transport, introspect=self.settings.introspect)
-            schema = Schema(remote_provider, self.endpoint, settings=self.settings, cache=self.cache)
+            provider = BackendSchemaProvider(self.backend, introspect=self.settings.introspect)
+            schema = Schema(provider, settings=self.settings, cache=self.cache)
         if not isinstance(schema, Schema):
             raise TypeError(f"Schem must be of type `{Schema.__name__}`")
 
@@ -80,15 +74,14 @@ class Client:
     def __str__(self) -> str:
         """ Return a simple string representation of the client """
         class_name = self.__class__.__name__
-        return f"{class_name}(endpoint=`{self.endpoint}`)"
+        return f"{class_name}(backend=`{self.backend}`)"
 
     def __repr__(self) -> str:
         """ Return a detailed string representation of the client """
         class_name = self.__class__.__name__
         props = ", ".join([
-            f"endpoint=`{self.endpoint}`",
+            f"endpoint=`{self.backend}`",
             f"settings={self.settings}",
-            f"transport={self.transport}",
             f"cache={self.cache}",
             f"schema={self.schema}"
         ])

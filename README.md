@@ -20,65 +20,19 @@ pip install qlient
 ## Quick Start
 
 ````python
-from qlient import Client
+from qlient import Client, GraphQLResponse
 
-client = Client("https://api.spacex.land/graphql/")
+client = Client("https://swapi-graphql.netlify.app/.netlify/functions/index")
 
-res = client.query.launchesPast(
-    # spacex graphql input fields
-    find={"mission_name": "Starlink"},
-    limit=5,
-    sort="mission_name",
+res: GraphQLResponse = client.query.film(
+    # swapi graphql input fields
+    id="ZmlsbXM6MQ==",
 
     # qlient specific
-    _fields=["mission_name", "launch_success", "launch_year"]
+    _fields=["id", "title", "episodeID"]
 )
-````
 
-which sends the following query
-
-```gql
-query launchesPast($find: LaunchFind, $limit: Int, $sort: String) {
-  launchesPast(find: $find, limit: $limit, sort: $sort) {
-    mission_name
-    launch_success
-    launch_year
-  }
-}
-```
-
-to the server and return this body:
-
-````json
-{
-  "data": {
-    "launchesPast": [
-      {
-        "mission_name": "Paz / Starlink Demo",
-        "launch_success": true,
-        "launch_year": "2018"
-      },
-      {
-        "mission_name": "Starlink 1",
-        "launch_success": true,
-        "launch_year": "2019"
-      },
-      {
-        "mission_name": "Starlink 2",
-        "launch_success": true,
-        "launch_year": "2020"
-      },
-      {
-        "mission_name": "Starlink 3",
-        "launch_success": true,
-        "launch_year": "2020"
-      },
-      {
-        "mission_name": "Starlink 4",
-        "launch_success": true,
-        "launch_year": "2020"
-      }
-    ]
-  }
-}
+print(res.query)  # query film($id: ID) { film(id: $id) { id title episodeID } }
+print(res.variables)  # {'id': 'ZmlsbXM6MQ=='}
+print(res.data)  # {'film': {'id': 'ZmlsbXM6MQ==', 'title': 'A New Hope', 'episodeID': 4}}
 ````

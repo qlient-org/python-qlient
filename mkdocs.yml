@@ -10,12 +10,11 @@ nav:
       - usage/client.md
       - usage/fields.md
       - usage/proxy.md
-      - usage/response.md
+      - usage/backend.md
       - usage/settings.md
       - usage/schema.md
       - usage/schema_providers.md
       - usage/cache.md
-      - usage/transport.md
 
 repo_name: qlient-org/python-qlient
 repo_url: https://github.com/qlient-org/python-qlient

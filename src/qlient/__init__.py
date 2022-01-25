@@ -3,10 +3,10 @@
 :author: Daniel Seifert
 :created: 09.09.2021
 """
+from qlient.backend import Backend, HTTPBackend
 from qlient.client import Client
 from qlient.exceptions import QlientException
+from qlient.models import GraphQLResponse
 from qlient.qb import Fields
-from qlient.response import GraphQLResponse, BaseResponse
 from qlient.schema.schema import Schema
 from qlient.settings import Settings
-from qlient.transport import Transport

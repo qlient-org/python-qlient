@@ -20,6 +20,8 @@ print(nested_fields)
 last_name first_name hobby { name }
 ```
 
+{% include "../examples/script_legend.md" %}
+
 The `hobby` selection can be changed from a single item to a `list`:
 
 ```python
@@ -37,6 +39,8 @@ print(nested_fields)
 ```text
 last_name first_name hobby { name description }
 ```
+
+{% include "../examples/script_legend.md" %}
 
 or even another `Fields` instance for even deeper selection.
 
@@ -59,9 +63,11 @@ print(nested_fields)
 last_name first_name hobby { name club { name } }
 ```
 
+{% include "../examples/script_legend.md" %}
+
 ## Supported Operators
 
-The `Fields` class supports multiple operators.
+The `Fields` class supports two operators: addition and subtraction.
 
 ### Addition
 
@@ -80,6 +86,8 @@ print(added)
 first_name last_name age
 ```
 
+{% include "../examples/script_legend.md" %}
+
 ### Subtraction
 
 ```python
@@ -96,3 +104,5 @@ print(subtracted)
 ```text
 first_name
 ```
+
+{% include "../examples/script_legend.md" %}

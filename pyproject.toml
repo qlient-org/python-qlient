@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qlient"
-version = "0.0.1-alpha-1"
+version = "0.1.0-alpha"
 description = "A fast and modern graphql client designed with simplicity in mind."
 authors = ["Daniel Seifert <info@danielseifert.ch>"]
 maintainers = ["Daniel Seifert <info@danielseifert.ch>"]

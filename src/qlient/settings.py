@@ -3,9 +3,6 @@
 :author: Daniel Seifert
 :created: 09.09.2021
 """
-from typing import Type
-
-from qlient.response import BaseResponse, GraphQLResponse
 
 
 class Settings:
@@ -16,14 +13,12 @@ class Settings:
             introspect: bool = True,
             validate_url: bool = True,
             validate_variables: bool = True,
-            validate_fields: bool = True,
-            response_type: Type[BaseResponse] = GraphQLResponse
+            validate_fields: bool = True
     ):
         self.introspect: bool = introspect
         self.validate_url: bool = validate_url
         self.validate_variables: bool = validate_variables
         self.validate_fields: bool = validate_fields
-        self.response_type: Type[BaseResponse] = response_type
 
     def __str__(self) -> str:
         """ Return a simple string representation of the settings """
