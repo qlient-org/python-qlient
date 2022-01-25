@@ -23,8 +23,6 @@ Since the http backend is based on requests, this can be quite easily achieved.
 {% include "../examples/using_custom_requests_sessions.py" %}
 ```
 
-{% include "../examples/script_legend.md" %}
-
 So what's going on here:
 
 * A new `requests.Session` instance is created

@@ -14,8 +14,6 @@ This is useful when you create a lot of clients in a short period of time.
 {% include "../examples/using_in_memory_cache.py" %}
 ```
 
-{% include "../examples/script_legend.md" %}
-
 ## SqliteCache
 
 The `SqliteCache` uses pythons built in `sqlite3` package to cache the schema in a `.sqlite` file. By default, this file
@@ -30,5 +28,3 @@ However, the path can be adjusted to your liking.
 ```python 
 {% include "../examples/using_sqlite_cache.py" %}
 ```
-
-{% include "../examples/script_legend.md" %}

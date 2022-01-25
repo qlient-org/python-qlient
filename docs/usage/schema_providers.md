@@ -15,4 +15,3 @@ If neither of these two built in providers suit your needs, you can create your 
 ```python 
 {% include "../examples/custom_schema_provider.py" %}
 ```
-
