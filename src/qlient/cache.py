@@ -12,8 +12,9 @@ import logging
 import os
 import sqlite3
 import threading
+import time
 from contextlib import contextmanager
-from typing import Iterator, Optional, Tuple
+from typing import Iterator, Optional, Tuple, Union
 
 import platformdirs
 
@@ -78,10 +79,11 @@ def _get_default_sqlite_cache_dir() -> str:
             pass
         else:
             raise e
-    return os.path.join(path_to_cache_dir, "cache.sqlite")
+    return os.path.join(path_to_cache_dir, "schemas.sqlite")
 
 
 SQLITE_IN_MEMORY = ":memory:"
+ONE_HOUR = datetime.timedelta(seconds=3600)
 
 
 class SqliteCache(Cache):
@@ -90,15 +92,16 @@ class SqliteCache(Cache):
     TABLE_STMT = f"""
            CREATE TABLE IF NOT EXISTS {TABLE_NAME}
            (
-               URL           TEXT PRIMARY KEY,
-               SCHEMA        TEXT,
-               DATE_CREATED  TIMESTAMP
+               URL                  TEXT PRIMARY KEY,
+               SCHEMA               TEXT,
+               TIMESTAMP_CREATED    INTEGER
            )
        """
 
-    INSERT_STMT = f"INSERT INTO {TABLE_NAME} (URL, SCHEMA, DATE_CREATED) VALUES (?, ?, ?)"
+    INSERT_STMT = f"INSERT INTO {TABLE_NAME} (URL, SCHEMA, TIMESTAMP_CREATED) VALUES (?, ?, ?)"
     DELETE_STMT = f"DELETE FROM {TABLE_NAME} WHERE URL = ?"
-    SELECT_STMT = f"SELECT SCHEMA, DATE_CREATED FROM {TABLE_NAME} WHERE URL = ?"
+    DELETE_EXPIRED_STMT = f"DELETE FROM {TABLE_NAME} WHERE TIMESTAMP_CREATED <= ?"
+    SELECT_STMT = f"SELECT SCHEMA, TIMESTAMP_CREATED FROM {TABLE_NAME} WHERE URL = ?"
     LENGTH_STMT = f"SELECT COUNT(URL) AS CACHE_SIZE FROM {TABLE_NAME}"
     ITER_STMT = f"SELECT URL, SCHEMA FROM {TABLE_NAME}"
 
@@ -112,7 +115,16 @@ class SqliteCache(Cache):
         decoded_raw_schema = base64.b64decode(encoded_schema.encode()).decode()
         return json.loads(decoded_raw_schema)
 
-    def __init__(self, path: Optional[str] = None):
+    def __init__(
+            self,
+            path: Optional[str] = None,
+            expires_in: Union[int, datetime.timedelta] = ONE_HOUR
+    ):
+        """ Initialize a new sqlite cache
+
+        :param path: holds the path of the sqlite db
+        :param expires_in: holds either the amount of seconds when it expires or a datetime.timedelta instance
+        """
         if path == SQLITE_IN_MEMORY:
             raise ValueError(
                 f"The {SqliteCache.__name__} doesn't support {SQLITE_IN_MEMORY} since it is not thread-safe. "
@@ -120,6 +132,10 @@ class SqliteCache(Cache):
             )
 
         self.path: str = path or _get_default_sqlite_cache_dir()
+
+        if isinstance(expires_in, int):
+            expires_in = datetime.timedelta(seconds=expires_in)
+        self.expires_in: datetime.timedelta = expires_in
         self.__lock = threading.RLock()
 
         # preparing the database
@@ -150,7 +166,7 @@ class SqliteCache(Cache):
             # we do not use the delete function here because we don't want to open another connection
             cursor.execute(self.DELETE_STMT, (url,))
             # Insert the new record into the cache
-            cursor.execute(self.INSERT_STMT, (url, encoded_schema, datetime.datetime.utcnow()))
+            cursor.execute(self.INSERT_STMT, (url, encoded_schema, int(time.time())))
             # commit the changes
             connection.commit()
 
@@ -163,6 +179,7 @@ class SqliteCache(Cache):
 
     def __getitem__(self, url: str) -> RawSchema:
         logger.debug(f"Sqlite selecting schema for url `{url}`")
+        self.delete_expired_records()
         with self.connect() as connection:
             cursor = connection.cursor()
             cursor.execute(self.SELECT_STMT, (url,))
@@ -171,12 +188,17 @@ class SqliteCache(Cache):
         if result_row is None:
             raise self.__missing__(url)
 
-        encoded_schema, date_created = result_row
+        encoded_schema, timestamp_created = result_row
+        if self._is_expired(timestamp_created):
+            del self[url]
+            raise self.__missing__(url)
+
         decoded_schema = self._decode_schema(encoded_schema)
         return decoded_schema
 
     def __len__(self) -> int:
         logger.debug(f"Sqlite counting records in `{self.TABLE_NAME}`")
+        self.delete_expired_records()
         with self.connect() as connection:
             cursor = connection.cursor()
             cursor.execute(self.LENGTH_STMT)
@@ -186,6 +208,7 @@ class SqliteCache(Cache):
 
     def __iter__(self) -> Iterator[Tuple[str, RawSchema]]:
         logger.debug(f"Sqlite iterating records in `{self.TABLE_NAME}`")
+        self.delete_expired_records()
         with self.connect() as connection:
             cursor = connection.cursor()
             cursor.execute(self.ITER_STMT)
@@ -193,3 +216,15 @@ class SqliteCache(Cache):
                 url, encoded_schema = row
                 decoded_schema = self._decode_schema(encoded_schema)
                 yield url, decoded_schema
+
+    def delete_expired_records(self):
+        logger.debug(f"Sqlite deleting expired records")
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            expiry = int(time.time()) - self.expires_in.seconds
+            cursor.execute(self.DELETE_EXPIRED_STMT, (expiry,))
+            logger.debug(f"Deleted {cursor.rowcount} expired records")
+            connection.commit()
+
+    def _is_expired(self, timestamp_created: int) -> bool:
+        return int(time.time()) > timestamp_created + self.expires_in.seconds
