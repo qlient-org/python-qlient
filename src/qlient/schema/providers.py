@@ -4,9 +4,10 @@
 :created: 13.01.2022
 """
 import abc
+import io
 import logging
 import pathlib
-from typing import Union
+from typing import Union, IO
 
 from qlient.backend import Backend
 from qlient.schema.types import RawSchema
@@ -47,20 +48,26 @@ class StaticSchemaProvider(SchemaProvider):
         return self._cache_key
 
 
-class FilepathSchemaProvider(SchemaProvider):
+class FileSchemaProvider(SchemaProvider):
 
-    def __init__(self, filepath: Union[str, pathlib.Path]):
-        self.filepath: pathlib.Path = pathlib.Path(filepath)
+    def __init__(self, file: Union[str, pathlib.Path, IO, io.IOBase]):
+        filepath = None
+        if isinstance(file, str):
+            file = pathlib.Path(file)
+        if isinstance(file, pathlib.Path):
+            filepath = str(file.resolve())
+            file = file.open("r")
+        self.filepath: str = filepath or file.name
+        self.file = file
 
     def load_schema(self) -> RawSchema:
-        logger.debug(f"Reading local schema from `{self.filepath}`")
+        logger.debug(f"Reading local schema from `{self.file}`")
         import json
-        with self.filepath.open("r") as schema_file_buffer:
-            return json.load(schema_file_buffer)
+        return json.load(self.file)
 
     @property
     def cache_key(self) -> str:
-        return str(self.filepath.resolve())
+        return self.filepath
 
 
 class BackendSchemaProvider(SchemaProvider):

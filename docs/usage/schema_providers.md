@@ -6,7 +6,7 @@ Do not fear, solution is near. Under the hood, the schema uses `SchemaProvider`s
 providers:
 
 * The `StaticSchemaProvider` in case you have a static dictionary with the schema
-* The `FilepathSchemaProvider` in case your schema is on your disk
+* The `FileSchemaProvider` in case your schema is on your disk
 * The `BackendSchemaProvider` in case your schema can be obtained from the backend (**Backend Introspection only works
   when allowed by the graphql backend.**)
 
