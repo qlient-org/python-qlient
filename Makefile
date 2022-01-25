@@ -11,6 +11,7 @@ help:
 	@echo " clean		remove all temporary files"
 	@echo " test		run all the tests"
 	@echo " report		print coverage report"
+	@echo " docs		create the docs"
 	@echo " shell		open a Poetry shell"
 
 
@@ -23,7 +24,7 @@ $(INSTALL_STAMP): pyproject.toml
 .PHONY: clean
 clean:
 	find . -type d -name "__pycache__" | xargs rm -rf {};
-	rm -rf $(INSTALL_STAMP) .coverage .mypy_cache
+	rm -rf $(INSTALL_STAMP) .coverage .mypy_cache .pytest_cache
 	rm -rf build
 	rm -rf dist
 
@@ -35,6 +36,10 @@ test: $(INSTALL_STAMP)
 .PHONY: report
 report: $(INSTALL_STAMP)
 	$(POETRY) run coverage report
+
+.PHONY: docs
+docs: $(INSTALL_STAMP)
+	$(POETRY) run mkdocs build
 
 
 .PHONY: shell
