@@ -10,9 +10,9 @@ from qlient.types import (
 
 def test_static_schema_provider():
     from qlient.schema.providers import StaticSchemaProvider
-    my_static_schema = {"foo": "bar"}
-    my_provider = StaticSchemaProvider(my_static_schema, cache_key="My Static Key")
-    assert my_provider.load_schema() == my_static_schema
+    from __base__ import raw_schema
+    my_provider = StaticSchemaProvider(raw_schema, cache_key="My Static Key")
+    assert my_provider.load_schema() == raw_schema
     assert my_provider.cache_key == "My Static Key"
 
 
