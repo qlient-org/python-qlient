@@ -20,3 +20,5 @@ def test_schema():
     assert schema.subscription_type is None
 
     assert schema.cache is None
+
+    assert str(schema) == "<Schema(query_type=<Type(name=`Root`)>, mutation_type=None, subscription_type=None)>"
