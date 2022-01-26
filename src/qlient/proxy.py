@@ -122,6 +122,9 @@ class OperationProxy(abc.ABC):
         self.client: Client = client
         self.operations: Dict[str, Operation] = self.get_bindings()
 
+    def __contains__(self, key: str) -> bool:
+        return key in self.operations
+
     def __getattr__(self, key: str) -> Operation:
         """ Return the OperationProxy for the given key.
 
