@@ -3,14 +3,11 @@ from qlient.schema.types import Type
 
 def test_schema():
     from qlient.schema.schema import Schema
-    from qlient.schema.providers import StaticSchemaProvider
-    from __base__ import raw_schema
+    from __base__ import make_test_schema
 
-    my_provider = StaticSchemaProvider(raw_schema["data"]["__schema"], "Test Schema")
-    schema = Schema(my_provider)
+    schema = make_test_schema()
     assert isinstance(schema, Schema)
-    assert schema.schema_provider == my_provider
-    assert schema.schema_provider.cache_key == "Test Schema"
+    assert schema.schema_provider.cache_key == "Test"
 
     assert isinstance(schema.query_type, Type)
     assert schema.query_type.name == "Root"

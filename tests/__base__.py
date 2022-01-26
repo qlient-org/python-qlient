@@ -5701,3 +5701,9 @@ raw_schema = {
         }
     }
 }
+
+
+def make_test_schema():
+    from qlient.schema.schema import Schema
+    from qlient.schema.providers import StaticSchemaProvider
+    return Schema(StaticSchemaProvider(raw_schema["data"]["__schema"], "Test"))

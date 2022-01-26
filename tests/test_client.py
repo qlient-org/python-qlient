@@ -1,12 +1,10 @@
 def test_simple_client():
     from qlient.client import Client
     from qlient import HTTPBackend
-    from qlient.schema.schema import Schema
-    from qlient.schema.providers import StaticSchemaProvider
-    from __base__ import raw_schema
+    from __base__ import make_test_schema
     client = Client(
         "https://swapi-graphql.netlify.app/.netlify/functions/index",
-        schema=Schema(StaticSchemaProvider(raw_schema["data"]["__schema"], "Test"))
+        schema=make_test_schema()
     )
 
     assert isinstance(client.backend, HTTPBackend)
