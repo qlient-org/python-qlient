@@ -211,7 +211,7 @@ class MutationService(OperationProxy):
     def get_bindings(self) -> Dict[str, Operation]:
         """ Method to get the mutation service bindings """
         bindings = {}
-        if not self.client.schema.query_type:
+        if not self.client.schema.mutation_type:
             return bindings
 
         for field in self.client.schema.mutation_type.fields:
