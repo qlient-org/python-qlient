@@ -61,7 +61,9 @@ def test_strawberry_backend():
 
     @strawberry.type
     class Query:
-        books: List[Book] = strawberry.field(resolver=lambda: my_books)
+        @strawberry.field
+        def get_books(self) -> List[Book]:
+            return my_books
 
     @strawberry.type
     class Mutation:
@@ -107,9 +109,9 @@ def test_strawberry_backend():
 
     client = Client(StrawberryBackend(my_book_schema))
 
-    response: GraphQLResponse = client.query.books(_fields=["title", "author"])
+    response: GraphQLResponse = client.query.getBooks(_fields=["title", "author"])
 
-    assert response.data == {'books': [{'title': 'The Great Gatsby', 'author': 'F. Scott Fitzgerald'}]}
+    assert response.data == {'getBooks': [{'title': 'The Great Gatsby', 'author': 'F. Scott Fitzgerald'}]}
 
     response: GraphQLResponse = client.mutation.addBook(
         title="1984",
@@ -119,9 +121,9 @@ def test_strawberry_backend():
 
     assert response.data == {"addBook": {"title": "1984", "author": "George Orwell"}}
 
-    response: GraphQLResponse = client.query.books(_fields=["title", "author"])
+    response: GraphQLResponse = client.query.getBooks(_fields=["title", "author"])
 
-    assert response.data == {'books': [
+    assert response.data == {'getBooks': [
         {'title': 'The Great Gatsby', 'author': 'F. Scott Fitzgerald'},
         {'title': '1984', 'author': 'George Orwell'}
     ]}

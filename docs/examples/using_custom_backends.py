@@ -20,17 +20,29 @@ class Book:
     author: str
 
 
-def get_books():
-    return [Book(title='The Great Gatsby', author='F. Scott Fitzgerald', )]
+my_books = [
+    Book(title="The Great Gatsby", author="F. Scott Fitzgerald")
+]
 
 
 @strawberry.type
 class Query:
-    books: List[Book] = strawberry.field(resolver=get_books)
+    @strawberry.field
+    def get_books(self) -> List[Book]:
+        return my_books
+
+
+@strawberry.type
+class Mutation:
+    @strawberry.mutation
+    def add_book(self, title: str, author: str) -> Book:
+        book = Book(title=title, author=author)
+        my_books.append(book)
+        return book
 
 
 # this line creates the strawberry schema
-my_book_schema = strawberry.Schema(query=Query)
+my_book_schema = strawberry.Schema(query=Query, mutation=Mutation)
 
 
 # now this is the important part
@@ -67,6 +79,34 @@ class StrawberryBackend(Backend):
 
 client = Client(StrawberryBackend(my_book_schema))
 
-response: GraphQLResponse = client.query.books(_fields=["title", "author"])
+# note that the operation is now named "getBooks"
+# instead of the actual method "get_books"
+# This is due to the automatic camel case conversation in strawberry
+# https://strawberry.rocks/docs/types/schema-configurations
+response: GraphQLResponse = client.query.getBooks(_fields=["title", "author"])
 
-print(response.data)  # {'books': [{'title': 'The Great Gatsby', 'author': 'F. Scott Fitzgerald'}]}
+print(response.data)  # {"getBooks": [{"title": "The Great Gatsby", "author": "F. Scott Fitzgerald"}]}
+
+response: GraphQLResponse = client.mutation.addBook(
+    title="1984",
+    author="George Orwell",
+    _fields=["title", "author"]
+)
+
+print(response.data)
+# {
+#   "addBook": {
+#       "title": "1984",
+#       "author": "George Orwell"
+#   }
+# }
+
+response: GraphQLResponse = client.query.getBooks(_fields=["title", "author"])
+
+print(response.data)
+# {
+#     "getBooks": [
+#         {"title": "The Great Gatsby", "author": "F. Scott Fitzgerald"},
+#         {"title": "1984", "author": "George Orwell"}
+#     ]
+# }
