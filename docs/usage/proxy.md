@@ -7,3 +7,14 @@ operation on the binding.
 ```python 
 {% include "../examples/simple_proxy_example.py" %}
 ```
+
+## Sending custom queries
+
+If you want to send your own custom queries, say because you want to send multiple queries or have fragments, you can
+use any proxy class.
+
+**NOTE**: No validation is done to neither the query, nor the variables.
+
+```python 
+{% include "../examples/sending_custom_queries.py" %}
+```
