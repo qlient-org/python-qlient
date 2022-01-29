@@ -134,11 +134,14 @@ class Fields:
     def __bool__(self) -> bool:
         return bool(self.fields) or bool(self.sub_fields)
 
-    def __str__(self) -> str:
+    def __gql__(self) -> str:
         builder = list(self.fields)
         for name, fields in self.sub_fields.items():
             builder.append(f"{name} {{ {str(fields)} }}")
         return " ".join(builder)
+
+    def __str__(self) -> str:
+        return self.__gql__()
 
     def __repr__(self) -> str:
         class_name = self.__class__.__name__

@@ -72,14 +72,17 @@ class TypeRef:
         class_name = self.__class__.__name__
         return f"<{class_name}(kind=`{self.kind.name}`, name=`{self.name}`, ofType={self.of_type})>"
 
-    @property
-    def graphql_representation(self) -> str:
+    def __gql__(self) -> str:
         representation = self.of_type.graphql_representation if self.of_type else self.name
         if self.kind == Kind.NON_NULL:
             representation = f"{representation}!"
         if self.kind == Kind.LIST:
             representation = f"[{representation}]"
         return representation
+
+    @property
+    def graphql_representation(self) -> str:
+        return self.__gql__()
 
     @property
     def final_type_name(self):
