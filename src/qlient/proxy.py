@@ -8,7 +8,7 @@ import itertools
 from typing import Dict, Iterable, Optional, List
 
 from qlient.models import GraphQLResponse
-from qlient.qb import TypedGQLQueryBuilder, Fields
+from qlient.builder import TypedGQLQueryBuilder, Fields
 from qlient.schema.types import Field
 from qlient.types import GraphQLVariables, GraphQLQuery, GraphQLOperation, GraphQLContext, GraphQLRoot
 
