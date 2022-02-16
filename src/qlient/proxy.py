@@ -78,12 +78,12 @@ class OperationProxy(abc.ABC):
             _fields: Optional[Fields] = None,
             _context: GraphQLContext = None,
             _root: GraphQLRoot = None,
-            **kwargs
+            **query_variables
     ) -> GraphQLResponse:
         if _fields:
             self.select(_fields)
-        if kwargs:
-            self.variables(**kwargs)
+        if query_variables:
+            self.variables(**query_variables)
         if _context:
             self.context(_context)
         if _root:
