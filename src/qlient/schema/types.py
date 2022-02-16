@@ -25,7 +25,8 @@ class TypeRef:
 
     kind: Optional[Kind]
     name: Optional[str]
-    of_type: Optional["TypeRef"]
+    of_type_ref: Optional["TypeRef"]
+    type: Optional["Type"]
 
     @classmethod
     def parse(cls, type_ref: Union["TypeRef", Dict]) -> "TypeRef":
@@ -61,7 +62,8 @@ class TypeRef:
     ):
         self.kind = Kind(kind) if kind else None
         self.name = name
-        self.of_type = self.parse(ofType) if ofType else None
+        self.of_type_ref = self.parse(ofType) if ofType else None
+        self.type: Optional["Type"] = None
 
     def __str__(self) -> str:
         """ Return a simple string representation of the type ref instance """
@@ -70,15 +72,20 @@ class TypeRef:
     def __repr__(self) -> str:
         """ Return a more detailed string representation of the type ref instance """
         class_name = self.__class__.__name__
-        return f"<{class_name}(kind=`{self.kind.name}`, name=`{self.name}`, ofType={self.of_type})>"
+        return f"<{class_name}(kind=`{self.kind.name}`, name=`{self.name}`, ofType={self.of_type_ref})>"
 
     def __gql__(self) -> str:
-        representation = self.of_type.graphql_representation if self.of_type else self.name
+        representation = self.of_type_ref.graphql_representation if self.of_type_ref is not None else self.name
         if self.kind == Kind.NON_NULL:
             representation = f"{representation}!"
         if self.kind == Kind.LIST:
             representation = f"[{representation}]"
         return representation
+
+    def infer_type_refs(self, types_dict: Dict[str, "Type"]):
+        self.type = types_dict.get(self.name)
+        if self.of_type_ref is not None:
+            self.of_type_ref.infer_type_refs(types_dict)
 
     @property
     def graphql_representation(self) -> str:
@@ -86,7 +93,7 @@ class TypeRef:
 
     @property
     def final_type_name(self):
-        return self.name if self.of_type is None else self.of_type.final_type_name
+        return self.name if self.of_type_ref is None else self.of_type_ref.final_type_name
 
 
 class Input:
@@ -366,6 +373,23 @@ class Type:
         self.interfaces: List[TypeRef] = TypeRef.parse_list(interfaces)
         self.enum_values: List[EnumValue] = EnumValue.parse_list(enumValues)
         self.possible_types: List[TypeRef] = TypeRef.parse_list(possibleTypes)
+
+    def infer_types(self, types_dict: Dict[str, "Type"]):
+        if self.fields is not None:
+            for type_field in self.fields:
+                type_field.type.infer_type_refs(types_dict)
+
+        if self.input_fields is not None:
+            for input_field in self.input_fields:
+                input_field.type.infer_type_refs(types_dict)
+
+        if self.interfaces is not None:
+            for interface in self.interfaces:
+                interface.infer_type_refs(types_dict)
+
+        if self.possible_types is not None:
+            for possible_type in self.possible_types:
+                possible_type.infer_type_refs(types_dict)
 
     def __str__(self) -> str:
         """ Return a simple string representation of the type instance """

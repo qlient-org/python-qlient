@@ -84,11 +84,16 @@ def parse_types(schema: Dict) -> Dict[str, Type]:
         if type_dict
     ]
 
-    return {
+    types_dict: Dict[str, Type] = {
         _type.name: _type
         for _type in types_list
         if _type
     }
+
+    for type_type in types_dict.values():
+        type_type.infer_types(types_dict)
+
+    return types_dict
 
 
 def parse_directives(schema: Dict) -> Optional[Dict[str, Directive]]:
