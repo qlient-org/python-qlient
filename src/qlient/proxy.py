@@ -7,17 +7,17 @@ import abc
 import itertools
 from typing import Dict, Iterable, Optional, List
 
-from qlient.models import GraphQLResponse
 from qlient.builder import TypedGQLQueryBuilder, Fields
+from qlient.models import GraphQLResponse
 from qlient.schema.types import Field
 from qlient.types import GraphQLVariables, GraphQLQuery, GraphQLOperation, GraphQLContext, GraphQLRoot
 
 
-class Operation:
+class OperationProxy(abc.ABC):
     """ Base class for all graphql operations """
 
-    def __init__(self, proxy: "OperationProxy", operation_field: Field):
-        self._proxy: "OperationProxy" = proxy
+    def __init__(self, proxy: "OperationServiceProxy", operation_field: Field):
+        self._proxy: "OperationServiceProxy" = proxy
         self.operation_field: Field = operation_field
 
         self.query_builder: TypedGQLQueryBuilder = TypedGQLQueryBuilder(
@@ -31,19 +31,19 @@ class Operation:
         self._context: GraphQLContext = None
         self._root: GraphQLRoot = None
 
-    def select(self, *args, **kwargs) -> "Operation":
+    def select(self, *args, **kwargs) -> "OperationProxy":
         self.query_builder.fields(*args, **kwargs)
         return self
 
-    def variables(self, **kwargs) -> "Operation":
+    def variables(self, **kwargs) -> "OperationProxy":
         self._variables = self.query_builder.variables(**kwargs)
         return self
 
-    def context(self, context: GraphQLContext) -> "Operation":
+    def context(self, context: GraphQLContext) -> "OperationProxy":
         self._context = context
         return self
 
-    def root(self, root: GraphQLRoot) -> "Operation":
+    def root(self, root: GraphQLRoot) -> "OperationProxy":
         self._root = root
         return self
 
@@ -61,12 +61,13 @@ class Operation:
         return f"{class_name}(field={self.operation_field})"
 
     @property
+    @abc.abstractmethod
     def operation_type(self) -> str:
         """ Return the operation type.
 
         :return: Either query, mutation or subscription (Depends on the class name)
         """
-        return self.__class__.__name__.lower()
+        raise NotImplementedError
 
     @property
     def query(self) -> GraphQLQuery:
@@ -97,35 +98,47 @@ class Operation:
         )
 
 
-class Query(Operation):
+class QueryProxy(OperationProxy):
     """ Represents the operation proxy for queries """
 
+    @property
+    def operation_type(self) -> str:
+        return "query"
 
-class Mutation(Operation):
+
+class MutationProxy(OperationProxy):
     """ Represents the operation proxy for mutations """
 
+    @property
+    def operation_type(self) -> str:
+        return "mutation"
 
-class Subscription(Operation):
+
+class SubscriptionProxy(OperationProxy):
     """ Represents the operation proxy for subscriptions """
 
+    @property
+    def operation_type(self) -> str:
+        return "subscription"
 
-class OperationProxy(abc.ABC):
+
+class OperationServiceProxy(abc.ABC):
     """ Base class for all service proxies """
 
     @abc.abstractmethod
-    def get_bindings(self) -> Dict[str, Operation]:
+    def get_bindings(self) -> Dict[str, OperationProxy]:
         """ Abstract base method to get the service bindings """
 
     def __init__(self, client):
         """ Instantiate a new instance of ServiceProxy """
         from qlient.client import Client  # type hint here due to circular dependency
         self.client: Client = client
-        self.operations: Dict[str, Operation] = self.get_bindings()
+        self.operations: Dict[str, OperationProxy] = self.get_bindings()
 
     def __contains__(self, key: str) -> bool:
         return key in self.operations
 
-    def __getattr__(self, key: str) -> Operation:
+    def __getattr__(self, key: str) -> OperationProxy:
         """ Return the OperationProxy for the given key.
 
         :param key: holds the operation key
@@ -134,7 +147,7 @@ class OperationProxy(abc.ABC):
         """
         return self[key]
 
-    def __getitem__(self, key: str) -> Operation:
+    def __getitem__(self, key: str) -> OperationProxy:
         """ Return the OperationProxy for the given key.
 
         :param key: holds the operation key
@@ -191,29 +204,29 @@ class OperationProxy(abc.ABC):
         return list(self.operations.keys())
 
 
-class QueryService(OperationProxy):
+class QueryServiceProxy(OperationServiceProxy):
     """ Represents the query service """
 
-    def get_bindings(self) -> Dict[str, Operation]:
+    def get_bindings(self) -> Dict[str, OperationProxy]:
         """ Method to get the query service bindings """
         bindings = {}
         if not self.client.schema.query_type:
             return bindings
 
         for field in self.client.schema.query_type.fields:
-            bindings[field.name] = Query(self, field)
+            bindings[field.name] = QueryProxy(self, field)
         return bindings
 
 
-class MutationService(OperationProxy):
+class MutationServiceProxy(OperationServiceProxy):
     """ Represents the mutation service """
 
-    def get_bindings(self) -> Dict[str, Operation]:
+    def get_bindings(self) -> Dict[str, OperationProxy]:
         """ Method to get the mutation service bindings """
         bindings = {}
         if not self.client.schema.mutation_type:
             return bindings
 
         for field in self.client.schema.mutation_type.fields:
-            bindings[field.name] = Mutation(self, field)
+            bindings[field.name] = MutationProxy(self, field)
         return bindings

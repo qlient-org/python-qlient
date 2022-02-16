@@ -2,9 +2,9 @@ from qlient import Client
 
 client = Client("https://my-graphql-api.com/")
 
-# query is a QueryService object (Inherits from OperationProxy). It will check if there
+# query is a QueryServiceProxy object (Inherits from OperationServiceProxy). It will check if there
 # is an operation with the name `X` defined in the binding
-# and if that is the case it will return a callable Operation object
+# and if that is the case it will return a callable OperationProxy object
 client.query.X()
 
 # The operation can also be called via an __getitem__ call.
