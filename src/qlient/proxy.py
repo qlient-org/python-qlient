@@ -73,6 +73,9 @@ class OperationProxy(abc.ABC):
     def query(self) -> GraphQLQuery:
         return self.query_builder.build()
 
+    def __gql__(self) -> GraphQLQuery:
+        return self.query
+
     def __call__(
             self,
             _fields: Optional[Fields] = None,

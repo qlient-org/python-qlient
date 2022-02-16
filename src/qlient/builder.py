@@ -235,6 +235,9 @@ class GQLQueryBuilder:
         final_query = " ".join(query_parts)
         return self.remove_duplicate_spaces(final_query)
 
+    def __gql__(self) -> str:
+        return self.build()
+
 
 class TypedGQLQueryBuilder:
     KEY_PREFIX = "$"
@@ -281,3 +284,6 @@ class TypedGQLQueryBuilder:
 
     def build(self) -> str:
         return self.builder.build()
+
+    def __gql__(self) -> str:
+        return self.build()
