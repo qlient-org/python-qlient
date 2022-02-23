@@ -14,7 +14,7 @@ def test_type_ref_values():
     assert type_ref.name == "String"
     assert type_ref.of_type_ref is None
     assert type_ref.graphql_representation == "String!"
-    assert type_ref.final_type_name == "String"
+    assert type_ref.leaf_type_name == "String"
 
 
 def test_type_ref_nested():
@@ -24,7 +24,7 @@ def test_type_ref_nested():
     assert type_ref.name is None
     assert isinstance(type_ref.of_type_ref, TypeRef)
     assert type_ref.graphql_representation == "[String]!"
-    assert type_ref.final_type_name == "String"
+    assert type_ref.leaf_type_name == "String"
 
 
 def test_type_ref_parse():
@@ -34,7 +34,7 @@ def test_type_ref_parse():
     assert type_ref.name == "String"
     assert type_ref.of_type_ref is None
     assert type_ref.graphql_representation == "String!"
-    assert type_ref.final_type_name == "String"
+    assert type_ref.leaf_type_name == "String"
 
 
 def test_input_empty():

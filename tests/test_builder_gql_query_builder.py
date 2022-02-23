@@ -74,18 +74,8 @@ def test_query_builder_fields_simple():
     from qlient.builder import GQLQueryBuilder
     builder = GQLQueryBuilder()
     builder = builder.action("get_person")
-    builder = builder.fields("first_name", "last_name")
+    builder = builder.fields("first_name last_name")
     expected = "{ get_person { first_name last_name } }"
-    actual = builder.build()
-    assert expected == actual
-
-
-def test_query_builder_fields_nested():
-    from qlient.builder import GQLQueryBuilder
-    builder = GQLQueryBuilder()
-    builder = builder.action("get_person")
-    builder = builder.fields("first_name", "last_name", hobby=["title", "description"])
-    expected = "{ get_person { first_name last_name hobby { title description } } }"
     actual = builder.build()
     assert expected == actual
 
@@ -95,7 +85,7 @@ def test_query_builder_full_query():
     builder = GQLQueryBuilder()
     builder = builder.operation("query", name="PersonQuery", variables={"$search": "String"})
     builder = builder.action("get_person", variables={"search": "$search"})
-    builder = builder.fields("first_name", "last_name", hobby=["title", "description"])
+    builder = builder.fields("first_name last_name hobby { title description }")
     expected = "query PersonQuery($search: String) { get_person(search: $search) { first_name last_name hobby { title description } } }"
     actual = builder.build()
     assert expected == actual
@@ -106,7 +96,7 @@ def test_query_builder_full_mutation():
     builder = GQLQueryBuilder()
     builder = builder.operation("mutation", name="UpdatePerson", variables={"$id": "ID!"})
     builder = builder.action("update_person", variables={"id": "$id"})
-    builder = builder.fields("first_name", "last_name")
+    builder = builder.fields("first_name last_name")
     expected = "mutation UpdatePerson($id: ID!) { update_person(id: $id) { first_name last_name } }"
     actual = builder.build()
     assert expected == actual

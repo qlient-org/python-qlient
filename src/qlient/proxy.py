@@ -22,21 +22,20 @@ class OperationProxy(abc.ABC):
 
         self.query_builder: TypedGQLQueryBuilder = TypedGQLQueryBuilder(
             self.operation_type,
-            self.operation_field.name,
-            self.operation_field.inputs,
-            self._proxy.client.schema.types_registry.get(self.operation_field.output_type_name),
-            self._proxy.client.settings
+            self.operation_field,
+            self._proxy.client.schema,
+            self._proxy.client.settings,
         )
         self._variables: Dict = {}
         self._context: GraphQLContext = None
         self._root: GraphQLRoot = None
 
     def select(self, *args, **kwargs) -> "OperationProxy":
-        self.query_builder.fields(*args, **kwargs)
+        self._variables.update(self.query_builder.fields(*args, **kwargs))
         return self
 
     def variables(self, **kwargs) -> "OperationProxy":
-        self._variables = self.query_builder.variables(**kwargs)
+        self._variables.update(self.query_builder.variables(**kwargs))
         return self
 
     def context(self, context: GraphQLContext) -> "OperationProxy":
@@ -48,7 +47,13 @@ class OperationProxy(abc.ABC):
         return self
 
     def execute(self) -> GraphQLResponse:
-        return self.__call__()
+        return self._proxy(
+            query=self.query,
+            operation=self.operation_field.name,
+            variables=self._variables,
+            context=self._context,
+            root=self._root
+        )
 
     def __str__(self) -> str:
         """ Return a simple string representation of this instance """
@@ -91,14 +96,7 @@ class OperationProxy(abc.ABC):
             self.context(_context)
         if _root:
             self.root(_root)
-
-        return self._proxy(
-            query=self.query,
-            operation=self.operation_field.name,
-            variables=self._variables,
-            context=self._context,
-            root=self._root
-        )
+        return self.execute()
 
 
 class QueryProxy(OperationProxy):

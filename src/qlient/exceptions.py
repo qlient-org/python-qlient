@@ -32,3 +32,7 @@ class SchemaDetectionException(QlientException):
     def __init__(self, location: str, *args):
         self.location: str = location
         super(SchemaDetectionException, self).__init__(*args)
+
+
+class UnsupportedFieldException(QlientException):
+    """ Indicates that an unsupported field was given as input """

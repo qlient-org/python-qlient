@@ -92,8 +92,12 @@ class TypeRef:
         return self.__gql__()
 
     @property
-    def final_type_name(self):
-        return self.name if self.of_type_ref is None else self.of_type_ref.final_type_name
+    def leaf_type_name(self) -> Optional[str]:
+        return self.name if self.of_type_ref is None else self.of_type_ref.leaf_type_name
+
+    @property
+    def leaf_type(self) -> Optional["Type"]:
+        return self.type if self.of_type_ref is None else self.of_type_ref.leaf_type
 
 
 class Input:
@@ -197,6 +201,10 @@ class Directive:
         self.locations: Optional[List[str]] = locations
         self.args: List[Input] = Input.parse_list(args)
 
+    @property
+    def arg_name_to_arg(self) -> Dict[str, Input]:
+        return {arg.name: arg for arg in self.args}
+
     def __str__(self) -> str:
         """ Return a simple string representation of the directive instance """
         return repr(self)
@@ -268,14 +276,14 @@ class Field:
         return f"<{class_name}(name=`{self.name}`, type={self.type})>"
 
     @property
-    def inputs(self) -> Dict[str, Input]:
-        return {_input.name: _input for _input in self.args}
+    def arg_name_to_arg(self) -> Dict[str, Input]:
+        return {arg.name: arg for arg in self.args}
 
     @property
     def output_type_name(self) -> Optional[str]:
         if self.type is None:
             return None
-        return self.type.final_type_name
+        return self.type.leaf_type_name
 
 
 class EnumValue:
@@ -390,6 +398,13 @@ class Type:
         if self.possible_types is not None:
             for possible_type in self.possible_types:
                 possible_type.infer_type_refs(types_dict)
+
+    @property
+    def field_name_to_field(self) -> Dict[str, Field]:
+        return {
+            field.name: field
+            for field in self.fields or []  # because self.fields might be None
+        }
 
     def __str__(self) -> str:
         """ Return a simple string representation of the type instance """

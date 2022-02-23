@@ -1,30 +1,29 @@
 def test_fields_simple_single():
-    from qlient.builder import Fields
+    from qlient.builder import Fields, Field
     a = Fields("a")
-    assert a.fields == ["a"]
+    assert a.fields == [Field("a")]
 
 
 def test_fields_simple_multiple():
-    from qlient.builder import Fields
+    from qlient.builder import Fields, Field
     a = Fields("a", "b", "c")
-    assert "a" in a.fields
-    assert "b" in a.fields
-    assert "c" in a.fields
+    assert Field("a") in a.fields
+    assert Field("b") in a.fields
+    assert Field("c") in a.fields
 
 
 def test_fields_simple_multiple_duplicates():
     from qlient.builder import Fields
     a = Fields("a", "b", "c", "c", "c")
     assert len(a.fields) == 3
-    assert a.fields.count("c") == 1
 
 
 def test_fields_simple_list():
-    from qlient.builder import Fields
+    from qlient.builder import Fields, Field
     a = Fields(["a", "b", "c"])
-    assert "a" in a.fields
-    assert "b" in a.fields
-    assert "c" in a.fields
+    assert Field("a") in a.fields
+    assert Field("b") in a.fields
+    assert Field("c") in a.fields
 
 
 def test_fields_simple_list_duplicates():
@@ -32,35 +31,29 @@ def test_fields_simple_list_duplicates():
     fields = ["a", "b", "c", "c", "c"]
     a = Fields(fields)
     assert len(a.fields) == 3
-    assert a.fields.count("c") == 1
 
 
 def test_fields_complex_simple():
-    from qlient.builder import Fields
+    from qlient.builder import Fields, Field
     a = Fields("a", "b", c="d")
-    assert "a" in a.fields
-    assert "b" in a.fields
-    assert "c" in a.sub_fields
-    assert a.sub_fields["c"].fields == ["d"]
+    assert Field("a") in a.fields
+    assert Field("b") in a.fields
+    assert Field("c", _sub_fields=Fields("d")) in a.fields
 
 
 def test_fields_complex_simple_list():
-    from qlient.builder import Fields
+    from qlient.builder import Fields, Field
     a = Fields("a", "b", c=["a", "b"])
-    assert "a" in a.fields
-    assert "b" in a.fields
-    assert "c" in a.sub_fields
-    assert len(a.sub_fields["c"].fields) == 2
+    assert Field("a") in a.fields
+    assert Field("b") in a.fields
+    assert Field("c", _sub_fields=Fields("a", "b")) in a.fields
 
 
 def test_fields_complex_nested_fields():
-    from qlient.builder import Fields
+    from qlient.builder import Fields, Field
     a = Fields(a=Fields("a"), b=Fields("b"))
-    assert "a" in a.sub_fields
-    assert a.sub_fields["a"].fields == ["a"]
-
-    assert "b" in a.sub_fields
-    assert a.sub_fields["b"].fields == ["b"]
+    assert Field("a", _sub_fields="a") in a.fields
+    assert Field("b", _sub_fields="b") in a.fields
 
 
 def test_fields_simple_eq_operator():
@@ -125,89 +118,37 @@ def test_fields_simple_add_operator_fields():
 
 
 def test_fields_complex_add_operator_simple():
-    from qlient.builder import Fields
+    from qlient.builder import Fields, Field
     a = Fields("a", b="b")
-    expected = Fields("a", "c", b="b")
     actual = a + "c"
-    assert expected == actual
+    assert Field("a") in actual.fields
+    assert Field("b", _sub_fields="b") in actual.fields
+    assert Field("c") in actual.fields
 
 
 def test_fields_complex_add_operator_list():
-    from qlient.builder import Fields
+    from qlient.builder import Fields, Field
     a = Fields("a", b="b")
-    expected = Fields("a", "c", "z", b="b")
     actual = a + ["a", "c", "z"]
-    assert expected == actual
+    assert Field("a") in actual.fields
+    assert Field("b", _sub_fields="b") in actual.fields
+    assert Field("c") in actual.fields
+    assert Field("z") in actual.fields
 
 
 def test_fields_complex_add_operator_dict():
-    from qlient.builder import Fields
+    from qlient.builder import Fields, Field
     a = Fields("a", b="b")
-    expected = Fields("a", b=["b", "c", "e"])
     actual = a + {"b": ["c", "e"]}
-    assert expected == actual
+    assert Field("a") in actual.fields
+    assert Field("b", _sub_fields=["c", "e"]) in actual.fields
 
 
 def test_fields_complex_add_operator_fields():
-    from qlient.builder import Fields
+    from qlient.builder import Fields, Field
     a = Fields("a", b="b")
     b = Fields("a", "c")
-    expected = Fields("a", "c", b="b")
     actual = a + b
-    assert expected == actual
-
-
-def test_fields_simple_sub_operator_simple():
-    from qlient.builder import Fields
-    a = Fields("a", "b")
-    expected = Fields("a")
-    actual = a - "b"
-    assert expected == actual
-
-
-def test_fields_simple_sub_operator_list():
-    from qlient.builder import Fields
-    a = Fields("a", "b", "c")
-    expected = Fields("a")
-    actual = a - ["b", "c"]
-    assert expected == actual
-
-
-def test_fields_simple_sub_operator_fields():
-    from qlient.builder import Fields
-    a = Fields("a", "b", "c")
-    expected = Fields("a")
-    actual = a - Fields("b", "c", "z")
-    assert expected == actual
-
-
-def test_fields_complex_sub_operator_simple():
-    from qlient.builder import Fields
-    a = Fields("a", "b", c="c")
-    expected = Fields("a", c="c")
-    actual = a - "b"
-    assert expected == actual
-
-
-def test_fields_complex_sub_operator_list():
-    from qlient.builder import Fields
-    a = Fields("a", "b", "z", c="c")
-    expected = Fields("a", c="c")
-    actual = a - ["b", "z"]
-    assert expected == actual
-
-
-def test_fields_complex_sub_operator_dict():
-    from qlient.builder import Fields
-    a = Fields("a", "b", "z", c=["a", "b", "c"])
-    expected = Fields("a", "b", "z", c=["a"])
-    actual = a - {"c": ["b", "c"]}
-    assert expected == actual
-
-
-def test_fields_complex_sub_operator_fields():
-    from qlient.builder import Fields
-    a = Fields("a", "b", "z", c="c")
-    expected = Fields("a")
-    actual = a - Fields("b", "z", c="c")
-    assert expected == actual
+    assert Field("a") in actual.fields
+    assert Field("c") in actual.fields
+    assert Field("b", _sub_fields="b") in actual.fields
