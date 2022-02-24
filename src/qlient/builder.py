@@ -19,10 +19,10 @@ from qlient.settings import Settings
 class Directive:
     def __init__(
             self,
-            name: str,
+            _name: str,
             **directive_variables
     ):
-        self.name: str = name
+        self.name: str = _name
         self.variables = directive_variables
 
     def prepare(self, schema: Schema) -> "PreparedDirective":
@@ -105,8 +105,10 @@ class PreparedDirective:
         builder = f"@{self.name}"
         if self.var_name_to_var_ref:
             builder += "("
-            for var_name, var_ref in self.var_name_to_var_ref.items():
-                builder += f"{var_name}: ${var_ref}"
+            builder += " ".join(map(
+                lambda name_to_ref: f"{name_to_ref[0]}: ${name_to_ref[1]}",
+                self.var_name_to_var_ref.items()
+            ))
             builder += ")"
         return builder
 
@@ -123,13 +125,13 @@ class Field:
 
     def __init__(
             self,
-            name: str,
+            _name: str,
             _alias: Optional[str] = None,
             _directive: Optional[Directive] = None,
             _sub_fields: Optional[Any] = None,
             **field_variables
     ):
-        self.name: str = name
+        self.name: str = _name
         self.alias: Optional[str] = _alias
         self.directive: Optional[Directive] = _directive
         self.sub_fields: Optional["Fields"] = Fields(_sub_fields) if _sub_fields is not None else None
@@ -271,8 +273,10 @@ class PreparedField:
         builder = f"{f'{self.alias}: ' if self.alias else ''}{self.name}"
         if self.var_name_to_var_ref:
             builder += "("
-            for var_name, var_ref in self.var_name_to_var_ref.items():
-                builder += f"{var_name}: ${var_ref}"
+            builder += " ".join(map(
+                lambda name_to_ref: f"{name_to_ref[0]}: ${name_to_ref[1]}",
+                self.var_name_to_var_ref.items()
+            ))
             builder += ")"
         if self.directive is not None:
             builder += f" {self.directive.__gql__()}"
