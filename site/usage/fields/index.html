@@ -13,15 +13,15 @@
         <link rel="canonical" href="https://qlient-org.github.io/python-qlient/usage/fields/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.8">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.1">
     
     
       
-        <title>Fields - qlient</title>
+        <title>Field and Fields - qlient</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.6e60f8b8.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e8d9bf0c.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#fields" class="md-skip">
+        <a href="#field-and-fields" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Fields
+              Field and Fields
             
           </span>
         </div>
@@ -168,7 +168,7 @@
         <a href="https://github.com/qlient-org/python-qlient/" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     qlient-org/python-qlient
@@ -213,7 +213,7 @@
       <a href="https://github.com/qlient-org/python-qlient/" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     qlient-org/python-qlient
@@ -313,12 +313,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Fields
+          Field and Fields
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Fields
+        Field and Fields
       </a>
       
         
@@ -337,8 +337,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nested-fields-selection" class="md-nav__link">
-    Nested Fields selection
+  <a href="#using-the-field-class" class="md-nav__link">
+    Using the Field Class
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-fields-class" class="md-nav__link">
+    Using the Fields Class
   </a>
   
 </li>
@@ -358,15 +365,15 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#subtraction" class="md-nav__link">
-    Subtraction
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#combination-of-fields-and-field" class="md-nav__link">
+    Combination of Fields and Field
+  </a>
   
 </li>
       
@@ -496,8 +503,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nested-fields-selection" class="md-nav__link">
-    Nested Fields selection
+  <a href="#using-the-field-class" class="md-nav__link">
+    Using the Field Class
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-fields-class" class="md-nav__link">
+    Using the Fields Class
   </a>
   
 </li>
@@ -517,15 +531,15 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#subtraction" class="md-nav__link">
-    Subtraction
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#combination-of-fields-and-field" class="md-nav__link">
+    Combination of Fields and Field
+  </a>
   
 </li>
       
@@ -546,81 +560,103 @@
 </a>
 
 
-<h1 id="fields">Fields</h1>
-<p>The <code>Fields</code> class is a powerful class for making nested or pre-configured field selections.</p>
-<h2 id="nested-fields-selection">Nested Fields selection</h2>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">qlient</span> <span class="kn">import</span> <span class="n">Fields</span>
 
-<span class="n">nested_fields</span> <span class="o">=</span> <span class="n">Fields</span><span class="p">(</span>
-    <span class="s2">&quot;first_name&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;last_name&quot;</span><span class="p">,</span>
-    <span class="n">hobby</span><span class="o">=</span><span class="s2">&quot;name&quot;</span>
+<h1 id="field-and-fields">Field and Fields</h1>
+<p>The <code>Fields</code> class is a powerful class for making nested or pre-configured field selections. In combination with
+the <code>Field</code> class you can create every query you need.</p>
+<h2 id="using-the-field-class">Using the Field Class</h2>
+<p>The Field class supports all major graphql features ranging from name, alias to directives and field inputs.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">qlient</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">Directive</span>
+
+<span class="n">my_field</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="c1"># Mandatory, the name of the field</span>
+    <span class="s2">&quot;repository&quot;</span><span class="p">,</span>
+
+    <span class="c1"># Schema Field specific inputs</span>
+    <span class="c1"># say we want the last 5 repositories where the name matches abc</span>
+    <span class="n">last</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;*abc*&quot;</span><span class="p">,</span>
+
+    <span class="c1"># Qlient Field specific arguments start with a `_`</span>
+    <span class="c1"># These arguments are Optional and can be left empty</span>
+    <span class="c1"># Optional, the alias of the field</span>
+    <span class="n">_alias</span><span class="o">=</span><span class="s2">&quot;my_repo&quot;</span><span class="p">,</span>
+    <span class="c1"># Optional, a field directive</span>
+    <span class="n">_directive</span><span class="o">=</span><span class="n">Directive</span><span class="p">(</span><span class="s2">&quot;include&quot;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;if&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">nested_fields</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>last_name first_name hobby { name }
+<span class="c1"># This results in a field like so:</span>
+
+<span class="c1"># {</span>
+<span class="c1">#   my_repo: repository(last: $repository_1234_last name: $repository_1234_name) @include(if: $include_5678_if)</span>
+<span class="c1"># }</span>
 </code></pre></div>
 <p><em>(This script is complete and should run "as is")</em></p>
-<p>The <code>hobby</code> selection can be changed from a single item to a <code>list</code>:</p>
+<h2 id="using-the-fields-class">Using the Fields Class</h2>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">qlient</span> <span class="kn">import</span> <span class="n">Fields</span>
 
 <span class="n">nested_fields</span> <span class="o">=</span> <span class="n">Fields</span><span class="p">(</span>
-    <span class="s2">&quot;first_name&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;last_name&quot;</span><span class="p">,</span>
-    <span class="n">hobby</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">]</span>
-<span class="p">)</span>
+    <span class="s2">&quot;first_name&quot;</span><span class="p">,</span>  <span class="c1"># will be converted to Field(&quot;first_name&quot;)</span>
+    <span class="s2">&quot;last_name&quot;</span><span class="p">,</span>  <span class="c1"># will be converted to Field(&quot;first_name&quot;)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">nested_fields</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>last_name first_name hobby { name description }
-</code></pre></div>
-<p><em>(This script is complete and should run "as is")</em></p>
-<p>or even another <code>Fields</code> instance for even deeper selection.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">qlient</span> <span class="kn">import</span> <span class="n">Fields</span>
-
-<span class="n">nested_fields</span> <span class="o">=</span> <span class="n">Fields</span><span class="p">(</span>
-    <span class="s2">&quot;first_name&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;last_name&quot;</span><span class="p">,</span>
+    <span class="c1"># This will be converted to</span>
+    <span class="c1"># Field(</span>
+    <span class="c1">#   &quot;hobby&quot;,</span>
+    <span class="c1">#   _sub_fields=Fields(</span>
+    <span class="c1">#       Field(&quot;name&quot;),</span>
+    <span class="c1">#       Field(&quot;club&quot;, _sub_fields=Fields(Field(&quot;name&quot;)))</span>
+    <span class="c1">#   )</span>
+    <span class="c1"># )</span>
     <span class="n">hobby</span><span class="o">=</span><span class="n">Fields</span><span class="p">(</span>
         <span class="s2">&quot;name&quot;</span><span class="p">,</span>
         <span class="n">club</span><span class="o">=</span><span class="s2">&quot;name&quot;</span>
     <span class="p">)</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">nested_fields</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>last_name first_name hobby { name club { name } }
+<span class="c1"># last_name first_name hobby { name club { name } }</span>
 </code></pre></div>
 <p><em>(This script is complete and should run "as is")</em></p>
 <h2 id="supported-operators">Supported Operators</h2>
-<p>The <code>Fields</code> class supports two operators: addition and subtraction.</p>
+<p>Both, the <code>Field</code> and <code>Fields</code> class currently support the following operators:</p>
 <h3 id="addition">Addition</h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">qlient</span> <span class="kn">import</span> <span class="n">Fields</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">qlient</span> <span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">Field</span>
 
-<span class="n">name</span> <span class="o">=</span> <span class="n">Fields</span><span class="p">(</span><span class="s2">&quot;first_name&quot;</span><span class="p">,</span> <span class="s2">&quot;last_name&quot;</span><span class="p">)</span>
-<span class="n">age</span> <span class="o">=</span> <span class="n">Fields</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">)</span>
+<span class="n">name_fields</span> <span class="o">=</span> <span class="n">Fields</span><span class="p">(</span><span class="s2">&quot;first_name&quot;</span><span class="p">,</span> <span class="s2">&quot;last_name&quot;</span><span class="p">)</span>
+<span class="n">age_field</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">)</span>
 
-<span class="n">added</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="n">age</span>
+<span class="n">person_fields</span> <span class="o">=</span> <span class="n">name_fields</span> <span class="o">+</span> <span class="n">age_field</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">added</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>first_name last_name age
+<span class="c1"># { first_name last_name age }</span>
 </code></pre></div>
 <p><em>(This script is complete and should run "as is")</em></p>
-<h3 id="subtraction">Subtraction</h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">qlient</span> <span class="kn">import</span> <span class="n">Fields</span>
+<h2 id="combination-of-fields-and-field">Combination of Fields and Field</h2>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">qlient</span> <span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">Directive</span>
 
-<span class="n">full_name</span> <span class="o">=</span> <span class="n">Fields</span><span class="p">(</span><span class="s2">&quot;first_name&quot;</span><span class="p">,</span> <span class="s2">&quot;last_name&quot;</span><span class="p">)</span>
-<span class="n">last_name</span> <span class="o">=</span> <span class="n">Fields</span><span class="p">(</span><span class="s2">&quot;last_name&quot;</span><span class="p">)</span>
+<span class="n">my_home_world_selection</span> <span class="o">=</span> <span class="n">Fields</span><span class="p">(</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;population&quot;</span>
+<span class="p">)</span>
 
-<span class="n">subtracted</span> <span class="o">=</span> <span class="n">full_name</span> <span class="o">-</span> <span class="n">last_name</span>
+<span class="n">my_person_selection</span> <span class="o">=</span> <span class="n">Fields</span><span class="p">(</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">,</span>  <span class="c1"># will be converted to Field(&quot;id&quot;)</span>
+    <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
+    <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="n">_alias</span><span class="o">=</span><span class="s2">&quot;my_height&quot;</span><span class="p">),</span>
+    <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;homeworld&quot;</span><span class="p">,</span> <span class="n">_sub_fields</span><span class="o">=</span><span class="n">my_home_world_selection</span><span class="p">,</span> <span class="n">_directive</span><span class="o">=</span><span class="n">Directive</span><span class="p">(</span><span class="s2">&quot;include&quot;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;if&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}))</span>
+<span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">subtracted</span><span class="p">)</span>
+<span class="c1"># Every variable name used in a Field or Directive is automatically generated and therefore unique.</span>
+<span class="c1"># {</span>
+<span class="c1">#     id</span>
+<span class="c1">#     name</span>
+<span class="c1">#     my_height: height</span>
+<span class="c1">#     homeworld @include(if: $include_123456789_if) {</span>
+<span class="c1">#         id</span>
+<span class="c1">#         name</span>
+<span class="c1">#         population</span>
+<span class="c1">#     }</span>
+<span class="c1"># }</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>first_name
-</code></pre></div>
-<p><em>(This script is complete and should run "as is")</em></p>
 
               
             </article>
@@ -686,10 +722,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.960e086b.min.js"></script>
+      <script src="../../assets/javascripts/bundle.8aa65030.min.js"></script>
       
     
   </body>

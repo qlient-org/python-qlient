@@ -84,11 +84,16 @@ def parse_types(schema: Dict) -> Dict[str, Type]:
         if type_dict
     ]
 
-    return {
+    types_dict: Dict[str, Type] = {
         _type.name: _type
         for _type in types_list
         if _type
     }
+
+    for _type in types_dict.values():
+        _type.infer_types(types_dict)
+
+    return types_dict
 
 
 def parse_directives(schema: Dict) -> Optional[Dict[str, Directive]]:
@@ -111,11 +116,16 @@ def parse_directives(schema: Dict) -> Optional[Dict[str, Directive]]:
         if directive_dict
     ]
 
-    return {
-        directive.name: directive
-        for directive in directives_list
-        if directive
+    directives_dict: Dict[str, Directive] = {
+        _directive.name: _directive
+        for _directive in directives_list
+        if _directive
     }
+
+    for _directive in directives_dict.values():
+        pass
+
+    return directives_dict
 
 
 def parse_schema(schema: Dict) -> ParseResult:

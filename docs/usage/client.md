@@ -43,3 +43,7 @@ Say for the example above, you'd also like to have information about the rocket.
 {% include "../examples/script_legend.md" %}
 
 For more details on the `Fields` class, have a look at the [fields documentation](./fields.md)
+
+## Sending custom queries
+
+Please have a look at the [proxy documentation](./proxy.md)

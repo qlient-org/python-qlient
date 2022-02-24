@@ -8,7 +8,7 @@ from typing import Optional, Union
 
 from qlient.backend import Backend, HTTPBackend
 from qlient.cache import Cache
-from qlient.proxy import QueryService, MutationService
+from qlient.proxy import QueryServiceProxy, MutationServiceProxy
 from qlient.schema.providers import BackendSchemaProvider
 from qlient.schema.schema import Schema
 from qlient.settings import Settings
@@ -44,11 +44,11 @@ class Client:
 
         self.schema: Schema = schema
 
-        self._query_service: Optional[QueryService] = None
-        self._mutation_service: Optional[MutationService] = None
+        self._query_service: Optional[QueryServiceProxy] = None
+        self._mutation_service: Optional[MutationServiceProxy] = None
 
     @property
-    def query(self) -> QueryService:
+    def query(self) -> QueryServiceProxy:
         """ Cached property for the query service
 
         If the :ref:`_query_service` is None, create a new QueryService.
@@ -56,11 +56,11 @@ class Client:
         :return: the query service in use
         """
         if self._query_service is None:
-            self._query_service = QueryService(self)
+            self._query_service = QueryServiceProxy(self)
         return self._query_service
 
     @property
-    def mutation(self) -> MutationService:
+    def mutation(self) -> MutationServiceProxy:
         """ Cached property for the mutation service
 
         if the ref:`_mutation_service` is None, create a new MutationService.
@@ -68,7 +68,7 @@ class Client:
         :return: the mutation service to use
         """
         if self._mutation_service is None:
-            self._mutation_service = MutationService(self)
+            self._mutation_service = MutationServiceProxy(self)
         return self._mutation_service
 
     def __str__(self) -> str:

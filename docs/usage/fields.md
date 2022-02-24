@@ -1,108 +1,40 @@
-# Fields
+# Field and Fields
 
-The `Fields` class is a powerful class for making nested or pre-configured field selections.
+The `Fields` class is a powerful class for making nested or pre-configured field selections. In combination with
+the `Field` class you can create every query you need.
 
-## Nested Fields selection
+## Using the Field Class
 
-```python
-from qlient import Fields
+The Field class supports all major graphql features ranging from name, alias to directives and field inputs.
 
-nested_fields = Fields(
-    "first_name",
-    "last_name",
-    hobby="name"
-)
-
-print(nested_fields)
-```
-
-```text
-last_name first_name hobby { name }
+```python 
+{% include "../examples/using_field_class.py" %}
 ```
 
 {% include "../examples/script_legend.md" %}
 
-The `hobby` selection can be changed from a single item to a `list`:
+## Using the Fields Class
 
-```python
-from qlient import Fields
-
-nested_fields = Fields(
-    "first_name",
-    "last_name",
-    hobby=["name", "description"]
-)
-
-print(nested_fields)
-```
-
-```text
-last_name first_name hobby { name description }
-```
-
-{% include "../examples/script_legend.md" %}
-
-or even another `Fields` instance for even deeper selection.
-
-```python
-from qlient import Fields
-
-nested_fields = Fields(
-    "first_name",
-    "last_name",
-    hobby=Fields(
-        "name",
-        club="name"
-    )
-)
-
-print(nested_fields)
-```
-
-```text
-last_name first_name hobby { name club { name } }
+```python 
+{% include "../examples/using_fields_class.py" %}
 ```
 
 {% include "../examples/script_legend.md" %}
 
 ## Supported Operators
 
-The `Fields` class supports two operators: addition and subtraction.
+Both, the `Field` and `Fields` class currently support the following operators:
 
 ### Addition
 
-```python
-from qlient import Fields
-
-name = Fields("first_name", "last_name")
-age = Fields("age")
-
-added = name + age
-
-print(added)
-```
-
-```text
-first_name last_name age
+```python 
+{% include "../examples/fields_addition_operator.py" %}
 ```
 
 {% include "../examples/script_legend.md" %}
 
-### Subtraction
+## Combination of Fields and Field
 
-```python
-from qlient import Fields
-
-full_name = Fields("first_name", "last_name")
-last_name = Fields("last_name")
-
-subtracted = full_name - last_name
-
-print(subtracted)
+```python 
+{% include "../examples/combination_of_fields_and_field.py" %}
 ```
-
-```text
-first_name
-```
-
-{% include "../examples/script_legend.md" %}
