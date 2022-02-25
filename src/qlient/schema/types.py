@@ -26,7 +26,7 @@ class TypeRef:
     kind: Optional[Kind]
     name: Optional[str]
     of_type_ref: Optional["TypeRef"]
-    type: Optional["Type"]
+    type: Optional["Type"]  # skipcq: PYL-W0622
 
     @classmethod
     def parse(cls, type_ref: Union["TypeRef", Dict]) -> "TypeRef":
@@ -63,7 +63,7 @@ class TypeRef:
         self.kind = Kind(kind) if kind else None
         self.name = name
         self.of_type_ref = self.parse(ofType) if ofType else None
-        self.type: Optional["Type"] = None
+        self.type: Optional["Type"] = None  # skipcq: PYL-W0622
 
     def __str__(self) -> str:
         """ Return a simple string representation of the type ref instance """
@@ -105,7 +105,7 @@ class Input:
 
     name: Optional[str]
     description: Optional[str]
-    type: Optional[TypeRef]
+    type: Optional[TypeRef]  # skipcq: PYL-W0622
     default_value: Optional[Any]
 
     @classmethod
@@ -138,7 +138,7 @@ class Input:
             self,
             name: Optional[str] = None,
             description: Optional[str] = None,
-            type: Optional[TypeRef] = None,
+            type: Optional[TypeRef] = None,  # skipcq: PYL-W0622
             defaultValue: Optional[Any] = None
     ):
         self.name = name
@@ -220,7 +220,7 @@ class Field:
     name: Optional[str]
     description: Optional[str]
     args: Optional[List[Input]]
-    type: Optional[TypeRef]
+    type: Optional[TypeRef]  # skipcq: PYL-W0622
     is_deprecated: Optional[bool]
     deprecation_reason: Optional[str]
 
@@ -255,14 +255,14 @@ class Field:
             name: Optional[str] = None,
             description: Optional[str] = None,
             args: Optional[List[Input]] = None,
-            type: Optional[TypeRef] = None,
+            type: Optional[TypeRef] = None, # skipcq: PYL-W0622
             isDeprecated: Optional[bool] = None,
             deprecationReason: Optional[str] = None
     ):
         self.name: Optional[str] = name
         self.description: Optional[str] = description
         self.args: List[Input] = Input.parse_list(args)
-        self.type: Optional[TypeRef] = TypeRef.parse(type) if type else None
+        self.type: Optional[TypeRef] = TypeRef.parse(type) if type else None # skipcq: PYL-W0622
         self.is_deprecated: Optional[bool] = isDeprecated
         self.deprecation_reason: Optional[str] = deprecationReason
 
