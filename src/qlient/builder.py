@@ -556,7 +556,7 @@ class TypedGQLQueryBuilder:
         return self._fields.var_ref_to_var_value
 
     def variables(self, **kwargs) -> Dict[str, Any]:
-        for key, value in kwargs.items():
+        for key in kwargs.keys():
             if self.settings.validate_variables:
                 if key not in self.op_inputs:
                     raise KeyError(f"Input `{key}` not supported for {self.op_type} operation `{self.op_name}`")
