@@ -455,7 +455,7 @@ class GQLQueryBuilder:
 
         if variables:
             key = list(variables.keys())[0]
-            nested_keys = list()
+            nested_keys = []
 
             while isinstance(variables[key], dict):
                 nested_keys.append(key)
