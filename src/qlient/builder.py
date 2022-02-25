@@ -256,15 +256,15 @@ class PreparedField:
         self.var_ref_to_var_input = ref_to_type
 
     @property
-    def rec_var_ref_to_var_input_type_name(self) -> Dict[str, SchemaTypeRef]:
-        ref_to_names = {_ref: _input for _ref, _input in self.var_ref_to_var_input.items()}
+    def rec_var_ref_to_var_input_type_ref(self) -> Dict[str, SchemaTypeRef]:
+        ref_to_input_type_ref = self.var_ref_to_var_input.copy()
         if self.sub_fields is not None:
-            ref_to_names.update(self.sub_fields.var_ref_to_var_type)
-        return ref_to_names
+            ref_to_input_type_ref.update(self.sub_fields.var_ref_to_var_type)
+        return ref_to_input_type_ref
 
     @property
     def rec_var_ref_to_var_value(self) -> Dict[str, Any]:
-        ref_to_value = {_ref: _value for _ref, _value in self.var_ref_to_var_value.items()}
+        ref_to_value = self.var_ref_to_var_value.copy()
         if self.sub_fields is not None:
             ref_to_value.update(self.sub_fields.var_ref_to_var_value)
         return ref_to_value
@@ -416,7 +416,7 @@ class PreparedFields:
     def var_ref_to_var_type(self) -> Dict[str, SchemaTypeRef]:
         ref_to_type = {}
         for field in self.fields:
-            ref_to_type.update(field.rec_var_ref_to_var_input_type_name)
+            ref_to_type.update(field.rec_var_ref_to_var_input_type_ref)
         return ref_to_type
 
     @property
