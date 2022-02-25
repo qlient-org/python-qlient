@@ -510,10 +510,7 @@ class GQLQueryBuilder:
         return self
 
     def build(self) -> str:
-        query_parts = []
-        query_parts.append(self.operation_field)
-        query_parts.append("{")
-        query_parts.append(self.action_field)
+        query_parts = [self.operation_field, "{", self.action_field]
         if self.fields_field:
             query_parts.append("{")
             query_parts.append(self.fields_field)
