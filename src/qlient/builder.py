@@ -315,7 +315,7 @@ class Fields:
             if isinstance(arg, dict):
                 arg = cls(**arg)
             if isinstance(arg, cls):
-                for field in arg.fields:
+                for field in arg.selected_fields:
                     fields[hash(field)] = field
                 continue
             raise TypeError(f"Can't handle type `{type(arg).__name__}`")
@@ -340,10 +340,10 @@ class Fields:
         _fields = self.parse_args(args, _fields)
         _fields = self.parse_kwargs(kwargs, _fields)
 
-        self.fields: List[Field] = list(_fields.values())
+        self.selected_fields: List[Field] = list(_fields.values())
 
     def __contains__(self, item) -> bool:
-        return item in self.fields
+        return item in self.selected_fields
 
     def __and__(self, other) -> "Fields":
         """ Synthetic sugar method which essentially just does the __add__
@@ -361,7 +361,7 @@ class Fields:
         """
         cls = self.__class__
         if other is None:
-            return cls(*self.fields)
+            return cls(*self.selected_fields)
         if isinstance(other, (str, Field)):
             other = cls(other)
         if isinstance(other, (list, tuple, set)):
@@ -369,7 +369,7 @@ class Fields:
         if isinstance(other, dict):
             other = cls(**other)
         if isinstance(other, cls):
-            args = [*self.fields, *other.fields]
+            args = [*self.selected_fields, *other.selected_fields]
             return cls(*args)
 
     def __eq__(self, other):
@@ -378,17 +378,17 @@ class Fields:
         return hash(self) == hash(other)
 
     def __bool__(self) -> bool:
-        return bool(self.fields)
+        return bool(self.selected_fields)
 
     def __hash__(self) -> int:
-        return hash(tuple(self.fields))
+        return hash(tuple(self.selected_fields))
 
     def prepare(self, parent: SchemaType, schema: Schema) -> "PreparedFields":
         p = PreparedFields()
         p.prepare(
             parent=parent,
             schema=schema,
-            fields=self.fields,
+            fields=self.selected_fields,
         )
         return p
 
