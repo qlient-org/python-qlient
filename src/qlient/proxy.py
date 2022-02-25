@@ -174,11 +174,11 @@ class OperationServiceProxy(abc.ABC):
     def __call__(
             self,
             query: GraphQLQuery,
+            *,
             operation: GraphQLOperation = None,
             variables: GraphQLVariables = None,
             context: GraphQLContext = None,
             root: GraphQLRoot = None,
-            *args,
             **kwargs
     ) -> GraphQLResponse:
         """ Send a query to the graphql server """
