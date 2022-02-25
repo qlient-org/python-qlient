@@ -25,7 +25,7 @@ def test_http_backend():
 def test_custom_backend():
     class MyBackend(Backend):
         def execute_query(
-                self,
+                self,  # skipcq PYL-R0201
                 query: GraphQLQuery,
                 variables: GraphQLVariables = None,
                 operation_name: GraphQLOperation = None,
