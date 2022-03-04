@@ -10,6 +10,8 @@ RawSchema = Dict[str, Any]
 
 
 class Kind(enum.Enum):
+    """ Enum for the Schema Type Kind """
+
     OBJECT = "OBJECT"
     SCALAR = "SCALAR"
     NON_NULL = "NON_NULL"
@@ -58,7 +60,7 @@ class TypeRef:
             self,
             kind: Union[str, Kind, None] = None,
             name: Optional[str] = None,
-            ofType: Optional["TypeRef"] = None
+            ofType: Optional["TypeRef"] = None,  # noqa
     ):
         self.kind = Kind(kind) if kind else None
         self.name = name
@@ -83,20 +85,40 @@ class TypeRef:
         return representation
 
     def infer_type_refs(self, types_dict: Dict[str, "Type"]):
+        """ Method to recursively infer types down to the deepest type level
+
+        :param types_dict: holds the mapping of type name to type
+        """
         self.type = types_dict.get(self.name)
         if self.of_type_ref is not None:
             self.of_type_ref.infer_type_refs(types_dict)
 
     @property
     def graphql_representation(self) -> str:
+        """ Property for the graphql type representation
+
+        See docstring of :ref:`__gql__` for more information
+
+        :return: the graphql type representation for this.
+        """
         return self.__gql__()
 
     @property
     def leaf_type_name(self) -> Optional[str]:
+        """ Property to return the name of the very last (leaf) `of_type`
+
+        As long as the `of_type` property is not None, it will call the `leaf_type_name` property of the `of_type`.
+
+        :return:  The name of the very last (leaf) `of_type` Type Ref.
+        """
         return self.name if self.of_type_ref is None else self.of_type_ref.leaf_type_name
 
     @property
     def leaf_type(self) -> Optional["Type"]:
+        """ Property to return the very last (leaf) `of_type` type.
+
+        :return: The type of the very last (leaf) `of_type`
+        """
         return self.type if self.of_type_ref is None else self.of_type_ref.leaf_type
 
 
@@ -138,8 +160,9 @@ class Input:
             self,
             name: Optional[str] = None,
             description: Optional[str] = None,
-            type: Optional[TypeRef] = None,  # skipcq: PYL-W0622
-            defaultValue: Optional[Any] = None
+            # skipcq: PYL-W0622
+            type: Optional[TypeRef] = None,  # noqa
+            defaultValue: Optional[Any] = None  # noqa
     ):
         self.name = name
         self.description = description
@@ -204,6 +227,10 @@ class Directive:
 
     @property
     def arg_name_to_arg(self) -> Dict[str, Input]:
+        """ Property for mapping the argument name to the argument for faster lookups
+
+        :return: A dictionary where the argument name is mapped to the argument itself
+        """
         return {arg.name: arg for arg in self.args}
 
     def __str__(self) -> str:
@@ -257,14 +284,15 @@ class Field:
             name: Optional[str] = None,
             description: Optional[str] = None,
             args: Optional[List[Input]] = None,
-            type: Optional[TypeRef] = None, # skipcq: PYL-W0622
-            isDeprecated: Optional[bool] = None,
-            deprecationReason: Optional[str] = None
+            # skipcq: PYL-W0622
+            type: Optional[TypeRef] = None,  # noqa
+            isDeprecated: Optional[bool] = None,  # noqa
+            deprecationReason: Optional[str] = None  # noqa
     ):
         self.name: Optional[str] = name
         self.description: Optional[str] = description
         self.args: List[Input] = Input.parse_list(args)
-        self.type: Optional[TypeRef] = TypeRef.parse(type) if type else None # skipcq: PYL-W0622
+        self.type: Optional[TypeRef] = TypeRef.parse(type) if type else None  # skipcq: PYL-W0622
         self.is_deprecated: Optional[bool] = isDeprecated
         self.deprecation_reason: Optional[str] = deprecationReason
 
@@ -279,10 +307,20 @@ class Field:
 
     @property
     def arg_name_to_arg(self) -> Dict[str, Input]:
+        """ Property for mapping the argument name to the argument for faster lookups
+
+        :return: A dictionary where the argument name is mapped to the argument itself
+        """
         return {arg.name: arg for arg in self.args}
 
     @property
     def output_type_name(self) -> Optional[str]:
+        """ Property to return the output type name (which is the leaf type name)
+
+        The output type name can only be looked up if the `self.type` property is not None
+
+        :return: Either None (if `self.type` is None) or the leaf type name
+        """
         if self.type is None:
             return None
         return self.type.leaf_type_name
@@ -321,8 +359,8 @@ class EnumValue:
             self,
             name: Optional[str] = None,
             description: Optional[str] = None,
-            isDeprecated: Optional[bool] = None,
-            deprecationReason: Optional[str] = None
+            isDeprecated: Optional[bool] = None,  # noqa
+            deprecationReason: Optional[str] = None  # noqa
     ):
         self.name: Optional[str] = name
         self.description: Optional[str] = description
@@ -370,10 +408,10 @@ class Type:
             name: Optional[str] = None,
             description: Optional[str] = None,
             fields: Optional[List[Union[Field, Dict]]] = None,
-            inputFields: Optional[List[Union[Input, Dict]]] = None,
+            inputFields: Optional[List[Union[Input, Dict]]] = None,  # noqa
             interfaces: Optional[List[Union[TypeRef, Dict]]] = None,
-            enumValues: Optional[List[Union[EnumValue, Dict]]] = None,
-            possibleTypes: Optional[List[Union[TypeRef, Dict]]] = None
+            enumValues: Optional[List[Union[EnumValue, Dict]]] = None,  # noqa
+            possibleTypes: Optional[List[Union[TypeRef, Dict]]] = None  # noqa
     ):
         self.kind: Optional[Kind] = Kind(kind) if kind else None
         self.name: Optional[str] = name
@@ -385,6 +423,13 @@ class Type:
         self.possible_types: List[TypeRef] = TypeRef.parse_list(possibleTypes)
 
     def infer_types(self, types_dict: Dict[str, "Type"]):
+        """ Method to infer the types for all graphql schema types.
+
+        This method iterates over each and all fields, input fields, interfaces and possible types to infer
+        the `types` of the instance.
+
+        :param types_dict: Holds a dictionary with the name of the typed mapped to the actual graphql schema type.
+        """
         if self.fields is not None:
             for type_field in self.fields:
                 type_field.type.infer_type_refs(types_dict)
@@ -403,6 +448,10 @@ class Type:
 
     @property
     def field_name_to_field(self) -> Dict[str, Field]:
+        """ Property for mapping the field name to the field for faster lookups
+
+        :return: A dictionary where the field name is mapped to the field itself
+        """
         return {
             field.name: field
             for field in self.fields or []  # because self.fields might be None
