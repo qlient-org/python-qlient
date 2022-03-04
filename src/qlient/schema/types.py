@@ -158,6 +158,7 @@ class Input:
 
 class Directive:
     """ Represents a basic graphql Directive """
+
     name: Optional[str]
     description: Optional[str]
     locations: Optional[List[str]]
@@ -217,6 +218,7 @@ class Directive:
 
 class Field:
     """ Represents a basic graphql Field """
+
     name: Optional[str]
     description: Optional[str]
     args: Optional[List[Input]]
