@@ -17,6 +17,8 @@ from qlient.settings import Settings
 
 
 class Directive:
+    """Class to create a directive on a Field."""
+
     def __init__(
             self,
             _name: str,
@@ -26,6 +28,11 @@ class Directive:
         self.variables = directive_variables
 
     def prepare(self, schema: Schema) -> "PreparedDirective":
+        """Prepare this directive and return a ref:`PreparedDirective`
+
+        :param schema: holds the schema that is currently being used.
+        :return: a PreparedDirective
+        """
         p = PreparedDirective()
         p.prepare(
             schema=schema,
@@ -44,6 +51,11 @@ class Directive:
 
 
 class PreparedDirective:
+    """Class that represents a prepared directive.
+
+    There should be no more changes made on this directive.
+    """
+
     def __init__(self):
         # the graphql schema directive type
         self.schema_directive: Optional[SchemaDirective] = None
@@ -62,11 +74,25 @@ class PreparedDirective:
             name: Optional[str] = None,
             variables: Optional[Dict[str, Any]] = None,
     ):
+        """Method to prepare this directive after it has been initialized.
+
+        :param schema: holds the client's schema that is currently being used.
+        :param name: holds the name of this directive
+        :param variables: holds variables for this directive
+        """
         self.prepare_name(name)
         self.prepare_type_checking(schema)
         self.prepare_input(variables)
 
     def prepare_type_checking(self, schema: Schema):
+        """Method to prepare for type checking.
+
+        This is important to make sure that the directive is known.
+
+        Make sure that you have called `prepare_name` before calling this method.
+
+        :param schema: holds the client's schema that is currently being used
+        """
         if not self.name:
             raise ValueError(f"Name must be set before calling `{self.prepare_type_checking.__name__}`")
         schema_directive = schema.directives_registry.get(self.name)
@@ -75,11 +101,25 @@ class PreparedDirective:
         self.schema_directive = schema_directive
 
     def prepare_name(self, name: Optional[str]):
+        """Method to prepare the name of this directive
+
+        :param name: holds the name of this directive
+        """
         if not name:
             raise ValueError("Directive name must have a value.")
         self.name = name
 
     def prepare_input(self, variables: Optional[Dict[str, Any]]):
+        """Method to prepare the directive inputs (variables)
+
+        This iterates over all given inputs and registers them for further usage.
+        To ensure a unique variables key, the reference key is prefixed with the name and id of this directive.
+
+        If there is an input given that is not part of this directive it will raise a ValueError.
+
+        :param variables: holds the inputs for this directive.
+        :raises ValueError: when a given input name is not part of this directive.
+        """
         if not self.name:
             raise ValueError(f"Name must be set before calling `{self.prepare_input.__name__}`")
         if self.schema_directive is None:
@@ -102,6 +142,10 @@ class PreparedDirective:
         self.var_ref_to_var_input = ref_to_type
 
     def __gql__(self) -> str:
+        """Method to create a graphql representation of this directive
+
+        :return: a string with the graphql representation of this directive
+        """
         builder = f"@{self.name}"
         if self.var_name_to_var_ref:
             builder += "("
