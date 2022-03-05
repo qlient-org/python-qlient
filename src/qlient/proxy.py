@@ -148,6 +148,7 @@ class OperationServiceProxy(abc.ABC):
         """
         return self[key]
 
+    # skipcq: PYL-R1710
     def __getitem__(self, key: str) -> OperationProxy:
         """Return the OperationProxy for the given key.
 

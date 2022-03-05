@@ -441,6 +441,7 @@ class Fields:
         if isinstance(other, cls):
             args = [*self.selected_fields, *other.selected_fields]
             return cls(*args)
+        raise TypeError(f"Can not add {other} to {self}")
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
