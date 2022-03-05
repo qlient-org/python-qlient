@@ -50,4 +50,7 @@ class Schema:
     def __repr__(self) -> str:
         """Return a more detailed string representation of the schema instance"""
         class_name = self.__class__.__name__
-        return f"<{class_name}(query_type={self.query_type}, mutation_type={self.mutation_type}, subscription_type={self.subscription_type})>"
+        return f"<{class_name}(" \
+               f"query_type={self.query_type}, " \
+               f"mutation_type={self.mutation_type}, " \
+               f"subscription_type={self.subscription_type})>"
