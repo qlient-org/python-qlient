@@ -279,12 +279,21 @@ class PreparedField:
         self.prepare_sub_fields(schema, sub_fields)
 
     def prepare_name(self, name: Optional[str], alias: Optional[str]):
+        """Method to prepare the name including alias of this field
+
+        :param name: holds the name of this field
+        :param alias: holds an alias of this field
+        """
         if not name:
             raise ValueError("Directive name must have a value.")
         self.name = name
         self.alias = alias
 
     def prepare_type_checking(self, parent: SchemaType):
+        """Method to prepare this field for type checking.
+
+        :param parent: holds the schema type of the parent field
+        """
         if not self.name:
             raise ValueError(f"Name must be set before calling `{self.prepare_type_checking.__name__}`")
         schema_field_type = parent.field_name_to_field.get(self.name)
@@ -293,11 +302,21 @@ class PreparedField:
         self.schema_field = schema_field_type
 
     def prepare_directive(self, schema: Schema, directive: Optional[Directive]):
+        """Method to prepare the directive of this field
+
+        :param schema: holds the schema to used (needed to prepare the directive)
+        :param directive: holds the actual directive to be prepared
+        """
         if directive is None:
             return
         self.directive = directive.prepare(schema)
 
     def prepare_sub_fields(self, schema: Schema, sub_fields: Optional["Fields"]):
+        """Method to prepare the subfields selection
+
+        :param schema: holds the schema that is being used by the client
+        :param sub_fields: holds the selected subfields
+        """
         if sub_fields is None:
             return
         new_parent = self.schema_field.type.leaf_type
