@@ -22,6 +22,13 @@ logger = logging.getLogger("qlient")
 
 
 class Backend(abc.ABC):
+    """Abstract base class for all graphql backend.
+
+    In order to create your own custom graphql backend you must overwrite the `execute_query`
+    method down below.
+
+    This is useful in cases where your backend is not typically reachable via http.
+    """
 
     @abc.abstractmethod
     def execute_query(
@@ -32,6 +39,19 @@ class Backend(abc.ABC):
             context: GraphQLContext = None,
             root: GraphQLRoot = None,
     ) -> GraphQLReturnType:
+        """Abstract method to execute a query on this backend.
+
+        Keep in mind that this method is synchronous.
+        If you want to create an async backend, make sure that the `execute_query` method
+        returns a result and not a Promise.
+
+        :param query: holds the graphql query
+        :param variables: optional, holds variables that are mentioned in the query
+        :param operation_name: optional, holds the name of this specific operation
+        :param context: optional, holds a graphql context
+        :param root: optional, holds a root value for this query
+        :return: the result of the graphql backend
+        """
         raise NotImplementedError
 
     @property
@@ -50,6 +70,10 @@ class Backend(abc.ABC):
 
 
 class HTTPBackend(Backend):
+    """A backend implementation that communicates with a http server.
+
+    The HTTPBackend uses pythons requests package under the hood for making requests.
+    """
 
     def __init__(
             self,
@@ -69,7 +93,7 @@ class HTTPBackend(Backend):
             context: GraphQLContext = None,
             root: GraphQLRoot = None,
     ) -> GraphQLReturnType:
-        """Send a query to the graphql endpoint
+        """Send a query to the http graphql backend
 
         :param query: holds the query
         :param variables: holds variables that should be sent with in the query
@@ -95,6 +119,10 @@ class HTTPBackend(Backend):
 
     @property
     def cache_key(self) -> str:
+        """The http backend uses the http server uri as the unique cache key.
+
+        :return: the endpoint where the graphql server is running.
+        """
         return self.endpoint
 
     def __str__(self) -> str:
