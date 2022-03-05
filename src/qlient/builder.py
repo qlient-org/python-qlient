@@ -166,6 +166,11 @@ class PreparedDirective:
 
 
 class Field:
+    """Class to create a field in the selection.
+
+    Use this class for more customization.
+    If you only make a simple selection, I highly recommend only using the Fields class.
+    """
 
     def __init__(
             self,
@@ -196,6 +201,12 @@ class Field:
         raise TypeError(f"Can not handle type `{type(other)}`")
 
     def prepare(self, parent: SchemaType, schema: Schema) -> "PreparedField":
+        """Method to convert this field into a PreparedField
+
+        :param parent: holds the parent of this Field
+        :param schema: holds the schema that should be used for validation
+        :return: a PreparedField
+        """
         p = PreparedField()
         p.prepare(
             parent=parent,
@@ -218,6 +229,11 @@ class Field:
 
 
 class PreparedField:
+    """Class that represents a PreparedField.
+
+    This means that there should be no more changes made to this field.
+    """
+
     def __init__(self):
         # the graphql schema field type
         self.schema_field: Optional[SchemaField] = None
@@ -246,6 +262,16 @@ class PreparedField:
             sub_fields: Optional[Any] = None,
             variables: Optional[Dict[str, Any]] = None,
     ):
+        """Method to prepare this instance
+
+        :param parent: holds the parent schema type of this field
+        :param schema: holds the schema that should be used for validation
+        :param name: holds the name of this explicit field
+        :param alias: holds an alias that should be used for this field
+        :param directive: holds a directive that should be used on this field
+        :param sub_fields: holds a selection of sub_fields for this field
+        :param variables: holds input variables for this field
+        """
         self.prepare_name(name, alias)
         self.prepare_type_checking(parent)
         self.prepare_directive(schema, directive)
