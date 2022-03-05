@@ -1,4 +1,4 @@
-""" This file contains all qlient specific exceptions
+"""This file contains all qlient specific exceptions
 
 :author: Daniel Seifert
 :created: 12.09.2021
@@ -7,11 +7,11 @@ from typing import Dict
 
 
 class QlientException(Exception):
-    """ Base class for qlient exceptions """
+    """Base class for qlient exceptions"""
 
 
 class SchemaException(QlientException):
-    """ Indicates that something is wrong regarding the graphql schema """
+    """Indicates that something is wrong regarding the graphql schema"""
 
     def __init__(self, schema: Dict, *args):
         self.schema: Dict = schema
@@ -19,15 +19,15 @@ class SchemaException(QlientException):
 
 
 class SchemaParseException(SchemaException):
-    """ This exception gets thrown when the parser was unable to parse the graphql schema """
+    """This exception gets thrown when the parser was unable to parse the graphql schema"""
 
 
 class NoTypesFound(SchemaParseException):
-    """ Indicates that the schema does not have any types defined """
+    """Indicates that the schema does not have any types defined"""
 
 
 class SchemaDetectionException(QlientException):
-    """ Indicates a failure in detecting the schema provider """
+    """Indicates a failure in detecting the schema provider"""
 
     def __init__(self, location: str, *args):
         self.location: str = location
@@ -35,4 +35,4 @@ class SchemaDetectionException(QlientException):
 
 
 class UnsupportedFieldException(QlientException):
-    """ Indicates that an unsupported field was given as input """
+    """Indicates that an unsupported field was given as input"""

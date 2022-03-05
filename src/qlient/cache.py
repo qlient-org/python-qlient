@@ -1,4 +1,4 @@
-""" This file contains different caching mechanisms for the qlient library
+"""This file contains different caching mechanisms for the qlient library
 
 :author: Daniel Seifert
 :created: 09.09.2021
@@ -24,7 +24,7 @@ logger = logging.getLogger("qlient")
 
 
 class Cache(collections.abc.MutableMapping):
-    """ Base class for caching """
+    """Base class for caching """
 
     def __setitem__(self, url: str, schema: RawSchema):
         raise NotImplementedError()
@@ -121,7 +121,7 @@ class SqliteCache(Cache):
             path: Optional[str] = None,
             expires_in: Union[int, datetime.timedelta] = ONE_HOUR
     ):
-        """ Initialize a new sqlite cache
+        """Initialize a new sqlite cache
 
         :param path: holds the path of the sqlite db
         :param expires_in: holds either the amount of seconds when it expires or a datetime.timedelta instance

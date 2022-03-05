@@ -1,4 +1,4 @@
-""" This file contains the different transports
+"""This file contains the different transports
 
 :author: Daniel Seifert
 :created: 09.09.2021
@@ -37,7 +37,7 @@ class Backend(abc.ABC):
     @property
     @abc.abstractmethod
     def cache_key(self) -> str:
-        """ A key that uniquely identifies the schema for a specific backend
+        """A key that uniquely identifies the schema for a specific backend
 
         For example this can be a unique url or hostname.
         Or even a static key if the schema remains the same for the backend.
@@ -69,7 +69,7 @@ class HTTPBackend(Backend):
             context: GraphQLContext = None,
             root: GraphQLRoot = None,
     ) -> GraphQLReturnType:
-        """ Send a query to the graphql endpoint
+        """Send a query to the graphql endpoint
 
         :param query: holds the query
         :param variables: holds variables that should be sent with in the query

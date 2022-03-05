@@ -1,4 +1,4 @@
-""" This file contains the query builder and fields
+"""This file contains the query builder and fields
 
 :author: Daniel Seifert
 :created: 13.01.2022
@@ -346,7 +346,7 @@ class Fields:
         return item in self.selected_fields
 
     def __and__(self, other) -> "Fields":
-        """ Synthetic sugar method which essentially just does the __add__
+        """Synthetic sugar method which essentially just does the __add__
 
         :param other: holds the other instance to add to this instance
         :return: a new Fields instance with the added properties
@@ -354,7 +354,7 @@ class Fields:
         return self.__add__(other)
 
     def __add__(self, other) -> "Fields":
-        """ Add another object to this fields
+        """Add another object to this fields
 
         :param other: the object to add
         :return: a new instance of this class with the added fields

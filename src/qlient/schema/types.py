@@ -1,4 +1,4 @@
-""" This file contains the graphql schema class
+"""This file contains the graphql schema class
 
 :author: Daniel Seifert
 :created: 09.09.2021
@@ -10,7 +10,7 @@ RawSchema = Dict[str, Any]
 
 
 class Kind(enum.Enum):
-    """ Enum for the Schema Type Kind """
+    """Enum for the Schema Type Kind"""
 
     OBJECT = "OBJECT"
     SCALAR = "SCALAR"
@@ -23,7 +23,7 @@ class Kind(enum.Enum):
 
 
 class TypeRef:
-    """ Represents a basic graphql Type Reference """
+    """Represents a basic graphql Type Reference"""
 
     kind: Optional[Kind]
     name: Optional[str]
@@ -32,7 +32,7 @@ class TypeRef:
 
     @classmethod
     def parse(cls, type_ref: Union["TypeRef", Dict]) -> "TypeRef":
-        """ Parse a single type reference
+        """Parse a single type reference
 
         :param type_ref: holds the type reference to parse
         :return: the parsed type ref
@@ -45,7 +45,7 @@ class TypeRef:
 
     @classmethod
     def parse_list(cls, type_refs: Optional[List[Union["TypeRef", Dict]]]) -> List["TypeRef"]:
-        """ Parse a list of type_refs
+        """Parse a list of type_refs
 
         :param type_refs: holds the type_ref list to parse
         :return: a list of type_refs
@@ -68,11 +68,11 @@ class TypeRef:
         self.type: Optional["Type"] = None  # skipcq: PYL-W0622
 
     def __str__(self) -> str:
-        """ Return a simple string representation of the type ref instance """
+        """Return a simple string representation of the type ref instance"""
         return repr(self)
 
     def __repr__(self) -> str:
-        """ Return a more detailed string representation of the type ref instance """
+        """Return a more detailed string representation of the type ref instance"""
         class_name = self.__class__.__name__
         return f"<{class_name}(kind=`{self.kind.name}`, name=`{self.name}`, ofType={self.of_type_ref})>"
 
@@ -85,7 +85,7 @@ class TypeRef:
         return representation
 
     def infer_type_refs(self, types_dict: Dict[str, "Type"]):
-        """ Method to recursively infer types down to the deepest type level
+        """Method to recursively infer types down to the deepest type level
 
         :param types_dict: holds the mapping of type name to type
         """
@@ -95,7 +95,7 @@ class TypeRef:
 
     @property
     def graphql_representation(self) -> str:
-        """ Property for the graphql type representation
+        """Property for the graphql type representation
 
         See docstring of :ref:`__gql__` for more information
 
@@ -105,7 +105,7 @@ class TypeRef:
 
     @property
     def leaf_type_name(self) -> Optional[str]:
-        """ Property to return the name of the very last (leaf) `of_type`
+        """Property to return the name of the very last (leaf) `of_type`
 
         As long as the `of_type` property is not None, it will call the `leaf_type_name` property of the `of_type`.
 
@@ -115,7 +115,7 @@ class TypeRef:
 
     @property
     def leaf_type(self) -> Optional["Type"]:
-        """ Property to return the very last (leaf) `of_type` type.
+        """Property to return the very last (leaf) `of_type` type.
 
         :return: The type of the very last (leaf) `of_type`
         """
@@ -123,7 +123,7 @@ class TypeRef:
 
 
 class Input:
-    """ Represents a basic graphql Input """
+    """Represents a basic graphql Input"""
 
     name: Optional[str]
     description: Optional[str]
@@ -132,7 +132,7 @@ class Input:
 
     @classmethod
     def parse(cls, input_value: Union["Input", Dict]) -> "Input":
-        """ Parse a single input value
+        """Parse a single input value
 
         :param input_value: holds the input value to parse
         :return: the parsed input
@@ -145,7 +145,7 @@ class Input:
 
     @classmethod
     def parse_list(cls, inputs: Optional[List[Union["Input", Dict]]]) -> List["Input"]:
-        """ Parse a list of inputs
+        """Parse a list of inputs
 
         :param inputs: holds the input list to parse
         :return: a list of inputs
@@ -170,17 +170,17 @@ class Input:
         self.default_value = defaultValue
 
     def __str__(self) -> str:
-        """ Return a simple string representation of the input instance """
+        """Return a simple string representation of the input instance"""
         return repr(self)
 
     def __repr__(self) -> str:
-        """ Return a more detailed string representation of the input instance """
+        """Return a more detailed string representation of the input instance"""
         class_name = self.__class__.__name__
         return f"<{class_name}(name=`{self.name}`, type={self.type})>"
 
 
 class Directive:
-    """ Represents a basic graphql Directive """
+    """Represents a basic graphql Directive"""
 
     name: Optional[str]
     description: Optional[str]
@@ -189,7 +189,7 @@ class Directive:
 
     @classmethod
     def parse(cls, directive: Union["Directive", Dict]) -> "Directive":
-        """ Parse a single directive
+        """Parse a single directive
 
         :param directive: holds the directive to parse
         :return: the parsed directive
@@ -202,7 +202,7 @@ class Directive:
 
     @classmethod
     def parse_list(cls, directives: Optional[List[Union["Directive", Dict]]]) -> List["Directive"]:
-        """ Parse a list of directives
+        """Parse a list of directives
 
         :param directives: holds the directive list to parse
         :return: a list of directives
@@ -227,24 +227,24 @@ class Directive:
 
     @property
     def arg_name_to_arg(self) -> Dict[str, Input]:
-        """ Property for mapping the argument name to the argument for faster lookups
+        """Property for mapping the argument name to the argument for faster lookups
 
         :return: A dictionary where the argument name is mapped to the argument itself
         """
         return {arg.name: arg for arg in self.args}
 
     def __str__(self) -> str:
-        """ Return a simple string representation of the directive instance """
+        """Return a simple string representation of the directive instance"""
         return repr(self)
 
     def __repr__(self) -> str:
-        """ Return a more detailed string representation of the directive instance """
+        """Return a more detailed string representation of the directive instance"""
         class_name = self.__class__.__name__
         return f"<{class_name}(name=`{self.name}`, locations={self.locations})>"
 
 
 class Field:
-    """ Represents a basic graphql Field """
+    """Represents a basic graphql Field"""
 
     name: Optional[str]
     description: Optional[str]
@@ -255,7 +255,7 @@ class Field:
 
     @classmethod
     def parse(cls, field: Union["Field", Dict]) -> "Field":
-        """ Parse a single field
+        """Parse a single field
 
         :param field: holds the field to parse
         :return: the parsed field
@@ -268,7 +268,7 @@ class Field:
 
     @classmethod
     def parse_list(cls, fields: Optional[List[Union["Field", Dict]]]) -> List["Field"]:
-        """ Parse a list of fields
+        """Parse a list of fields
 
         :param fields: holds the field list to parse
         :return: a list of fields
@@ -297,17 +297,17 @@ class Field:
         self.deprecation_reason: Optional[str] = deprecationReason
 
     def __str__(self) -> str:
-        """ Return a simple string representation of the field instance """
+        """Return a simple string representation of the field instance"""
         return repr(self)
 
     def __repr__(self) -> str:
-        """ Return a more detailed string representation of the field instance """
+        """Return a more detailed string representation of the field instance"""
         class_name = self.__class__.__name__
         return f"<{class_name}(name=`{self.name}`, type={self.type})>"
 
     @property
     def arg_name_to_arg(self) -> Dict[str, Input]:
-        """ Property for mapping the argument name to the argument for faster lookups
+        """Property for mapping the argument name to the argument for faster lookups
 
         :return: A dictionary where the argument name is mapped to the argument itself
         """
@@ -315,7 +315,7 @@ class Field:
 
     @property
     def output_type_name(self) -> Optional[str]:
-        """ Property to return the output type name (which is the leaf type name)
+        """Property to return the output type name (which is the leaf type name)
 
         The output type name can only be looked up if the `self.type` property is not None
 
@@ -327,11 +327,11 @@ class Field:
 
 
 class EnumValue:
-    """ Represents a basic graphql enum value """
+    """Represents a basic graphql enum value """
 
     @classmethod
     def parse(cls, enum_value: Union["EnumValue", Dict]) -> "EnumValue":
-        """ Parse a single field
+        """Parse a single field
 
         :param enum_value: holds the field to parse
         :return: the parsed field
@@ -344,7 +344,7 @@ class EnumValue:
 
     @classmethod
     def parse_list(cls, enum_values: Optional[List[Union["EnumValue", Dict]]]) -> List["EnumValue"]:
-        """ Parse a list of enum values
+        """Parse a list of enum values
 
         :param enum_values: holds the list of enum values to parse
         :return: a list of enum values
@@ -368,17 +368,17 @@ class EnumValue:
         self.deprecation_reason: Optional[str] = deprecationReason
 
     def __str__(self) -> str:
-        """ Return a simple string representation of the enum value instance """
+        """Return a simple string representation of the enum value instance"""
         return repr(self)
 
     def __repr__(self) -> str:
-        """ Return a more detailed string representation of the enum value instance """
+        """Return a more detailed string representation of the enum value instance"""
         class_name = self.__class__.__name__
         return f"<{class_name}(name=`{self.name}`)>"
 
 
 class Type:
-    """ Represents a basic graphql Type """
+    """Represents a basic graphql Type"""
 
     kind: Optional[Kind]
     name: Optional[str]
@@ -391,7 +391,7 @@ class Type:
 
     @classmethod
     def parse(cls, type_value: Union["Type", Dict]) -> "Type":
-        """ Parse a single field
+        """Parse a single field
 
         :param type_value: holds the field to parse
         :return: the parsed field
@@ -423,7 +423,7 @@ class Type:
         self.possible_types: List[TypeRef] = TypeRef.parse_list(possibleTypes)
 
     def infer_types(self, types_dict: Dict[str, "Type"]):
-        """ Method to infer the types for all graphql schema types.
+        """Method to infer the types for all graphql schema types.
 
         This method iterates over each and all fields, input fields, interfaces and possible types to infer
         the `types` of the instance.
@@ -448,7 +448,7 @@ class Type:
 
     @property
     def field_name_to_field(self) -> Dict[str, Field]:
-        """ Property for mapping the field name to the field for faster lookups
+        """Property for mapping the field name to the field for faster lookups
 
         :return: A dictionary where the field name is mapped to the field itself
         """
@@ -458,10 +458,10 @@ class Type:
         }
 
     def __str__(self) -> str:
-        """ Return a simple string representation of the type instance """
+        """Return a simple string representation of the type instance """
         return repr(self)
 
     def __repr__(self) -> str:
-        """ Return a more detailed string representation of the type instance """
+        """Return a more detailed string representation of the type instance """
         class_name = self.__class__.__name__
         return f"<{class_name}(name=`{self.name}`)>"

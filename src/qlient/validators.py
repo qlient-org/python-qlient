@@ -1,4 +1,4 @@
-""" This file contains the validators
+"""This file contains the validators
 
 URL Validator:
 - https://github.com/kvesteri/validators/blob/master/validators/url.py
@@ -100,7 +100,7 @@ URL_PATTERN = re.compile(  # noqa: W605
 
 
 def is_url(value: str) -> bool:
-    """ Validate whether any given value is a valid domain
+    """Validate whether any given value is a valid domain
 
     :param value: holds the value to check
     :return: True if the given value matches the domain pattern defined at the top
@@ -111,7 +111,7 @@ def is_url(value: str) -> bool:
 
 
 def is_local_path(location: str) -> bool:
-    """ Check if the given location is a local path
+    """Check if the given location is a local path
 
     :param location: holds the location of the schema definition
     :return: True if the schema is a local path

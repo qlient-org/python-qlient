@@ -1,4 +1,4 @@
-""" This file contains the graphql schema
+"""This file contains the graphql schema
 
 :author: Daniel Seifert
 :created: 16.09.2021
@@ -15,7 +15,7 @@ logger = logging.getLogger("qlient")
 
 
 class Schema:
-    """ Represents a graphql schema """
+    """Represents a graphql schema"""
 
     def __init__(
             self,
@@ -44,10 +44,10 @@ class Schema:
         logger.debug("Schema successfully introspected")
 
     def __str__(self) -> str:
-        """ Return a simple string representation of the schema instance """
+        """Return a simple string representation of the schema instance"""
         return repr(self)
 
     def __repr__(self) -> str:
-        """ Return a more detailed string representation of the schema instance """
+        """Return a more detailed string representation of the schema instance"""
         class_name = self.__class__.__name__
         return f"<{class_name}(query_type={self.query_type}, mutation_type={self.mutation_type}, subscription_type={self.subscription_type})>"
