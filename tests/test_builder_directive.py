@@ -35,7 +35,7 @@ def test_prepared_directive_gql():
     from __base__ import make_test_schema
     my_directive = Directive("include")
     prepared_directive = my_directive.prepare(make_test_schema())
-    assert prepared_directive.__gql__() == f"@include"
+    assert prepared_directive.__gql__() == "@include"
 
 
 def test_prepared_directive_with_variables_gql():
