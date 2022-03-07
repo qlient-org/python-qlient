@@ -122,9 +122,6 @@ def parse_directives(schema: Dict) -> Optional[Dict[str, Directive]]:
         if _directive
     }
 
-    for _directive in directives_dict.values():
-        pass
-
     return directives_dict
 
 
