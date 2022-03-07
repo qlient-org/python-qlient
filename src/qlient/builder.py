@@ -647,9 +647,8 @@ class TypedGQLQueryBuilder:
 
     def variables(self, **kwargs) -> Dict[str, Any]:
         for key in kwargs:
-            if self.settings.validate_variables:
-                if key not in self.op_inputs:
-                    raise KeyError(f"Input `{key}` not supported for {self.op_type} operation `{self.op_name}`")
+            if self.settings.validate_variables and key not in self.op_inputs:
+                raise KeyError(f"Input `{key}` not supported for {self.op_type} operation `{self.op_name}`")
             _input: SchemaInput = self.op_inputs[key]
             prefixed_key = f"${key}"
             self._operation_variables[prefixed_key] = _input.type.__gql__()
