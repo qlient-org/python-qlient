@@ -24,7 +24,7 @@ logger = logging.getLogger("qlient")
 
 
 class Cache(collections.abc.MutableMapping):
-    """Base class for caching """
+    """Base class for caching"""
 
     def __setitem__(self, url: str, schema: RawSchema):
         raise NotImplementedError()

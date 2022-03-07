@@ -327,7 +327,7 @@ class Field:
 
 
 class EnumValue:
-    """Represents a basic graphql enum value """
+    """Represents a basic graphql enum value"""
 
     @classmethod
     def parse(cls, enum_value: Union["EnumValue", Dict]) -> "EnumValue":
@@ -458,10 +458,10 @@ class Type:
         }
 
     def __str__(self) -> str:
-        """Return a simple string representation of the type instance """
+        """Return a simple string representation of the type instance"""
         return repr(self)
 
     def __repr__(self) -> str:
-        """Return a more detailed string representation of the type instance """
+        """Return a more detailed string representation of the type instance"""
         class_name = self.__class__.__name__
         return f"<{class_name}(name=`{self.name}`)>"
