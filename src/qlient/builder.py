@@ -323,6 +323,18 @@ class PreparedField:
         self.sub_fields = sub_fields.prepare(new_parent, schema)
 
     def prepare_input(self, variables: Optional[Dict[str, Any]]):
+        """Method to prepare the field inputs
+
+        Each Field can have its own input values.
+        To make this happen and allow for deep inputs like dictionaries or lists,
+        they must be registered at operation level.
+        In order to do so, they must be referenced.
+
+        So this method iterates over all given variables and creates unique references for them.
+        It then maps the reference to the value.
+
+        :param variables: holds a dictionary where the name of the variable is mapped to its value
+        """
         if not self.name:
             raise ValueError(f"Name must be set before calling `{self.prepare_input.__name__}`")
         if self.schema_field is None:
@@ -345,20 +357,32 @@ class PreparedField:
         self.var_ref_to_var_input = ref_to_type
 
     @property
-    def rec_var_ref_to_var_input_type_ref(self) -> Dict[str, SchemaTypeRef]:
+    def reduced_var_ref_to_var_input_type_ref(self) -> Dict[str, SchemaTypeRef]:
+        """Property to generate a flattened var_ref_to_var_input_type map.
+
+        :return: a flattened dictionary with var ref to var input type ref
+        """
         ref_to_input_type_ref = self.var_ref_to_var_input.copy()
         if self.sub_fields is not None:
             ref_to_input_type_ref.update(self.sub_fields.var_ref_to_var_type)
         return ref_to_input_type_ref
 
     @property
-    def rec_var_ref_to_var_value(self) -> Dict[str, Any]:
+    def reduced_var_ref_to_var_value(self) -> Dict[str, Any]:
+        """Property to generate a flattened var_ref_to_var_value map.
+
+        :return: a flattened dictionary with var ref to var value
+        """
         ref_to_value = self.var_ref_to_var_value.copy()
         if self.sub_fields is not None:
             ref_to_value.update(self.sub_fields.var_ref_to_var_value)
         return ref_to_value
 
     def __gql__(self) -> str:
+        """Method to create a graphql representation of this field
+
+        :return: a string with the graphql representation of this field
+        """
         builder = f"{f'{self.alias}: ' if self.alias else ''}{self.name}"
         if self.var_name_to_var_ref:
             builder += "("
@@ -383,12 +407,23 @@ class PreparedField:
 
 
 class Fields:
+    """Class to create a selection of multiple fields
+
+    Use this class to create a selection of multiple fields or combine multiple instances.
+    """
+
     @classmethod
     def parse_args(
             cls,
             args: Tuple[Any],
             fields: Dict[int, Field] = None,
     ) -> Dict[int, Field]:
+        """Class method to parse given *args
+
+        :param args: holds the given *args
+        :param fields: optional, holds a dictionary of fields parsed so far, empty dict if None
+        :return: a dictionary mapped with the hash of the field to the Field itself.
+        """
         fields = fields or {}
         for arg in args:
             if isinstance(arg, str):
@@ -417,6 +452,12 @@ class Fields:
             kwargs: Dict[Any, Any],
             fields: Dict[int, Field] = None,
     ) -> Dict[int, Field]:
+        """Class method to parse given **kwargs
+
+        :param kwargs: holds the given **kwargs
+        :param fields: optional, holds a dictionary of fields parsed so far, empty dict if None
+        :return: a dictionary mapped with the hash of the field to the Field itself.
+        """
         fields = fields or {}
         for key, value in kwargs.items():
             field = Field(key, _sub_fields=cls(value))
@@ -474,6 +515,12 @@ class Fields:
         return hash(tuple(self.selected_fields))
 
     def prepare(self, parent: SchemaType, schema: Schema) -> "PreparedFields":
+        """Method to convert this fields instance into a PreparedFields instance
+
+        :param parent: holds the parent of this Field
+        :param schema: holds the schema that should be used for validation
+        :return: a PreparedFields instance
+        """
         p = PreparedFields()
         p.prepare(
             parent=parent,
@@ -484,6 +531,11 @@ class Fields:
 
 
 class PreparedFields:
+    """Class that represents a prepared version of the Fields class.
+
+    A prepared class should not be changed after preparation.
+    """
+
     def __init__(self):
         # the prepared fields
         self.fields: Optional[List[PreparedField]] = None
@@ -494,9 +546,22 @@ class PreparedFields:
             schema: Schema,
             fields: Optional[List[Field]] = None
     ):
+        """Method to prepare this instance after initialization.
+
+        :param parent: holds the parent's field schema type
+        :param schema: holds the schema that should be used for validation and type lookups.
+        :param fields: holds the list of fields that were selected
+        """
         self.prepare_fields(parent, schema, fields)
 
     def prepare_fields(self, parent: SchemaType, schema: Schema, fields: Optional[List[Fields]]):
+        """Method to turn all selected fields into prepared fields.
+
+        :param parent: holds this fields instance parents field schema type.
+        :param schema: holds the schema that should be used for validation and type lookups.
+        :param fields: holds a list of fields that should be prepared
+        """
+        fields = fields if fields is not None else []
         self.fields = [
             field.prepare(parent, schema)
             for field in fields
@@ -504,19 +569,31 @@ class PreparedFields:
 
     @property
     def var_ref_to_var_type(self) -> Dict[str, SchemaTypeRef]:
+        """Property to generate a flattened var_ref_to_var_input_type map.
+
+        :return: a flattened dictionary with var ref to var input type ref
+        """
         ref_to_type = {}
         for field in self.fields:
-            ref_to_type.update(field.rec_var_ref_to_var_input_type_ref)
+            ref_to_type.update(field.reduced_var_ref_to_var_input_type_ref)
         return ref_to_type
 
     @property
     def var_ref_to_var_value(self) -> Dict[str, Any]:
+        """Property to generate a flattened var_ref_to_var_value map.
+
+        :return: a flattened dictionary with var ref to var value
+        """
         ref_to_value = {}
         for field in self.fields:
-            ref_to_value.update(field.rec_var_ref_to_var_value)
+            ref_to_value.update(field.reduced_var_ref_to_var_value)
         return ref_to_value
 
     def __gql__(self) -> str:
+        """Method to create a graphql representation of this fields instance
+
+        :return: a string with the graphql representation of this fields instance
+        """
         return " ".join(
             field.__gql__()
             for field in self.fields
