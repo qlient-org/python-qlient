@@ -61,11 +61,11 @@ class InMemoryCache(Cache):
         return self.__memory__.__getitem__(url)
 
     def __len__(self) -> int:
-        logger.debug(f"In-Memory counting records")
+        logger.debug("In-Memory counting records")
         return self.__memory__.__len__()
 
     def __iter__(self) -> Iterator[Tuple[str, RawSchema]]:
-        logger.debug(f"In-Memory iterating records")
+        logger.debug("In-Memory iterating records")
         return self.__memory__.__iter__()
 
 
@@ -219,7 +219,7 @@ class SqliteCache(Cache):
                 yield url, decoded_schema
 
     def delete_expired_records(self):
-        logger.debug(f"Sqlite deleting expired records")
+        logger.debug("Sqlite deleting expired records")
         with self.connect() as connection:
             cursor = connection.cursor()
             expiry = int(time.time()) - self.expires_in.seconds
