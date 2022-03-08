@@ -1,4 +1,4 @@
-""" This file contains the operation proxies
+"""This file contains the operation proxies
 
 :author: Daniel Seifert
 :created: 16.09.2021
@@ -14,7 +14,7 @@ from qlient.types import GraphQLVariables, GraphQLQuery, GraphQLOperation, Graph
 
 
 class OperationProxy(abc.ABC):
-    """ Base class for all graphql operations """
+    """Base class for all graphql operations"""
 
     def __init__(self, proxy: "OperationServiceProxy", operation_field: Field):
         self._proxy: "OperationServiceProxy" = proxy
@@ -56,19 +56,19 @@ class OperationProxy(abc.ABC):
         )
 
     def __str__(self) -> str:
-        """ Return a simple string representation of this instance """
+        """Return a simple string representation of this instance"""
         class_name = self.__class__.__name__
         return f"{class_name}(`{self.operation_field.name}`)"
 
     def __repr__(self) -> str:
-        """ Return a detailed string representation of this instance """
+        """Return a detailed string representation of this instance"""
         class_name = self.__class__.__name__
         return f"{class_name}(field={self.operation_field})"
 
     @property
     @abc.abstractmethod
     def operation_type(self) -> str:
-        """ Return the operation type.
+        """Return the operation type.
 
         :return: Either query, mutation or subscription (Depends on the class name)
         """
@@ -100,7 +100,7 @@ class OperationProxy(abc.ABC):
 
 
 class QueryProxy(OperationProxy):
-    """ Represents the operation proxy for queries """
+    """Represents the operation proxy for queries"""
 
     @property
     def operation_type(self) -> str:
@@ -108,7 +108,7 @@ class QueryProxy(OperationProxy):
 
 
 class MutationProxy(OperationProxy):
-    """ Represents the operation proxy for mutations """
+    """Represents the operation proxy for mutations"""
 
     @property
     def operation_type(self) -> str:
@@ -116,7 +116,7 @@ class MutationProxy(OperationProxy):
 
 
 class SubscriptionProxy(OperationProxy):
-    """ Represents the operation proxy for subscriptions """
+    """Represents the operation proxy for subscriptions"""
 
     @property
     def operation_type(self) -> str:
@@ -124,14 +124,14 @@ class SubscriptionProxy(OperationProxy):
 
 
 class OperationServiceProxy(abc.ABC):
-    """ Base class for all service proxies """
+    """Base class for all service proxies"""
 
     @abc.abstractmethod
     def get_bindings(self) -> Dict[str, OperationProxy]:
-        """ Abstract base method to get the service bindings """
+        """Abstract base method to get the service bindings"""
 
     def __init__(self, client):
-        """ Instantiate a new instance of ServiceProxy """
+        """Instantiate a new instance of ServiceProxy"""
         from qlient.client import Client  # type hint here due to circular dependency
         self.client: Client = client
         self.operations: Dict[str, OperationProxy] = self.get_bindings()
@@ -140,7 +140,7 @@ class OperationServiceProxy(abc.ABC):
         return key in self.operations
 
     def __getattr__(self, key: str) -> OperationProxy:
-        """ Return the OperationProxy for the given key.
+        """Return the OperationProxy for the given key.
 
         :param key: holds the operation key
         :return: the according OperationProxy
@@ -148,8 +148,9 @@ class OperationServiceProxy(abc.ABC):
         """
         return self[key]
 
+    # skipcq: PYL-R1710
     def __getitem__(self, key: str) -> OperationProxy:
-        """ Return the OperationProxy for the given key.
+        """Return the OperationProxy for the given key.
 
         :param key: holds the operation key
         :return: the according OperationProxy
@@ -164,24 +165,24 @@ class OperationServiceProxy(abc.ABC):
         raise AttributeError(f"No operation found for key {key}")
 
     def __iter__(self):
-        """ Return iterator for the services and their callables. """
+        """Return iterator for the services and their callables."""
         return iter(self.operations.items())
 
     def __dir__(self) -> Iterable[str]:
-        """ Return the names of the operations. """
+        """Return the names of the operations."""
         return list(itertools.chain(dir(super()), self.operations))
 
     def __call__(
             self,
             query: GraphQLQuery,
+            *,
             operation: GraphQLOperation = None,
             variables: GraphQLVariables = None,
             context: GraphQLContext = None,
             root: GraphQLRoot = None,
-            *args,
             **kwargs
     ) -> GraphQLResponse:
-        """ Send a query to the graphql server """
+        """Send a query to the graphql server"""
         response_body = self.client.backend.execute_query(query, variables, operation, context, root)
         return GraphQLResponse(
             response=response_body,
@@ -191,12 +192,12 @@ class OperationServiceProxy(abc.ABC):
         )
 
     def __str__(self) -> str:
-        """ Return a simple string representation of this instance """
+        """Return a simple string representation of this instance"""
         class_name = self.__class__.__name__
         return f"{class_name}(bindings={len(self.operations)})"
 
     def __repr__(self) -> str:
-        """ Return a detailed string representation of this instance """
+        """Return a detailed string representation of this instance"""
         class_name = self.__class__.__name__
         return f"{class_name}(bindings={self.supported_bindings})"
 
@@ -206,10 +207,10 @@ class OperationServiceProxy(abc.ABC):
 
 
 class QueryServiceProxy(OperationServiceProxy):
-    """ Represents the query service """
+    """Represents the query service"""
 
     def get_bindings(self) -> Dict[str, OperationProxy]:
-        """ Method to get the query service bindings """
+        """Method to get the query service bindings"""
         bindings = {}
         if not self.client.schema.query_type:
             return bindings
@@ -220,10 +221,10 @@ class QueryServiceProxy(OperationServiceProxy):
 
 
 class MutationServiceProxy(OperationServiceProxy):
-    """ Represents the mutation service """
+    """Represents the mutation service"""
 
     def get_bindings(self) -> Dict[str, OperationProxy]:
-        """ Method to get the mutation service bindings """
+        """Method to get the mutation service bindings"""
         bindings = {}
         if not self.client.schema.mutation_type:
             return bindings

@@ -1,3 +1,4 @@
+# skipcq: PY-D0003
 def test_parse_schema_types():
     from qlient.schema.parser import parse_types
     from __base__ import raw_schema
@@ -6,6 +7,7 @@ def test_parse_schema_types():
     assert isinstance(types, dict)
 
 
+# skipcq: PY-D0003
 def test_query_type_extraction():
     from qlient.schema.parser import parse_types, extract_query_type
     from qlient.schema.types import Type
@@ -16,6 +18,7 @@ def test_query_type_extraction():
     assert isinstance(query_type, Type)
 
 
+# skipcq: PY-D0003
 def test_mutation_type_extraction():
     from qlient.schema.parser import parse_types, extract_mutation_type
     from __base__ import raw_schema
@@ -25,6 +28,7 @@ def test_mutation_type_extraction():
     assert mutation_type is None
 
 
+# skipcq: PY-D0003
 def test_subscription_type_extraction():
     from qlient.schema.parser import parse_types, extract_subscription_type
     from __base__ import raw_schema
@@ -34,6 +38,7 @@ def test_subscription_type_extraction():
     assert subscription_type is None
 
 
+# skipcq: PY-D0003
 def test_parse_schema_directives():
     from qlient.schema.parser import parse_directives
     from __base__ import raw_schema
@@ -42,6 +47,7 @@ def test_parse_schema_directives():
     assert isinstance(directives, dict)
 
 
+# skipcq: PY-D0003
 def test_empty_parse_result():
     from qlient.schema.parser import ParseResult
     empty_result = ParseResult()
@@ -52,6 +58,7 @@ def test_empty_parse_result():
     assert empty_result.directives is None
 
 
+# skipcq: PY-D0003
 def test_filled_parse_result():
     from qlient.schema.parser import ParseResult
     from qlient.schema.types import Type
@@ -69,6 +76,7 @@ def test_filled_parse_result():
     assert empty_result.directives == {}
 
 
+# skipcq: PY-D0003
 def test_parse_schema():
     from qlient.schema.parser import parse_schema, ParseResult
     from __base__ import raw_schema

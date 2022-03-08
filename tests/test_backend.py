@@ -1,23 +1,33 @@
-from qlient.types import GraphQLQuery, GraphQLVariables, GraphQLOperation, GraphQLContext, GraphQLRoot, \
-    GraphQLReturnType
+from typing import List
+
+import strawberry  # must be installed additionally
+from requests.sessions import Session
+
+from qlient import Client, GraphQLResponse
+from qlient.backend import Backend, HTTPBackend
+from qlient.types import (
+    GraphQLVariables,
+    GraphQLQuery,
+    GraphQLOperation,
+    GraphQLReturnType,
+    GraphQLContext,
+    GraphQLRoot
+)
 
 
+# skipcq: PY-D0003
 def test_http_backend():
-    from qlient.backend import HTTPBackend
-    from requests.sessions import Session
-
     backend = HTTPBackend("https://test.test")
     assert isinstance(backend.session, Session)
     assert backend.session is not Session()
     assert backend.endpoint == "https://test.test"
 
 
+# skipcq: PY-D0003
 def test_custom_backend():
-    from qlient.backend import Backend
-
     class MyBackend(Backend):
         def execute_query(
-                self,
+                self,  # skipcq PYL-R0201
                 query: GraphQLQuery,
                 variables: GraphQLVariables = None,
                 operation_name: GraphQLOperation = None,
@@ -36,22 +46,8 @@ def test_custom_backend():
     assert my_backend.execute_query("foo") == {}
 
 
+# skipcq: PY-D0003
 def test_strawberry_backend():
-    from typing import List
-
-    import strawberry  # must be installed additionally
-
-    from qlient import Client, GraphQLResponse
-    from qlient.backend import Backend
-    from qlient.types import (
-        GraphQLVariables,
-        GraphQLQuery,
-        GraphQLOperation,
-        GraphQLReturnType,
-        GraphQLContext,
-        GraphQLRoot
-    )
-
     @strawberry.type
     class Book:
         title: str

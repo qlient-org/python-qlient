@@ -1,4 +1,4 @@
-""" This file contains the query builder and fields
+"""This file contains the query builder and fields
 
 :author: Daniel Seifert
 :created: 13.01.2022
@@ -17,6 +17,8 @@ from qlient.settings import Settings
 
 
 class Directive:
+    """Class to create a directive on a Field."""
+
     def __init__(
             self,
             _name: str,
@@ -26,6 +28,11 @@ class Directive:
         self.variables = directive_variables
 
     def prepare(self, schema: Schema) -> "PreparedDirective":
+        """Prepare this directive and return a ref:`PreparedDirective`
+
+        :param schema: holds the schema that is currently being used.
+        :return: a PreparedDirective
+        """
         p = PreparedDirective()
         p.prepare(
             schema=schema,
@@ -44,6 +51,11 @@ class Directive:
 
 
 class PreparedDirective:
+    """Class that represents a prepared directive.
+
+    There should be no more changes made on this directive.
+    """
+
     def __init__(self):
         # the graphql schema directive type
         self.schema_directive: Optional[SchemaDirective] = None
@@ -62,11 +74,25 @@ class PreparedDirective:
             name: Optional[str] = None,
             variables: Optional[Dict[str, Any]] = None,
     ):
+        """Method to prepare this directive after it has been initialized.
+
+        :param schema: holds the client's schema that is currently being used.
+        :param name: holds the name of this directive
+        :param variables: holds variables for this directive
+        """
         self.prepare_name(name)
         self.prepare_type_checking(schema)
         self.prepare_input(variables)
 
     def prepare_type_checking(self, schema: Schema):
+        """Method to prepare for type checking.
+
+        This is important to make sure that the directive is known.
+
+        Make sure that you have called `prepare_name` before calling this method.
+
+        :param schema: holds the client's schema that is currently being used
+        """
         if not self.name:
             raise ValueError(f"Name must be set before calling `{self.prepare_type_checking.__name__}`")
         schema_directive = schema.directives_registry.get(self.name)
@@ -75,11 +101,25 @@ class PreparedDirective:
         self.schema_directive = schema_directive
 
     def prepare_name(self, name: Optional[str]):
+        """Method to prepare the name of this directive
+
+        :param name: holds the name of this directive
+        """
         if not name:
             raise ValueError("Directive name must have a value.")
         self.name = name
 
     def prepare_input(self, variables: Optional[Dict[str, Any]]):
+        """Method to prepare the directive inputs (variables)
+
+        This iterates over all given inputs and registers them for further usage.
+        To ensure a unique variables key, the reference key is prefixed with the name and id of this directive.
+
+        If there is an input given that is not part of this directive it will raise a ValueError.
+
+        :param variables: holds the inputs for this directive.
+        :raises ValueError: when a given input name is not part of this directive.
+        """
         if not self.name:
             raise ValueError(f"Name must be set before calling `{self.prepare_input.__name__}`")
         if self.schema_directive is None:
@@ -102,6 +142,10 @@ class PreparedDirective:
         self.var_ref_to_var_input = ref_to_type
 
     def __gql__(self) -> str:
+        """Method to create a graphql representation of this directive
+
+        :return: a string with the graphql representation of this directive
+        """
         builder = f"@{self.name}"
         if self.var_name_to_var_ref:
             builder += "("
@@ -122,6 +166,11 @@ class PreparedDirective:
 
 
 class Field:
+    """Class to create a field in the selection.
+
+    Use this class for more customization.
+    If you only make a simple selection, I highly recommend only using the Fields class.
+    """
 
     def __init__(
             self,
@@ -152,6 +201,12 @@ class Field:
         raise TypeError(f"Can not handle type `{type(other)}`")
 
     def prepare(self, parent: SchemaType, schema: Schema) -> "PreparedField":
+        """Method to convert this field into a PreparedField
+
+        :param parent: holds the parent of this Field
+        :param schema: holds the schema that should be used for validation
+        :return: a PreparedField
+        """
         p = PreparedField()
         p.prepare(
             parent=parent,
@@ -174,6 +229,11 @@ class Field:
 
 
 class PreparedField:
+    """Class that represents a PreparedField.
+
+    This means that there should be no more changes made to this field.
+    """
+
     def __init__(self):
         # the graphql schema field type
         self.schema_field: Optional[SchemaField] = None
@@ -202,6 +262,16 @@ class PreparedField:
             sub_fields: Optional[Any] = None,
             variables: Optional[Dict[str, Any]] = None,
     ):
+        """Method to prepare this instance
+
+        :param parent: holds the parent schema type of this field
+        :param schema: holds the schema that should be used for validation
+        :param name: holds the name of this explicit field
+        :param alias: holds an alias that should be used for this field
+        :param directive: holds a directive that should be used on this field
+        :param sub_fields: holds a selection of sub_fields for this field
+        :param variables: holds input variables for this field
+        """
         self.prepare_name(name, alias)
         self.prepare_type_checking(parent)
         self.prepare_directive(schema, directive)
@@ -209,12 +279,21 @@ class PreparedField:
         self.prepare_sub_fields(schema, sub_fields)
 
     def prepare_name(self, name: Optional[str], alias: Optional[str]):
+        """Method to prepare the name including alias of this field
+
+        :param name: holds the name of this field
+        :param alias: holds an alias of this field
+        """
         if not name:
             raise ValueError("Directive name must have a value.")
         self.name = name
         self.alias = alias
 
     def prepare_type_checking(self, parent: SchemaType):
+        """Method to prepare this field for type checking.
+
+        :param parent: holds the schema type of the parent field
+        """
         if not self.name:
             raise ValueError(f"Name must be set before calling `{self.prepare_type_checking.__name__}`")
         schema_field_type = parent.field_name_to_field.get(self.name)
@@ -223,17 +302,39 @@ class PreparedField:
         self.schema_field = schema_field_type
 
     def prepare_directive(self, schema: Schema, directive: Optional[Directive]):
+        """Method to prepare the directive of this field
+
+        :param schema: holds the schema to used (needed to prepare the directive)
+        :param directive: holds the actual directive to be prepared
+        """
         if directive is None:
             return
         self.directive = directive.prepare(schema)
 
     def prepare_sub_fields(self, schema: Schema, sub_fields: Optional["Fields"]):
+        """Method to prepare the subfields selection
+
+        :param schema: holds the schema that is being used by the client
+        :param sub_fields: holds the selected subfields
+        """
         if sub_fields is None:
             return
         new_parent = self.schema_field.type.leaf_type
         self.sub_fields = sub_fields.prepare(new_parent, schema)
 
     def prepare_input(self, variables: Optional[Dict[str, Any]]):
+        """Method to prepare the field inputs
+
+        Each Field can have its own input values.
+        To make this happen and allow for deep inputs like dictionaries or lists,
+        they must be registered at operation level.
+        In order to do so, they must be referenced.
+
+        So this method iterates over all given variables and creates unique references for them.
+        It then maps the reference to the value.
+
+        :param variables: holds a dictionary where the name of the variable is mapped to its value
+        """
         if not self.name:
             raise ValueError(f"Name must be set before calling `{self.prepare_input.__name__}`")
         if self.schema_field is None:
@@ -256,20 +357,32 @@ class PreparedField:
         self.var_ref_to_var_input = ref_to_type
 
     @property
-    def rec_var_ref_to_var_input_type_name(self) -> Dict[str, SchemaTypeRef]:
-        ref_to_names = {_ref: _input for _ref, _input in self.var_ref_to_var_input.items()}
+    def reduced_var_ref_to_var_input_type_ref(self) -> Dict[str, SchemaTypeRef]:
+        """Property to generate a flattened var_ref_to_var_input_type map.
+
+        :return: a flattened dictionary with var ref to var input type ref
+        """
+        ref_to_input_type_ref = self.var_ref_to_var_input.copy()
         if self.sub_fields is not None:
-            ref_to_names.update(self.sub_fields.var_ref_to_var_type)
-        return ref_to_names
+            ref_to_input_type_ref.update(self.sub_fields.var_ref_to_var_type)
+        return ref_to_input_type_ref
 
     @property
-    def rec_var_ref_to_var_value(self) -> Dict[str, Any]:
-        ref_to_value = {_ref: _value for _ref, _value in self.var_ref_to_var_value.items()}
+    def reduced_var_ref_to_var_value(self) -> Dict[str, Any]:
+        """Property to generate a flattened var_ref_to_var_value map.
+
+        :return: a flattened dictionary with var ref to var value
+        """
+        ref_to_value = self.var_ref_to_var_value.copy()
         if self.sub_fields is not None:
             ref_to_value.update(self.sub_fields.var_ref_to_var_value)
         return ref_to_value
 
     def __gql__(self) -> str:
+        """Method to create a graphql representation of this field
+
+        :return: a string with the graphql representation of this field
+        """
         builder = f"{f'{self.alias}: ' if self.alias else ''}{self.name}"
         if self.var_name_to_var_ref:
             builder += "("
@@ -294,12 +407,23 @@ class PreparedField:
 
 
 class Fields:
+    """Class to create a selection of multiple fields
+
+    Use this class to create a selection of multiple fields or combine multiple instances.
+    """
+
     @classmethod
     def parse_args(
             cls,
             args: Tuple[Any],
             fields: Dict[int, Field] = None,
     ) -> Dict[int, Field]:
+        """Class method to parse given *args
+
+        :param args: holds the given *args
+        :param fields: optional, holds a dictionary of fields parsed so far, empty dict if None
+        :return: a dictionary mapped with the hash of the field to the Field itself.
+        """
         fields = fields or {}
         for arg in args:
             if isinstance(arg, str):
@@ -315,7 +439,7 @@ class Fields:
             if isinstance(arg, dict):
                 arg = cls(**arg)
             if isinstance(arg, cls):
-                for field in arg.fields:
+                for field in arg.selected_fields:
                     fields[hash(field)] = field
                 continue
             raise TypeError(f"Can't handle type `{type(arg).__name__}`")
@@ -328,6 +452,12 @@ class Fields:
             kwargs: Dict[Any, Any],
             fields: Dict[int, Field] = None,
     ) -> Dict[int, Field]:
+        """Class method to parse given **kwargs
+
+        :param kwargs: holds the given **kwargs
+        :param fields: optional, holds a dictionary of fields parsed so far, empty dict if None
+        :return: a dictionary mapped with the hash of the field to the Field itself.
+        """
         fields = fields or {}
         for key, value in kwargs.items():
             field = Field(key, _sub_fields=cls(value))
@@ -340,13 +470,13 @@ class Fields:
         _fields = self.parse_args(args, _fields)
         _fields = self.parse_kwargs(kwargs, _fields)
 
-        self.fields: List[Field] = list(_fields.values())
+        self.selected_fields: List[Field] = list(_fields.values())
 
     def __contains__(self, item) -> bool:
-        return item in self.fields
+        return item in self.selected_fields
 
     def __and__(self, other) -> "Fields":
-        """ Synthetic sugar method which essentially just does the __add__
+        """Synthetic sugar method which essentially just does the __add__
 
         :param other: holds the other instance to add to this instance
         :return: a new Fields instance with the added properties
@@ -354,14 +484,14 @@ class Fields:
         return self.__add__(other)
 
     def __add__(self, other) -> "Fields":
-        """ Add another object to this fields
+        """Add another object to this fields
 
         :param other: the object to add
         :return: a new instance of this class with the added fields
         """
         cls = self.__class__
         if other is None:
-            return cls(*self.fields)
+            return cls(*self.selected_fields)
         if isinstance(other, (str, Field)):
             other = cls(other)
         if isinstance(other, (list, tuple, set)):
@@ -369,8 +499,9 @@ class Fields:
         if isinstance(other, dict):
             other = cls(**other)
         if isinstance(other, cls):
-            args = [*self.fields, *other.fields]
+            args = [*self.selected_fields, *other.selected_fields]
             return cls(*args)
+        raise TypeError(f"Can not add {other} to {self}")
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
@@ -378,22 +509,33 @@ class Fields:
         return hash(self) == hash(other)
 
     def __bool__(self) -> bool:
-        return bool(self.fields)
+        return bool(self.selected_fields)
 
     def __hash__(self) -> int:
-        return hash(tuple(self.fields))
+        return hash(tuple(self.selected_fields))
 
     def prepare(self, parent: SchemaType, schema: Schema) -> "PreparedFields":
+        """Method to convert this fields instance into a PreparedFields instance
+
+        :param parent: holds the parent of this Field
+        :param schema: holds the schema that should be used for validation
+        :return: a PreparedFields instance
+        """
         p = PreparedFields()
         p.prepare(
             parent=parent,
             schema=schema,
-            fields=self.fields,
+            fields=self.selected_fields,
         )
         return p
 
 
 class PreparedFields:
+    """Class that represents a prepared version of the Fields class.
+
+    A prepared class should not be changed after preparation.
+    """
+
     def __init__(self):
         # the prepared fields
         self.fields: Optional[List[PreparedField]] = None
@@ -404,9 +546,22 @@ class PreparedFields:
             schema: Schema,
             fields: Optional[List[Field]] = None
     ):
+        """Method to prepare this instance after initialization.
+
+        :param parent: holds the parent's field schema type
+        :param schema: holds the schema that should be used for validation and type lookups.
+        :param fields: holds the list of fields that were selected
+        """
         self.prepare_fields(parent, schema, fields)
 
     def prepare_fields(self, parent: SchemaType, schema: Schema, fields: Optional[List[Fields]]):
+        """Method to turn all selected fields into prepared fields.
+
+        :param parent: holds this fields instance parents field schema type.
+        :param schema: holds the schema that should be used for validation and type lookups.
+        :param fields: holds a list of fields that should be prepared
+        """
+        fields = fields if fields is not None else []
         self.fields = [
             field.prepare(parent, schema)
             for field in fields
@@ -414,19 +569,31 @@ class PreparedFields:
 
     @property
     def var_ref_to_var_type(self) -> Dict[str, SchemaTypeRef]:
+        """Property to generate a flattened var_ref_to_var_input_type map.
+
+        :return: a flattened dictionary with var ref to var input type ref
+        """
         ref_to_type = {}
         for field in self.fields:
-            ref_to_type.update(field.rec_var_ref_to_var_input_type_name)
+            ref_to_type.update(field.reduced_var_ref_to_var_input_type_ref)
         return ref_to_type
 
     @property
     def var_ref_to_var_value(self) -> Dict[str, Any]:
+        """Property to generate a flattened var_ref_to_var_value map.
+
+        :return: a flattened dictionary with var ref to var value
+        """
         ref_to_value = {}
         for field in self.fields:
-            ref_to_value.update(field.rec_var_ref_to_var_value)
+            ref_to_value.update(field.reduced_var_ref_to_var_value)
         return ref_to_value
 
     def __gql__(self) -> str:
+        """Method to create a graphql representation of this fields instance
+
+        :return: a string with the graphql representation of this fields instance
+        """
         return " ".join(
             field.__gql__()
             for field in self.fields
@@ -442,20 +609,32 @@ class PreparedFields:
 
 
 class GQLQueryBuilder:
+    """Class to programmatically build graphql queries"""
 
     @staticmethod
     def remove_duplicate_spaces(query: str) -> str:
+        """Static method to remove duplicate spaces from a string
+
+        :param query: holds the string from which to drop the duplicate white spaces
+        :return: a string with no duplicate white spaces
+        """
         return " ".join(query.split())
 
     @staticmethod
     def build_input(variables: Dict[str, Any], initial_str: str) -> str:
+        """Static method to build the input with variables
+
+        :param variables: holds a dictionary with the variable key mapped to the variable value
+        :param initial_str: holds the initial string (prefixed the input)
+        :return: a full-fledged graphql input string
+        """
         inputs: List[str] = []
 
         final_str = initial_str
 
         if variables:
             key = list(variables.keys())[0]
-            nested_keys = list()
+            nested_keys = []
 
             while isinstance(variables[key], dict):
                 nested_keys.append(key)
@@ -489,10 +668,23 @@ class GQLQueryBuilder:
         self.fields_field: Optional[str] = None
 
     def fields(self, fields: str) -> "GQLQueryBuilder":
+        """Method to register a field selection
+
+        Do not put leading and trailing curly brackets
+
+        :param fields: holds the fields as a string (e.g. "name friends { name }")
+        :return: self
+        """
         self.fields_field = fields
         return self
 
     def action(self, action: str, variables: Dict[str, Any] = None) -> "GQLQueryBuilder":
+        """Method to register the graphql action/resolver you wish to execute
+
+        :param action: holds the graphql action/resolver (e.g. getUser)
+        :param variables: holds the action variables
+        :return: self
+        """
         action = self.build_input(variables, action)
         self.action_field = action
         return self
@@ -503,6 +695,13 @@ class GQLQueryBuilder:
             name: str = "",
             variables: Dict[str, Any] = None
     ) -> "GQLQueryBuilder":
+        """Method to register the graphql operation
+
+        :param operation: holds the operation type (query, mutation, subscription)
+        :param name: optional, holds the name of the operation, required for usage with variables
+        :param variables: optional, holds query variables
+        :return: self
+        """
         if name:
             operation = f"{operation} {name}"
             operation = self.build_input(variables, operation)
@@ -510,10 +709,11 @@ class GQLQueryBuilder:
         return self
 
     def build(self) -> str:
-        query_parts = []
-        query_parts.append(self.operation_field)
-        query_parts.append("{")
-        query_parts.append(self.action_field)
+        """Method to build the graphql query
+
+        :return: the complete graphql query with operation, action and fields.
+        """
+        query_parts = [self.operation_field, "{", self.action_field]
         if self.fields_field:
             query_parts.append("{")
             query_parts.append(self.fields_field)
@@ -527,6 +727,15 @@ class GQLQueryBuilder:
 
 
 class TypedGQLQueryBuilder:
+    """Class that represents a typed GraphQL Query Builder
+
+    The typed graphql builder takes the operation type, operation field, schema and settings
+    as input arguments to ensure type safety in the graphql query.
+
+    The operation_field is the action that you are trying to execute.
+    Say you want to register a new user with your graphql mutation "registerUser".
+    Then a "registerUser" field will be present in the schema.
+    """
 
     def __init__(
             self,
@@ -551,6 +760,15 @@ class TypedGQLQueryBuilder:
         self._action_variables: Optional[Dict[str, Any]] = {}
 
     def fields(self, *args, **kwargs) -> Dict[str, Any]:
+        """Method to programmatically create a type safe field selection.
+
+        This method takes the *args and **kwargs and creates a "Fields" instances.
+        It then prepares this Fields instance.
+
+        :param args: holds an iterable of fields (e.g. "firstname", "lastname", ...)
+        :param kwargs: holds a dictionary for simple deeper field selection.
+        :return: a dictionary with declared variable references mapped to their values
+        """
         self._fields = Fields(*args, **kwargs).prepare(self.op_output, self.schema)
         for var_ref, var_type_ref in self._fields.var_ref_to_var_type.items():
             prefixed_key = f"${var_ref}"
@@ -559,10 +777,14 @@ class TypedGQLQueryBuilder:
         return self._fields.var_ref_to_var_value
 
     def variables(self, **kwargs) -> Dict[str, Any]:
-        for key, value in kwargs.items():
-            if self.settings.validate_variables:
-                if key not in self.op_inputs:
-                    raise KeyError(f"Input `{key}` not supported for {self.op_type} operation `{self.op_name}`")
+        """Method to register operation level variables.
+
+        :param kwargs: holds a dictionary with variable key mapped to variable value
+        :return: a dictionary with declared variable references mapped to their values
+        """
+        for key in kwargs:
+            if self.settings.validate_variables and key not in self.op_inputs:
+                raise KeyError(f"Input `{key}` not supported for {self.op_type} operation `{self.op_name}`")
             _input: SchemaInput = self.op_inputs[key]
             prefixed_key = f"${key}"
             self._operation_variables[prefixed_key] = _input.type.__gql__()
@@ -571,6 +793,10 @@ class TypedGQLQueryBuilder:
         return kwargs
 
     def build(self) -> str:
+        """Method to build the graphql query string from all given inputs
+
+        :return: the graphql query string
+        """
         if self._fields is not None:
             self.builder.fields(self._fields.__gql__())
         if self._operation_variables is not None:
@@ -580,4 +806,8 @@ class TypedGQLQueryBuilder:
         return self.builder.build()
 
     def __gql__(self) -> str:
+        """Method to build the graphql query string from all given inputs
+
+        :return: the graphql query string
+        """
         return self.build()

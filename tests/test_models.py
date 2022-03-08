@@ -1,3 +1,4 @@
+# skipcq: PY-D0003
 def test_graphql_response():
     from qlient.models import GraphQLResponse
 

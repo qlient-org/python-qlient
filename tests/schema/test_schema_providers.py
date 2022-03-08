@@ -8,6 +8,7 @@ from qlient.types import (
 )
 
 
+# skipcq: PY-D0003
 def test_static_schema_provider():
     from qlient.schema.providers import StaticSchemaProvider
     from __base__ import raw_schema
@@ -16,6 +17,7 @@ def test_static_schema_provider():
     assert my_provider.cache_key == "My Static Key"
 
 
+# skipcq: PY-D0003
 def test_file_schema_provider_tempfile():
     import tempfile
     from qlient.schema.providers import FileSchemaProvider
@@ -28,6 +30,7 @@ def test_file_schema_provider_tempfile():
     my_file.close()
 
 
+# skipcq: PY-D0003
 def test_file_schema_provider_tempfile_context():
     import tempfile
     from qlient.schema.providers import FileSchemaProvider
@@ -39,6 +42,7 @@ def test_file_schema_provider_tempfile_context():
         assert my_provider.cache_key == my_file.name
 
 
+# skipcq: PY-D0003
 def test_file_schema_provider_bytes_io():
     import io
     from qlient.schema.providers import FileSchemaProvider
@@ -49,6 +53,7 @@ def test_file_schema_provider_bytes_io():
     assert my_provider.cache_key == "My Bytes File"
 
 
+# skipcq: PY-D0003
 def test_file_schema_provider_string_io():
     import io
     from qlient.schema.providers import FileSchemaProvider
@@ -59,6 +64,7 @@ def test_file_schema_provider_string_io():
     assert my_provider.cache_key == "My String File"
 
 
+# skipcq: PY-D0003
 def test_backend_schema_provider():
     from qlient.schema.providers import BackendSchemaProvider
     from qlient.backend import Backend

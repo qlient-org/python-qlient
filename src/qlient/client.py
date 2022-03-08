@@ -1,4 +1,4 @@
-""" This file contains the graphql client
+"""This file contains the graphql client
 
 :author: Daniel Seifert
 :created: 09.09.2021
@@ -17,7 +17,7 @@ logger = logging.getLogger("qlient")
 
 
 class Client:
-    """ This class represents the base qlient Client. """
+    """This class represents the base qlient Client."""
 
     def __init__(
             self,
@@ -49,7 +49,7 @@ class Client:
 
     @property
     def query(self) -> QueryServiceProxy:
-        """ Cached property for the query service
+        """Cached property for the query service
 
         If the :ref:`_query_service` is None, create a new QueryService.
 
@@ -61,7 +61,7 @@ class Client:
 
     @property
     def mutation(self) -> MutationServiceProxy:
-        """ Cached property for the mutation service
+        """Cached property for the mutation service
 
         if the ref:`_mutation_service` is None, create a new MutationService.
 
@@ -72,12 +72,12 @@ class Client:
         return self._mutation_service
 
     def __str__(self) -> str:
-        """ Return a simple string representation of the client """
+        """Return a simple string representation of the client"""
         class_name = self.__class__.__name__
         return f"{class_name}(backend=`{self.backend}`)"
 
     def __repr__(self) -> str:
-        """ Return a detailed string representation of the client """
+        """Return a detailed string representation of the client"""
         class_name = self.__class__.__name__
         props = ", ".join([
             f"endpoint=`{self.backend}`",

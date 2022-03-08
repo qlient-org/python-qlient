@@ -1,3 +1,4 @@
+# skipcq: PY-D0003
 def test_type_ref_empty():
     from qlient.schema.types import TypeRef
     type_ref = TypeRef()
@@ -7,6 +8,7 @@ def test_type_ref_empty():
     assert type_ref.graphql_representation is None
 
 
+# skipcq: PY-D0003
 def test_type_ref_values():
     from qlient.schema.types import TypeRef, Kind
     type_ref = TypeRef(kind="NON_NULL", name="String")
@@ -17,6 +19,7 @@ def test_type_ref_values():
     assert type_ref.leaf_type_name == "String"
 
 
+# skipcq: PY-D0003
 def test_type_ref_nested():
     from qlient.schema.types import TypeRef, Kind
     type_ref = TypeRef(kind="NON_NULL", name=None, ofType=TypeRef(kind="LIST", name="String"))
@@ -27,6 +30,7 @@ def test_type_ref_nested():
     assert type_ref.leaf_type_name == "String"
 
 
+# skipcq: PY-D0003
 def test_type_ref_parse():
     from qlient.schema.types import TypeRef, Kind
     type_ref = TypeRef.parse({"kind": "NON_NULL", "name": "String"})
@@ -37,6 +41,7 @@ def test_type_ref_parse():
     assert type_ref.leaf_type_name == "String"
 
 
+# skipcq: PY-D0003
 def test_input_empty():
     from qlient.schema.types import Input
     input_type = Input()
@@ -46,6 +51,7 @@ def test_input_empty():
     assert input_type.default_value is None
 
 
+# skipcq: PY-D0003
 def test_input_values():
     from qlient.schema.types import Input
     input_type = Input(name="first_name")

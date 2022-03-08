@@ -1,9 +1,11 @@
+# skipcq: PY-D0003
 def test_simple_field():
     from qlient.builder import Field
     actual = Field("a")
     assert actual.name == "a"
 
 
+# skipcq: PY-D0003
 def test_simple_field_with_values():
     from qlient.builder import Field, Directive, Fields
     actual = Field(
@@ -23,6 +25,7 @@ def test_simple_field_with_values():
     assert isinstance(actual.sub_fields, Fields)
 
 
+# skipcq: PY-D0003
 def test_field_add_other_field():
     from qlient.builder import Field, Fields
     a = Field("a")

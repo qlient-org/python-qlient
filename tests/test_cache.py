@@ -1,3 +1,4 @@
+# skipcq: PY-D0003
 def test_in_memory_cache():
     from qlient.cache import InMemoryCache
 
@@ -7,6 +8,7 @@ def test_in_memory_cache():
     assert "test" in my_cache
 
 
+# skipcq: PY-D0003
 def test_sqlite_cache():
     from qlient.cache import SqliteCache
     my_cache = SqliteCache()
@@ -14,6 +16,7 @@ def test_sqlite_cache():
     assert "test" in my_cache
 
 
+# skipcq: PY-D0003
 def test_custom_sqlite_cache():
     import datetime
     from qlient.cache import SqliteCache

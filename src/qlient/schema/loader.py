@@ -1,4 +1,4 @@
-""" This file contains the loader functions for the graphql schema
+"""This file contains the loader functions for the graphql schema
 
 :author: Daniel Seifert
 :created: 10.09.2021
@@ -16,7 +16,7 @@ def load_schema(
         provider: SchemaProvider,
         cache: Optional[Cache]
 ) -> Dict:
-    """ Load the schema from the given provider
+    """Load the schema from the given provider
 
     :param provider: holds either None or the schema provider
     :param cache: holds the cache that contains the schema

@@ -1,3 +1,4 @@
+# skipcq: PY-D0003
 def test_is_local_path():
     from qlient.validators import is_local_path
     assert is_local_path(".")
@@ -5,6 +6,7 @@ def test_is_local_path():
     assert is_local_path("/tmp")
 
 
+# skipcq: PY-D0003
 def test_is_not_local_path():
     from qlient.validators import is_local_path
 
@@ -13,6 +15,7 @@ def test_is_not_local_path():
     assert not is_local_path("file://test/test.json")
 
 
+# skipcq: PY-D0003
 def test_is_url():
     from qlient.validators import is_url
     assert is_url("http://test.test/graphql")
@@ -20,6 +23,7 @@ def test_is_url():
     assert is_url("https://api.spacex.land/graphql/")
 
 
+# skipcq: PY-D0003
 def test_is_not_url():
     from qlient.validators import is_url
     assert not is_url(".")
