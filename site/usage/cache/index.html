@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://qlient-org.github.io/python-qlient/usage/cache/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.1">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.e8d9bf0c.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -32,8 +32,9 @@
     
       
         
+        
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
@@ -528,18 +529,24 @@ is stored in the application cache folder of your operating system.</p>
 <li>Mac: <code>/Users/{USER}/Library/Caches/qlient/schemas.sqlite</code></li>
 </ul>
 <p>However, the path can be adjusted to your liking.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">qlient</span> <span class="kn">import</span> <span class="n">Client</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">qlient</span> <span class="kn">import</span> <span class="n">Client</span><span class="p">,</span> <span class="n">Settings</span>
 <span class="kn">from</span> <span class="nn">qlient.cache</span> <span class="kn">import</span> <span class="n">SqliteCache</span>
 
 <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;https://...&quot;</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">SqliteCache</span><span class="p">())</span>
 
 <span class="c1"># or with custom settings</span>
 
+<span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span>
+    <span class="n">json_loads</span><span class="o">=...</span><span class="p">,</span>  <span class="c1"># uses json.loads by default, can be overwritten to ujson.loads</span>
+    <span class="n">json_dumps</span><span class="o">=...</span><span class="p">,</span>  <span class="c1"># and ujson.dumps</span>
+<span class="p">)</span>
+
 <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span>
     <span class="s2">&quot;https://...&quot;</span><span class="p">,</span>
     <span class="n">cache</span><span class="o">=</span><span class="n">SqliteCache</span><span class="p">(</span>
         <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/path/to/my/schema_cache.sqlite&quot;</span><span class="p">,</span>
-        <span class="n">expires_in</span><span class="o">=</span><span class="mi">86400</span>  <span class="c1"># seconds</span>
+        <span class="n">expires_in</span><span class="o">=</span><span class="mi">86400</span><span class="p">,</span>  <span class="c1"># seconds</span>
+        <span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="p">)</span>
 </code></pre></div>
@@ -596,7 +603,7 @@ is stored in the application cache folder of your operating system.</p>
     <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.8aa65030.min.js"></script>
+      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
       
     
   </body>

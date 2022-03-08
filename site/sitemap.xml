@@ -2,62 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://qlient-org.github.io/python-qlient/</loc>
-         <lastmod>2022-02-24</lastmod>
+         <lastmod>2022-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://qlient-org.github.io/python-qlient/install/</loc>
-         <lastmod>2022-02-24</lastmod>
+         <lastmod>2022-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://qlient-org.github.io/python-qlient/examples/project_batches/</loc>
-         <lastmod>2022-02-24</lastmod>
+         <lastmod>2022-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://qlient-org.github.io/python-qlient/examples/script_legend/</loc>
-         <lastmod>2022-02-24</lastmod>
+         <lastmod>2022-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://qlient-org.github.io/python-qlient/usage/backend/</loc>
-         <lastmod>2022-02-24</lastmod>
+         <lastmod>2022-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://qlient-org.github.io/python-qlient/usage/cache/</loc>
-         <lastmod>2022-02-24</lastmod>
+         <lastmod>2022-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://qlient-org.github.io/python-qlient/usage/client/</loc>
-         <lastmod>2022-02-24</lastmod>
+         <lastmod>2022-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://qlient-org.github.io/python-qlient/usage/fields/</loc>
-         <lastmod>2022-02-24</lastmod>
+         <lastmod>2022-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://qlient-org.github.io/python-qlient/usage/proxy/</loc>
-         <lastmod>2022-02-24</lastmod>
+         <lastmod>2022-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://qlient-org.github.io/python-qlient/usage/schema/</loc>
-         <lastmod>2022-02-24</lastmod>
+         <lastmod>2022-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://qlient-org.github.io/python-qlient/usage/schema_providers/</loc>
-         <lastmod>2022-02-24</lastmod>
+         <lastmod>2022-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://qlient-org.github.io/python-qlient/usage/settings/</loc>
-         <lastmod>2022-02-24</lastmod>
+         <lastmod>2022-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
