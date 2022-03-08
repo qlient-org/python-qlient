@@ -46,6 +46,11 @@ class Cache(collections.abc.MutableMapping):
 
 
 class InMemoryCache(Cache):
+    """Class that represents an in-memory caching strategy
+
+    Use this class for fast in-memory lookups
+    """
+
     __memory__ = {}
 
     def __setitem__(self, url: str, schema: RawSchema):
@@ -69,7 +74,11 @@ class InMemoryCache(Cache):
         return self.__memory__.__iter__()
 
 
-def _get_default_sqlite_cache_dir() -> str:
+def _get_default_sqlite_cache_file() -> str:
+    """Function to resolve the default sqlite caching file
+
+    :return: absolute path to the default qlient sqlite caching file
+    """
     path_to_cache_dir = platformdirs.user_cache_dir("qlient", False)
 
     try:
@@ -87,6 +96,10 @@ ONE_HOUR = datetime.timedelta(seconds=3600)
 
 
 class SqliteCache(Cache):
+    """Class that represents a sqlite caching strategy
+
+    Use this class for persistent schema storage.
+    """
     TABLE_NAME = "QLIENT_SCHEMA_CACHE"
 
     # skipcq: BAN-B608
@@ -108,11 +121,21 @@ class SqliteCache(Cache):
 
     @staticmethod
     def _encode_schema(schema: RawSchema) -> str:
+        """Static method to encode the raw schema before inserting it into the database
+
+        :param schema: holds the raw schema
+        :return: a base64 encoded representation of the schema
+        """
         schema_string = json.dumps(schema, ensure_ascii=False)
         return base64.b64encode(schema_string.encode()).decode()
 
     @staticmethod
     def _decode_schema(encoded_schema: str) -> RawSchema:
+        """Static method to decode the base64 encoded schema back to the dictionary
+
+        :param encoded_schema: holds a base64 representation of the schema
+        :return: a raw schema instance
+        """
         decoded_raw_schema = base64.b64decode(encoded_schema.encode()).decode()
         return json.loads(decoded_raw_schema)
 
@@ -132,7 +155,7 @@ class SqliteCache(Cache):
                 + "Please use qlient.cache.InMemoryCache()."
             )
 
-        self.path: str = path or _get_default_sqlite_cache_dir()
+        self.path: str = path or _get_default_sqlite_cache_file()
 
         if isinstance(expires_in, int):
             expires_in = datetime.timedelta(seconds=expires_in)
@@ -144,6 +167,10 @@ class SqliteCache(Cache):
 
     @contextmanager
     def connect(self) -> sqlite3.Connection:
+        """Method to connect to the sqlite db.
+
+        :return: the connection instance
+        """
         logger.debug(f"Creating sqlite3 connection to {self.path}")
         with self.__lock:
             connection = sqlite3.connect(self.path, detect_types=sqlite3.PARSE_DECLTYPES)
@@ -151,6 +178,7 @@ class SqliteCache(Cache):
             connection.close()
 
     def create_cache_table_if_not_exists(self):
+        """Method to ensure that the table exists"""
         logger.debug(f"Creating table {self.TABLE_NAME}")
         with self.connect() as connection:
             cursor = connection.cursor()
@@ -219,6 +247,10 @@ class SqliteCache(Cache):
                 yield url, decoded_schema
 
     def delete_expired_records(self):
+        """Method to delete expired records.
+
+        See ref:`_is_expired` for more information.
+        """
         logger.debug("Sqlite deleting expired records")
         with self.connect() as connection:
             cursor = connection.cursor()
@@ -228,4 +260,9 @@ class SqliteCache(Cache):
             connection.commit()
 
     def _is_expired(self, timestamp_created: int) -> bool:
+        """Method to determine whether a records timestamp is expired or not
+
+        :param timestamp_created: holds the timestamp when the record was created
+        :return: True if the current time is higher than the record's creation timestamp plus the time to live.
+        """
         return int(time.time()) > timestamp_created + self.expires_in.seconds
