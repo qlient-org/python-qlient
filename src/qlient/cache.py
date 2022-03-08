@@ -7,7 +7,6 @@ import base64
 import collections.abc
 import datetime
 import errno
-import json
 import logging
 import os
 import sqlite3
@@ -18,6 +17,7 @@ from typing import Iterator, Optional, Tuple, Union
 
 import platformdirs
 
+from qlient.settings import Settings
 from qlient.schema.types import RawSchema
 
 logger = logging.getLogger("qlient")
@@ -120,30 +120,11 @@ class SqliteCache(Cache):
     LENGTH_STMT = f"SELECT COUNT(URL) AS CACHE_SIZE FROM {TABLE_NAME}"  # skipcq: BAN-B608
     ITER_STMT = f"SELECT URL, SCHEMA FROM {TABLE_NAME}"  # skipcq: BAN-B608
 
-    @staticmethod
-    def _encode_schema(schema: RawSchema) -> str:
-        """Static method to encode the raw schema before inserting it into the database
-
-        :param schema: holds the raw schema
-        :return: a base64 encoded representation of the schema
-        """
-        schema_string = json.dumps(schema, ensure_ascii=False)
-        return base64.b64encode(schema_string.encode()).decode()
-
-    @staticmethod
-    def _decode_schema(encoded_schema: str) -> RawSchema:
-        """Static method to decode the base64 encoded schema back to the dictionary
-
-        :param encoded_schema: holds a base64 representation of the schema
-        :return: a raw schema instance
-        """
-        decoded_raw_schema = base64.b64decode(encoded_schema.encode()).decode()
-        return json.loads(decoded_raw_schema)
-
     def __init__(
             self,
             path: Optional[str] = None,
-            expires_in: Union[int, datetime.timedelta] = ONE_HOUR
+            expires_in: Union[int, datetime.timedelta] = ONE_HOUR,
+            settings: Optional[Settings] = None,
     ):
         """Initialize a new sqlite cache
 
@@ -156,6 +137,7 @@ class SqliteCache(Cache):
                 + "Please use qlient.cache.InMemoryCache()."
             )
 
+        self.settings: Settings = settings if settings is not None else Settings()
         self.path: str = path or _get_default_sqlite_cache_file()
 
         if isinstance(expires_in, int):
@@ -185,6 +167,24 @@ class SqliteCache(Cache):
             cursor = connection.cursor()
             cursor.execute(self.TABLE_STMT)
             connection.commit()
+
+    def _encode_schema(self, schema: RawSchema) -> str:
+        """Static method to encode the raw schema before inserting it into the database
+
+        :param schema: holds the raw schema
+        :return: a base64 encoded representation of the schema
+        """
+        schema_string = self.settings.json_dumps(schema, ensure_ascii=False)
+        return base64.b64encode(schema_string.encode()).decode()
+
+    def _decode_schema(self, encoded_schema: str) -> RawSchema:
+        """Static method to decode the base64 encoded schema back to the dictionary
+
+        :param encoded_schema: holds a base64 representation of the schema
+        :return: a raw schema instance
+        """
+        decoded_raw_schema = base64.b64decode(encoded_schema.encode()).decode()
+        return self.settings.json_loads(decoded_raw_schema)
 
     def __setitem__(self, url: str, schema: RawSchema):
         logger.debug(f"Sqlite caching schema for url `{url}`")

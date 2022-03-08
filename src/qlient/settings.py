@@ -3,6 +3,7 @@
 :author: Daniel Seifert
 :created: 09.09.2021
 """
+import json
 
 
 class Settings:
@@ -12,11 +13,15 @@ class Settings:
             self,
             introspect: bool = True,
             validate_variables: bool = True,
-            validate_fields: bool = True
+            validate_fields: bool = True,
+            json_loads=json.loads,
+            json_dumps=json.dumps,
     ):
         self.introspect: bool = introspect
         self.validate_variables: bool = validate_variables
         self.validate_fields: bool = validate_fields
+        self.json_loads = json_loads
+        self.json_dumps = json_dumps
 
     def __str__(self) -> str:
         """Return a simple string representation of the settings"""
