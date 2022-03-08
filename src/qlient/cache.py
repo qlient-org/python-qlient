@@ -100,6 +100,7 @@ class SqliteCache(Cache):
 
     Use this class for persistent schema storage.
     """
+
     TABLE_NAME = "QLIENT_SCHEMA_CACHE"
 
     # skipcq: BAN-B608
