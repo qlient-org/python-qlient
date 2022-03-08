@@ -1,3 +1,4 @@
+# skipcq: PY-D0003
 def test_query_service():
     from qlient.client import Client
     from qlient.proxy import QueryServiceProxy, QueryProxy
@@ -9,6 +10,7 @@ def test_query_service():
     assert isinstance(service["allPeople"], QueryProxy)
 
 
+# skipcq: PY-D0003
 def test_query_query_select():
     from qlient.client import Client
     from qlient.proxy import QueryServiceProxy
@@ -20,6 +22,7 @@ def test_query_query_select():
     assert actual == expected
 
 
+# skipcq: PY-D0003
 def test_query_query_variables():
     from qlient.client import Client
     from qlient.proxy import QueryServiceProxy
@@ -31,6 +34,7 @@ def test_query_query_variables():
     assert actual == expected
 
 
+# skipcq: PY-D0003
 def test_mutation_service():
     from qlient.client import Client
     from qlient.proxy import MutationServiceProxy

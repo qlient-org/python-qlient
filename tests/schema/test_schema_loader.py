@@ -1,6 +1,7 @@
 from qlient.schema.types import RawSchema
 
 
+# skipcq: PY-D0003
 def test_schema_loader():
     from qlient.schema.providers import StaticSchemaProvider
     from qlient.schema.loader import load_schema
@@ -9,6 +10,7 @@ def test_schema_loader():
     assert schema == {"foo": "bar"}
 
 
+# skipcq: PY-D0003
 def test_schema_loader_cached():
     from qlient.schema.providers import StaticSchemaProvider
     from qlient.cache import InMemoryCache

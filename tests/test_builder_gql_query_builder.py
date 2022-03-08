@@ -1,3 +1,4 @@
+# skipcq: PY-D0003
 def test_query_builder():
     from qlient.builder import GQLQueryBuilder
     builder = GQLQueryBuilder()
@@ -6,6 +7,7 @@ def test_query_builder():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_query_builder_operation_query():
     from qlient.builder import GQLQueryBuilder
     builder = GQLQueryBuilder().operation("query")
@@ -14,6 +16,7 @@ def test_query_builder_operation_query():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_query_builder_operation_query_name():
     from qlient.builder import GQLQueryBuilder
     builder = GQLQueryBuilder().operation("query", name="MyQuery")
@@ -22,6 +25,7 @@ def test_query_builder_operation_query_name():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_query_builder_operation_query_name_variables():
     from qlient.builder import GQLQueryBuilder
     builder = GQLQueryBuilder().operation("query", name="MyQueryVar", variables={"$foo": "String!"})
@@ -30,6 +34,7 @@ def test_query_builder_operation_query_name_variables():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_query_builder_operation_mutation():
     from qlient.builder import GQLQueryBuilder
     builder = GQLQueryBuilder().operation("mutation")
@@ -38,6 +43,7 @@ def test_query_builder_operation_mutation():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_query_builder_operation_mutation_name():
     from qlient.builder import GQLQueryBuilder
     builder = GQLQueryBuilder().operation("mutation", name="MyMutation")
@@ -46,6 +52,7 @@ def test_query_builder_operation_mutation_name():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_query_builder_operation_mutation_name_variables():
     from qlient.builder import GQLQueryBuilder
     builder = GQLQueryBuilder().operation("mutation", name="MyMutationVar", variables={"$foo": "String!"})
@@ -54,6 +61,7 @@ def test_query_builder_operation_mutation_name_variables():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_query_builder_action():
     from qlient.builder import GQLQueryBuilder
     builder = GQLQueryBuilder().action("foo")
@@ -62,6 +70,7 @@ def test_query_builder_action():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_query_builder_action_variables():
     from qlient.builder import GQLQueryBuilder
     builder = GQLQueryBuilder().action("foo", variables={"bar": 1})
@@ -70,6 +79,7 @@ def test_query_builder_action_variables():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_query_builder_fields_simple():
     from qlient.builder import GQLQueryBuilder
     builder = GQLQueryBuilder()
@@ -80,6 +90,7 @@ def test_query_builder_fields_simple():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_query_builder_full_query():
     from qlient.builder import GQLQueryBuilder
     builder = GQLQueryBuilder()
@@ -91,6 +102,7 @@ def test_query_builder_full_query():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_query_builder_full_mutation():
     from qlient.builder import GQLQueryBuilder
     builder = GQLQueryBuilder()

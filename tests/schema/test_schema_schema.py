@@ -1,6 +1,7 @@
 from qlient.schema.types import Type
 
 
+# skipcq: PY-D0003
 def test_schema():
     from qlient.schema.schema import Schema
     from __base__ import make_test_schema

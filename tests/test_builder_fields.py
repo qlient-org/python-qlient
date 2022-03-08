@@ -1,9 +1,11 @@
+# skipcq: PY-D0003
 def test_fields_simple_single():
     from qlient.builder import Fields, Field
     a = Fields("a")
     assert a.selected_fields == [Field("a")]
 
 
+# skipcq: PY-D0003
 def test_fields_simple_multiple():
     from qlient.builder import Fields, Field
     a = Fields("a", "b", "c")
@@ -12,12 +14,14 @@ def test_fields_simple_multiple():
     assert Field("c") in a.selected_fields
 
 
+# skipcq: PY-D0003
 def test_fields_simple_multiple_duplicates():
     from qlient.builder import Fields
     a = Fields("a", "b", "c", "c", "c")
     assert len(a.selected_fields) == 3
 
 
+# skipcq: PY-D0003
 def test_fields_simple_list():
     from qlient.builder import Fields, Field
     a = Fields(["a", "b", "c"])
@@ -26,6 +30,7 @@ def test_fields_simple_list():
     assert Field("c") in a.selected_fields
 
 
+# skipcq: PY-D0003
 def test_fields_simple_list_duplicates():
     from qlient.builder import Fields
     fields = ["a", "b", "c", "c", "c"]
@@ -33,6 +38,7 @@ def test_fields_simple_list_duplicates():
     assert len(a.selected_fields) == 3
 
 
+# skipcq: PY-D0003
 def test_fields_complex_simple():
     from qlient.builder import Fields, Field
     a = Fields("a", "b", c="d")
@@ -41,6 +47,7 @@ def test_fields_complex_simple():
     assert Field("c", _sub_fields=Fields("d")) in a.selected_fields
 
 
+# skipcq: PY-D0003
 def test_fields_complex_simple_list():
     from qlient.builder import Fields, Field
     a = Fields("a", "b", c=["a", "b"])
@@ -49,6 +56,7 @@ def test_fields_complex_simple_list():
     assert Field("c", _sub_fields=Fields("a", "b")) in a.selected_fields
 
 
+# skipcq: PY-D0003
 def test_fields_complex_nested_fields():
     from qlient.builder import Fields, Field
     a = Fields(a=Fields("a"), b=Fields("b"))
@@ -56,6 +64,7 @@ def test_fields_complex_nested_fields():
     assert Field("b", _sub_fields="b") in a.selected_fields
 
 
+# skipcq: PY-D0003
 def test_fields_simple_eq_operator():
     from qlient.builder import Fields
     a = Fields("a")
@@ -63,6 +72,7 @@ def test_fields_simple_eq_operator():
     assert a == b
 
 
+# skipcq: PY-D0003
 def test_fields_simple_eq_operator_not():
     from qlient.builder import Fields
     a = Fields("a")
@@ -70,6 +80,7 @@ def test_fields_simple_eq_operator_not():
     assert a != b
 
 
+# skipcq: PY-D0003
 def test_fields_complex_eq_operator():
     from qlient.builder import Fields
     a = Fields("a", b="c")
@@ -77,6 +88,7 @@ def test_fields_complex_eq_operator():
     assert a == b
 
 
+# skipcq: PY-D0003
 def test_fields_complex_eq_operator_not():
     from qlient.builder import Fields
     a = Fields("a", b="c")
@@ -84,6 +96,7 @@ def test_fields_complex_eq_operator_not():
     assert a != b
 
 
+# skipcq: PY-D0003
 def test_fields_simple_add_operator_simple():
     from qlient.builder import Fields
     a = Fields("a")
@@ -92,6 +105,7 @@ def test_fields_simple_add_operator_simple():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_fields_simple_add_operator_list():
     from qlient.builder import Fields
     a = Fields("a")
@@ -100,6 +114,7 @@ def test_fields_simple_add_operator_list():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_fields_simple_add_operator_dict():
     from qlient.builder import Fields
     a = Fields("a")
@@ -108,6 +123,7 @@ def test_fields_simple_add_operator_dict():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_fields_simple_add_operator_fields():
     from qlient.builder import Fields
     a = Fields("a")
@@ -117,6 +133,7 @@ def test_fields_simple_add_operator_fields():
     assert expected == actual
 
 
+# skipcq: PY-D0003
 def test_fields_complex_add_operator_simple():
     from qlient.builder import Fields, Field
     a = Fields("a", b="b")
@@ -126,6 +143,7 @@ def test_fields_complex_add_operator_simple():
     assert Field("c") in actual.selected_fields
 
 
+# skipcq: PY-D0003
 def test_fields_complex_add_operator_list():
     from qlient.builder import Fields, Field
     a = Fields("a", b="b")
@@ -136,6 +154,7 @@ def test_fields_complex_add_operator_list():
     assert Field("z") in actual.selected_fields
 
 
+# skipcq: PY-D0003
 def test_fields_complex_add_operator_dict():
     from qlient.builder import Fields, Field
     a = Fields("a", b="b")
@@ -144,6 +163,7 @@ def test_fields_complex_add_operator_dict():
     assert Field("b", _sub_fields=["c", "e"]) in actual.selected_fields
 
 
+# skipcq: PY-D0003
 def test_fields_complex_add_operator_fields():
     from qlient.builder import Fields, Field
     a = Fields("a", b="b")

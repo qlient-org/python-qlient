@@ -1,3 +1,4 @@
+# skipcq: PY-D0003
 def test_simple_client():
     from qlient.client import Client
     from qlient import HTTPBackend

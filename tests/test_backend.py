@@ -15,6 +15,7 @@ from qlient.types import (
 )
 
 
+# skipcq: PY-D0003
 def test_http_backend():
     backend = HTTPBackend("https://test.test")
     assert isinstance(backend.session, Session)
@@ -22,6 +23,7 @@ def test_http_backend():
     assert backend.endpoint == "https://test.test"
 
 
+# skipcq: PY-D0003
 def test_custom_backend():
     class MyBackend(Backend):
         def execute_query(
@@ -44,6 +46,7 @@ def test_custom_backend():
     assert my_backend.execute_query("foo") == {}
 
 
+# skipcq: PY-D0003
 def test_strawberry_backend():
     @strawberry.type
     class Book:
