@@ -8,6 +8,7 @@ help:
 	@echo "Please use 'make <target>' where <target> is one of"
 	@echo ""
 	@echo " install		install packages and prepare environment"
+	@echo " lint		run formatter and linter"
 	@echo " clean		remove all temporary files"
 	@echo " test		run all the tests"
 	@echo " report		print coverage report"
@@ -20,6 +21,10 @@ $(INSTALL_STAMP): pyproject.toml
 	@if [ -z $(POETRY) ]; then echo "Poetry could not be found. See https://python-poetry.org/docs/"; exit 2; fi
 	$(POETRY) install
 	touch $(INSTALL_STAMP)
+
+.PHONY: lint
+lint: $(INSTALL_STAMP)
+	$(POETRY) run black src
 
 .PHONY: clean
 clean:
