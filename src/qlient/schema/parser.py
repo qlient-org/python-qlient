@@ -13,12 +13,12 @@ class ParseResult:
     """Represents a parsed graphql schema"""
 
     def __init__(
-            self,
-            query_type: Optional[Type] = None,
-            mutation_type: Optional[Type] = None,
-            subscription_type: Optional[Type] = None,
-            types: Optional[Dict[str, Type]] = None,
-            directives: Optional[Dict[str, Directive]] = None
+        self,
+        query_type: Optional[Type] = None,
+        mutation_type: Optional[Type] = None,
+        subscription_type: Optional[Type] = None,
+        types: Optional[Dict[str, Type]] = None,
+        directives: Optional[Dict[str, Directive]] = None,
     ):
         self.query_type: Optional[Type] = query_type
         self.mutation_type: Optional[Type] = mutation_type
@@ -34,7 +34,9 @@ def extract_type(type_name: str, types: Optional[Dict[str, Type]]) -> Optional[T
     return types.get(type_name)
 
 
-def extract_query_type(schema: Dict, types: Optional[Dict[str, Type]]) -> Optional[Type]:
+def extract_query_type(
+    schema: Dict, types: Optional[Dict[str, Type]]
+) -> Optional[Type]:
     """Extract the name of the query type from the schema"""
     query_type: Optional[Dict] = schema.get("queryType")
     if not query_type:
@@ -43,7 +45,9 @@ def extract_query_type(schema: Dict, types: Optional[Dict[str, Type]]) -> Option
     return extract_type(query_type_name, types)
 
 
-def extract_mutation_type(schema: Dict, types: Optional[Dict[str, Type]]) -> Optional[Type]:
+def extract_mutation_type(
+    schema: Dict, types: Optional[Dict[str, Type]]
+) -> Optional[Type]:
     """Extract the name of the mutation type from the schema"""
     mutation_type: Optional[Dict] = schema.get("mutationType")
     if not mutation_type:
@@ -52,7 +56,9 @@ def extract_mutation_type(schema: Dict, types: Optional[Dict[str, Type]]) -> Opt
     return extract_type(mutation_type_name, types)
 
 
-def extract_subscription_type(schema: Dict, types: Optional[Dict[str, Type]]) -> Optional[Type]:
+def extract_subscription_type(
+    schema: Dict, types: Optional[Dict[str, Type]]
+) -> Optional[Type]:
     """Extract the name of the subscription type from the schema"""
     subscription_type: Optional[Dict] = schema.get("subscriptionType")
     if not subscription_type:
@@ -79,16 +85,10 @@ def parse_types(schema: Dict) -> Dict[str, Type]:
         raise NoTypesFound(schema)
 
     types_list: List[Type] = [
-        Type(**type_dict)
-        for type_dict in types_list
-        if type_dict
+        Type(**type_dict) for type_dict in types_list if type_dict
     ]
 
-    types_dict: Dict[str, Type] = {
-        _type.name: _type
-        for _type in types_list
-        if _type
-    }
+    types_dict: Dict[str, Type] = {_type.name: _type for _type in types_list if _type}
 
     for _type in types_dict.values():
         _type.infer_types(types_dict)
@@ -117,9 +117,7 @@ def parse_directives(schema: Dict) -> Optional[Dict[str, Directive]]:
     ]
 
     directives_dict: Dict[str, Directive] = {
-        _directive.name: _directive
-        for _directive in directives_list
-        if _directive
+        _directive.name: _directive for _directive in directives_list if _directive
     }
 
     return directives_dict
@@ -137,5 +135,5 @@ def parse_schema(schema: Dict) -> ParseResult:
         mutation_type=extract_mutation_type(schema, types),
         subscription_type=extract_subscription_type(schema, types),
         types=types,
-        directives=parse_directives(schema)
+        directives=parse_directives(schema),
     )

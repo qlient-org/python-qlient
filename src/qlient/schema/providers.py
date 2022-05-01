@@ -93,6 +93,7 @@ class FileSchemaProvider(SchemaProvider):
         """
         logger.debug(f"Reading local schema from `{self.file}`")
         import json
+
         return json.load(self.file)
 
     @property
@@ -223,7 +224,7 @@ class BackendSchemaProvider(SchemaProvider):
         schema_content = self.backend.execute_query(
             query=self.INTROSPECTION_QUERY,
             operation_name=self.INTROSPECTION_OPERATION_NAME,
-            variables={}
+            variables={},
         )
         return schema_content["data"]["__schema"]
 

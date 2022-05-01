@@ -20,11 +20,11 @@ class Client:
     """This class represents the base qlient Client."""
 
     def __init__(
-            self,
-            backend: Union[str, Backend],
-            schema: Optional[Schema] = None,
-            settings: Optional[Settings] = None,
-            cache: Optional[Cache] = None,
+        self,
+        backend: Union[str, Backend],
+        schema: Optional[Schema] = None,
+        settings: Optional[Settings] = None,
+        cache: Optional[Cache] = None,
     ):
         self.settings: Settings = settings or Settings()
 
@@ -37,7 +37,9 @@ class Client:
         self.cache: Optional[Cache] = cache
 
         if schema is None:
-            provider = BackendSchemaProvider(self.backend, introspect=self.settings.introspect)
+            provider = BackendSchemaProvider(
+                self.backend, introspect=self.settings.introspect
+            )
             schema = Schema(provider, settings=self.settings, cache=self.cache)
         if not isinstance(schema, Schema):
             raise TypeError(f"Schem must be of type `{Schema.__name__}`")
@@ -79,10 +81,12 @@ class Client:
     def __repr__(self) -> str:
         """Return a detailed string representation of the client"""
         class_name = self.__class__.__name__
-        props = ", ".join([
-            f"endpoint=`{self.backend}`",
-            f"settings={self.settings}",
-            f"cache={self.cache}",
-            f"schema={self.schema}"
-        ])
+        props = ", ".join(
+            [
+                f"endpoint=`{self.backend}`",
+                f"settings={self.settings}",
+                f"cache={self.cache}",
+                f"schema={self.schema}",
+            ]
+        )
         return f"<{class_name}({props})>"

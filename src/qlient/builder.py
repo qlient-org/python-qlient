@@ -19,11 +19,7 @@ from qlient.settings import Settings
 class Directive:
     """Class to create a directive on a Field."""
 
-    def __init__(
-            self,
-            _name: str,
-            **directive_variables
-    ):
+    def __init__(self, _name: str, **directive_variables):
         self.name: str = _name
         self.variables = directive_variables
 
@@ -46,7 +42,9 @@ class Directive:
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError(f"Can not compare other classes than {self.__class__.__name__}")
+            raise TypeError(
+                f"Can not compare other classes than {self.__class__.__name__}"
+            )
         return hash(self) == hash(other)
 
 
@@ -69,10 +67,10 @@ class PreparedDirective:
         self.var_ref_to_var_input: Optional[Dict[str, SchemaTypeRef]] = None
 
     def prepare(
-            self,
-            schema: Schema,
-            name: Optional[str] = None,
-            variables: Optional[Dict[str, Any]] = None,
+        self,
+        schema: Schema,
+        name: Optional[str] = None,
+        variables: Optional[Dict[str, Any]] = None,
     ):
         """Method to prepare this directive after it has been initialized.
 
@@ -94,7 +92,9 @@ class PreparedDirective:
         :param schema: holds the client's schema that is currently being used
         """
         if not self.name:
-            raise ValueError(f"Name must be set before calling `{self.prepare_type_checking.__name__}`")
+            raise ValueError(
+                f"Name must be set before calling `{self.prepare_type_checking.__name__}`"
+            )
         schema_directive = schema.directives_registry.get(self.name)
         if schema_directive is None:
             raise ValueError(f"No directive found with name `{self.name}` in schema.")
@@ -121,17 +121,25 @@ class PreparedDirective:
         :raises ValueError: when a given input name is not part of this directive.
         """
         if not self.name:
-            raise ValueError(f"Name must be set before calling `{self.prepare_input.__name__}`")
+            raise ValueError(
+                f"Name must be set before calling `{self.prepare_input.__name__}`"
+            )
         if self.schema_directive is None:
-            raise ValueError(f"Directive must be set before calling `{self.prepare_input.__name__}`")
+            raise ValueError(
+                f"Directive must be set before calling `{self.prepare_input.__name__}`"
+            )
         ref_prefix = f"{self.name}_{id(self)}"
         var_to_ref = {}
         ref_to_val = {}
         ref_to_type = {}
         for key, value in variables.items():
-            input_type: Optional[SchemaInput] = self.schema_directive.arg_name_to_arg.get(key)
+            input_type: Optional[
+                SchemaInput
+            ] = self.schema_directive.arg_name_to_arg.get(key)
             if input_type is None:
-                raise ValueError(f"Input `{key}` not supported for directive {self.name}")
+                raise ValueError(
+                    f"Input `{key}` not supported for directive {self.name}"
+                )
             ref_key = f"{ref_prefix}_{key}"
             var_to_ref[key] = ref_key
             ref_to_val[ref_key] = value
@@ -149,10 +157,12 @@ class PreparedDirective:
         builder = f"@{self.name}"
         if self.var_name_to_var_ref:
             builder += "("
-            builder += " ".join(map(
-                lambda name_to_ref: f"{name_to_ref[0]}: ${name_to_ref[1]}",
-                self.var_name_to_var_ref.items()
-            ))
+            builder += " ".join(
+                map(
+                    lambda name_to_ref: f"{name_to_ref[0]}: ${name_to_ref[1]}",
+                    self.var_name_to_var_ref.items(),
+                )
+            )
             builder += ")"
         return builder
 
@@ -161,7 +171,9 @@ class PreparedDirective:
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError(f"Can not compare other classes than {self.__class__.__name__}")
+            raise TypeError(
+                f"Can not compare other classes than {self.__class__.__name__}"
+            )
         return hash(self) == hash(other)
 
 
@@ -173,17 +185,19 @@ class Field:
     """
 
     def __init__(
-            self,
-            _name: str,
-            _alias: Optional[str] = None,
-            _directive: Optional[Directive] = None,
-            _sub_fields: Optional[Any] = None,
-            **field_variables
+        self,
+        _name: str,
+        _alias: Optional[str] = None,
+        _directive: Optional[Directive] = None,
+        _sub_fields: Optional[Any] = None,
+        **field_variables,
     ):
         self.name: str = _name
         self.alias: Optional[str] = _alias
         self.directive: Optional[Directive] = _directive
-        self.sub_fields: Optional["Fields"] = Fields(_sub_fields) if _sub_fields is not None else None
+        self.sub_fields: Optional["Fields"] = (
+            Fields(_sub_fields) if _sub_fields is not None else None
+        )
         self.variables: Dict[str, Any] = field_variables
 
     def __and__(self, other) -> "Fields":
@@ -215,7 +229,7 @@ class Field:
             alias=self.alias,
             directive=self.directive,
             sub_fields=self.sub_fields,
-            variables=self.variables
+            variables=self.variables,
         )
         return p
 
@@ -224,7 +238,9 @@ class Field:
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError(f"Can not compare other classes than {self.__class__.__name__}")
+            raise TypeError(
+                f"Can not compare other classes than {self.__class__.__name__}"
+            )
         return hash(self) == hash(other)
 
 
@@ -253,14 +269,14 @@ class PreparedField:
         self.var_ref_to_var_input: Optional[Dict[str, SchemaTypeRef]] = None
 
     def prepare(
-            self,
-            parent: SchemaType,
-            schema: Schema,
-            name: Optional[str] = None,
-            alias: Optional[str] = None,
-            directive: Optional[Directive] = None,
-            sub_fields: Optional[Any] = None,
-            variables: Optional[Dict[str, Any]] = None,
+        self,
+        parent: SchemaType,
+        schema: Schema,
+        name: Optional[str] = None,
+        alias: Optional[str] = None,
+        directive: Optional[Directive] = None,
+        sub_fields: Optional[Any] = None,
+        variables: Optional[Dict[str, Any]] = None,
     ):
         """Method to prepare this instance
 
@@ -295,7 +311,9 @@ class PreparedField:
         :param parent: holds the schema type of the parent field
         """
         if not self.name:
-            raise ValueError(f"Name must be set before calling `{self.prepare_type_checking.__name__}`")
+            raise ValueError(
+                f"Name must be set before calling `{self.prepare_type_checking.__name__}`"
+            )
         schema_field_type = parent.field_name_to_field.get(self.name)
         if schema_field_type is None:
             raise ValueError(f"No Field found with name `{self.name}` in schema.")
@@ -336,15 +354,21 @@ class PreparedField:
         :param variables: holds a dictionary where the name of the variable is mapped to its value
         """
         if not self.name:
-            raise ValueError(f"Name must be set before calling `{self.prepare_input.__name__}`")
+            raise ValueError(
+                f"Name must be set before calling `{self.prepare_input.__name__}`"
+            )
         if self.schema_field is None:
-            raise ValueError(f"Field must be set before calling `{self.prepare_input.__name__}`")
+            raise ValueError(
+                f"Field must be set before calling `{self.prepare_input.__name__}`"
+            )
         ref_prefix = f"{f'{self.alias}_' if self.alias else ''}{self.name}_{id(self)}"
         var_to_ref = {}
         ref_to_val = {}
         ref_to_type = {}
         for key, value in variables.items():
-            input_type: Optional[SchemaInput] = self.schema_field.arg_name_to_arg.get(key)
+            input_type: Optional[SchemaInput] = self.schema_field.arg_name_to_arg.get(
+                key
+            )
             if input_type is None:
                 raise ValueError(f"Input `{key}` not supported for field {self.name}")
             ref_key = f"{ref_prefix}_{key}"
@@ -386,10 +410,12 @@ class PreparedField:
         builder = f"{f'{self.alias}: ' if self.alias else ''}{self.name}"
         if self.var_name_to_var_ref:
             builder += "("
-            builder += " ".join(map(
-                lambda name_to_ref: f"{name_to_ref[0]}: ${name_to_ref[1]}",
-                self.var_name_to_var_ref.items()
-            ))
+            builder += " ".join(
+                map(
+                    lambda name_to_ref: f"{name_to_ref[0]}: ${name_to_ref[1]}",
+                    self.var_name_to_var_ref.items(),
+                )
+            )
             builder += ")"
         if self.directive is not None:
             builder += f" {self.directive.__gql__()}"
@@ -402,7 +428,9 @@ class PreparedField:
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError(f"Can not compare other classes than {self.__class__.__name__}")
+            raise TypeError(
+                f"Can not compare other classes than {self.__class__.__name__}"
+            )
         return hash(self) == hash(other)
 
 
@@ -414,9 +442,9 @@ class Fields:
 
     @classmethod
     def parse_args(
-            cls,
-            args: Tuple[Any],
-            fields: Dict[int, Field] = None,
+        cls,
+        args: Tuple[Any],
+        fields: Dict[int, Field] = None,
     ) -> Dict[int, Field]:
         """Class method to parse given *args
 
@@ -448,9 +476,9 @@ class Fields:
 
     @classmethod
     def parse_kwargs(
-            cls,
-            kwargs: Dict[Any, Any],
-            fields: Dict[int, Field] = None,
+        cls,
+        kwargs: Dict[Any, Any],
+        fields: Dict[int, Field] = None,
     ) -> Dict[int, Field]:
         """Class method to parse given **kwargs
 
@@ -505,7 +533,9 @@ class Fields:
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError(f"Can not compare other classes than {self.__class__.__name__}")
+            raise TypeError(
+                f"Can not compare other classes than {self.__class__.__name__}"
+            )
         return hash(self) == hash(other)
 
     def __bool__(self) -> bool:
@@ -541,10 +571,7 @@ class PreparedFields:
         self.fields: Optional[List[PreparedField]] = None
 
     def prepare(
-            self,
-            parent: SchemaType,
-            schema: Schema,
-            fields: Optional[List[Field]] = None
+        self, parent: SchemaType, schema: Schema, fields: Optional[List[Field]] = None
     ):
         """Method to prepare this instance after initialization.
 
@@ -554,7 +581,9 @@ class PreparedFields:
         """
         self.prepare_fields(parent, schema, fields)
 
-    def prepare_fields(self, parent: SchemaType, schema: Schema, fields: Optional[List[Fields]]):
+    def prepare_fields(
+        self, parent: SchemaType, schema: Schema, fields: Optional[List[Fields]]
+    ):
         """Method to turn all selected fields into prepared fields.
 
         :param parent: holds this fields instance parents field schema type.
@@ -562,10 +591,7 @@ class PreparedFields:
         :param fields: holds a list of fields that should be prepared
         """
         fields = fields if fields is not None else []
-        self.fields = [
-            field.prepare(parent, schema)
-            for field in fields
-        ]
+        self.fields = [field.prepare(parent, schema) for field in fields]
 
     @property
     def var_ref_to_var_type(self) -> Dict[str, SchemaTypeRef]:
@@ -594,17 +620,16 @@ class PreparedFields:
 
         :return: a string with the graphql representation of this fields instance
         """
-        return " ".join(
-            field.__gql__()
-            for field in self.fields
-        )
+        return " ".join(field.__gql__() for field in self.fields)
 
     def __hash__(self) -> int:
         return hash(tuple(self.fields))
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError(f"Can not compare other classes than {self.__class__.__name__}")
+            raise TypeError(
+                f"Can not compare other classes than {self.__class__.__name__}"
+            )
         return hash(self) == hash(other)
 
 
@@ -643,7 +668,9 @@ class GQLQueryBuilder:
 
             for key, value in variables.items():
                 if nested_keys:
-                    inputs.append(f'{key}: "{value}"')  # Nested input won't have double quotes
+                    inputs.append(
+                        f'{key}: "{value}"'
+                    )  # Nested input won't have double quotes
 
                 else:
                     inputs.append(f"{key}: {value}")
@@ -678,7 +705,9 @@ class GQLQueryBuilder:
         self.fields_field = fields
         return self
 
-    def action(self, action: str, variables: Dict[str, Any] = None) -> "GQLQueryBuilder":
+    def action(
+        self, action: str, variables: Dict[str, Any] = None
+    ) -> "GQLQueryBuilder":
         """Method to register the graphql action/resolver you wish to execute
 
         :param action: holds the graphql action/resolver (e.g. getUser)
@@ -690,10 +719,7 @@ class GQLQueryBuilder:
         return self
 
     def operation(
-            self,
-            operation: str,
-            name: str = "",
-            variables: Dict[str, Any] = None
+        self, operation: str, name: str = "", variables: Dict[str, Any] = None
     ) -> "GQLQueryBuilder":
         """Method to register the graphql operation
 
@@ -738,18 +764,20 @@ class TypedGQLQueryBuilder:
     """
 
     def __init__(
-            self,
-            operation_type: str,
-            operation_field: SchemaField,
-            schema: Schema,
-            settings: Settings,
+        self,
+        operation_type: str,
+        operation_field: SchemaField,
+        schema: Schema,
+        settings: Settings,
     ):
         self.settings: Settings = settings
         self.op_type: str = operation_type
         self.op_field: SchemaField = operation_field
         self.op_name: str = self.op_field.name
         self.op_inputs: Dict[str, SchemaInput] = self.op_field.arg_name_to_arg
-        self.op_output: Optional[SchemaType] = schema.types_registry.get(self.op_field.output_type_name)
+        self.op_output: Optional[SchemaType] = schema.types_registry.get(
+            self.op_field.output_type_name
+        )
         self.schema: Schema = schema
         self.builder: GQLQueryBuilder = GQLQueryBuilder()
         self.builder.operation(self.op_type, self.op_name)
@@ -784,7 +812,9 @@ class TypedGQLQueryBuilder:
         """
         for key in kwargs:
             if self.settings.validate_variables and key not in self.op_inputs:
-                raise KeyError(f"Input `{key}` not supported for {self.op_type} operation `{self.op_name}`")
+                raise KeyError(
+                    f"Input `{key}` not supported for {self.op_type} operation `{self.op_name}`"
+                )
             _input: SchemaInput = self.op_inputs[key]
             prefixed_key = f"${key}"
             self._operation_variables[prefixed_key] = _input.type.__gql__()
@@ -800,7 +830,9 @@ class TypedGQLQueryBuilder:
         if self._fields is not None:
             self.builder.fields(self._fields.__gql__())
         if self._operation_variables is not None:
-            self.builder.operation(self.op_type, self.op_name, self._operation_variables)
+            self.builder.operation(
+                self.op_type, self.op_name, self._operation_variables
+            )
         if self._action_variables is not None:
             self.builder.action(self.op_name, self._action_variables)
         return self.builder.build()

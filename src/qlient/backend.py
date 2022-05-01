@@ -15,7 +15,7 @@ from qlient.types import (
     GraphQLOperation,
     GraphQLReturnType,
     GraphQLContext,
-    GraphQLRoot
+    GraphQLRoot,
 )
 
 logger = logging.getLogger("qlient")
@@ -32,12 +32,12 @@ class Backend(abc.ABC):
 
     @abc.abstractmethod
     def execute_query(
-            self,
-            query: GraphQLQuery,
-            variables: GraphQLVariables = None,
-            operation_name: GraphQLOperation = None,
-            context: GraphQLContext = None,
-            root: GraphQLRoot = None,
+        self,
+        query: GraphQLQuery,
+        variables: GraphQLVariables = None,
+        operation_name: GraphQLOperation = None,
+        context: GraphQLContext = None,
+        root: GraphQLRoot = None,
     ) -> GraphQLReturnType:
         """Abstract method to execute a query on this backend.
 
@@ -76,22 +76,22 @@ class HTTPBackend(Backend):
     """
 
     def __init__(
-            self,
-            endpoint: str,
-            session: Optional[requests.Session] = None,
-            raise_for_status: bool = False
+        self,
+        endpoint: str,
+        session: Optional[requests.Session] = None,
+        raise_for_status: bool = False,
     ):
         self.endpoint: str = endpoint
         self.session: requests.Session = session or requests.Session()
         self.raise_for_status: bool = raise_for_status
 
     def execute_query(
-            self,
-            query: GraphQLQuery,
-            variables: GraphQLVariables = None,
-            operation_name: GraphQLOperation = None,
-            context: GraphQLContext = None,
-            root: GraphQLRoot = None,
+        self,
+        query: GraphQLQuery,
+        variables: GraphQLVariables = None,
+        operation_name: GraphQLOperation = None,
+        context: GraphQLContext = None,
+        root: GraphQLRoot = None,
     ) -> GraphQLReturnType:
         """Send a query to the http graphql backend
 
@@ -110,8 +110,8 @@ class HTTPBackend(Backend):
             json={
                 "query": query,
                 "operationName": operation_name,
-                "variables": variables
-            }
+                "variables": variables,
+            },
         )
         if self.raise_for_status:
             response.raise_for_status()

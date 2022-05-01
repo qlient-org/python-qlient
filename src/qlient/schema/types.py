@@ -44,23 +44,25 @@ class TypeRef:
         return type_ref
 
     @classmethod
-    def parse_list(cls, type_refs: Optional[List[Union["TypeRef", Dict]]]) -> List["TypeRef"]:
+    def parse_list(
+        cls, type_refs: Optional[List[Union["TypeRef", Dict]]]
+    ) -> List["TypeRef"]:
         """Parse a list of type_refs
 
         :param type_refs: holds the type_ref list to parse
         :return: a list of type_refs
         """
-        return [
-            cls.parse(type_ref)
-            for type_ref in type_refs
-            if type_ref
-        ] if type_refs else []
+        return (
+            [cls.parse(type_ref) for type_ref in type_refs if type_ref]
+            if type_refs
+            else []
+        )
 
     def __init__(
-            self,
-            kind: Union[str, Kind, None] = None,
-            name: Optional[str] = None,
-            ofType: Optional["TypeRef"] = None,  # noqa
+        self,
+        kind: Union[str, Kind, None] = None,
+        name: Optional[str] = None,
+        ofType: Optional["TypeRef"] = None,  # noqa
     ):
         self.kind = Kind(kind) if kind else None
         self.name = name
@@ -77,7 +79,11 @@ class TypeRef:
         return f"<{class_name}(kind=`{self.kind.name}`, name=`{self.name}`, ofType={self.of_type_ref})>"
 
     def __gql__(self) -> str:
-        representation = self.of_type_ref.graphql_representation if self.of_type_ref is not None else self.name
+        representation = (
+            self.of_type_ref.graphql_representation
+            if self.of_type_ref is not None
+            else self.name
+        )
         if self.kind == Kind.NON_NULL:
             representation = f"{representation}!"
         if self.kind == Kind.LIST:
@@ -111,7 +117,9 @@ class TypeRef:
 
         :return:  The name of the very last (leaf) `of_type` Type Ref.
         """
-        return self.name if self.of_type_ref is None else self.of_type_ref.leaf_type_name
+        return (
+            self.name if self.of_type_ref is None else self.of_type_ref.leaf_type_name
+        )
 
     @property
     def leaf_type(self) -> Optional["Type"]:
@@ -150,19 +158,19 @@ class Input:
         :param inputs: holds the input list to parse
         :return: a list of inputs
         """
-        return [
-            cls.parse(input_value)
-            for input_value in inputs
-            if input_value
-        ] if inputs else []
+        return (
+            [cls.parse(input_value) for input_value in inputs if input_value]
+            if inputs
+            else []
+        )
 
     def __init__(
-            self,
-            name: Optional[str] = None,
-            description: Optional[str] = None,
-            # skipcq: PYL-W0622
-            type: Optional[TypeRef] = None,  # noqa
-            defaultValue: Optional[Any] = None  # noqa
+        self,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        # skipcq: PYL-W0622
+        type: Optional[TypeRef] = None,  # noqa
+        defaultValue: Optional[Any] = None,  # noqa
     ):
         self.name = name
         self.description = description
@@ -201,24 +209,26 @@ class Directive:
         return directive
 
     @classmethod
-    def parse_list(cls, directives: Optional[List[Union["Directive", Dict]]]) -> List["Directive"]:
+    def parse_list(
+        cls, directives: Optional[List[Union["Directive", Dict]]]
+    ) -> List["Directive"]:
         """Parse a list of directives
 
         :param directives: holds the directive list to parse
         :return: a list of directives
         """
-        return [
-            cls.parse(directive)
-            for directive in directives
-            if directive
-        ] if directives else []
+        return (
+            [cls.parse(directive) for directive in directives if directive]
+            if directives
+            else []
+        )
 
     def __init__(
-            self,
-            name: Optional[str] = None,
-            description: Optional[str] = None,
-            locations: Optional[List[str]] = None,
-            args: Optional[List[Input]] = None
+        self,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        locations: Optional[List[str]] = None,
+        args: Optional[List[Input]] = None,
     ):
         self.name: Optional[str] = name
         self.description: Optional[str] = description
@@ -273,26 +283,24 @@ class Field:
         :param fields: holds the field list to parse
         :return: a list of fields
         """
-        return [
-            cls.parse(field)
-            for field in fields
-            if field
-        ] if fields else []
+        return [cls.parse(field) for field in fields if field] if fields else []
 
     def __init__(
-            self,
-            name: Optional[str] = None,
-            description: Optional[str] = None,
-            args: Optional[List[Input]] = None,
-            # skipcq: PYL-W0622
-            type: Optional[TypeRef] = None,  # noqa
-            isDeprecated: Optional[bool] = None,  # noqa
-            deprecationReason: Optional[str] = None  # noqa
+        self,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        args: Optional[List[Input]] = None,
+        # skipcq: PYL-W0622
+        type: Optional[TypeRef] = None,  # noqa
+        isDeprecated: Optional[bool] = None,  # noqa
+        deprecationReason: Optional[str] = None,  # noqa
     ):
         self.name: Optional[str] = name
         self.description: Optional[str] = description
         self.args: List[Input] = Input.parse_list(args)
-        self.type: Optional[TypeRef] = TypeRef.parse(type) if type else None  # skipcq: PYL-W0622
+        self.type: Optional[TypeRef] = (
+            TypeRef.parse(type) if type else None
+        )  # skipcq: PYL-W0622
         self.is_deprecated: Optional[bool] = isDeprecated
         self.deprecation_reason: Optional[str] = deprecationReason
 
@@ -343,24 +351,26 @@ class EnumValue:
         return enum_value
 
     @classmethod
-    def parse_list(cls, enum_values: Optional[List[Union["EnumValue", Dict]]]) -> List["EnumValue"]:
+    def parse_list(
+        cls, enum_values: Optional[List[Union["EnumValue", Dict]]]
+    ) -> List["EnumValue"]:
         """Parse a list of enum values
 
         :param enum_values: holds the list of enum values to parse
         :return: a list of enum values
         """
-        return [
-            cls.parse(enum_value)
-            for enum_value in enum_values
-            if enum_value
-        ] if enum_values else []
+        return (
+            [cls.parse(enum_value) for enum_value in enum_values if enum_value]
+            if enum_values
+            else []
+        )
 
     def __init__(
-            self,
-            name: Optional[str] = None,
-            description: Optional[str] = None,
-            isDeprecated: Optional[bool] = None,  # noqa
-            deprecationReason: Optional[str] = None  # noqa
+        self,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        isDeprecated: Optional[bool] = None,  # noqa
+        deprecationReason: Optional[str] = None,  # noqa
     ):
         self.name: Optional[str] = name
         self.description: Optional[str] = description
@@ -403,15 +413,15 @@ class Type:
         return type_value
 
     def __init__(
-            self,
-            kind: Union[str, Kind, None] = None,
-            name: Optional[str] = None,
-            description: Optional[str] = None,
-            fields: Optional[List[Union[Field, Dict]]] = None,
-            inputFields: Optional[List[Union[Input, Dict]]] = None,  # noqa
-            interfaces: Optional[List[Union[TypeRef, Dict]]] = None,
-            enumValues: Optional[List[Union[EnumValue, Dict]]] = None,  # noqa
-            possibleTypes: Optional[List[Union[TypeRef, Dict]]] = None  # noqa
+        self,
+        kind: Union[str, Kind, None] = None,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        fields: Optional[List[Union[Field, Dict]]] = None,
+        inputFields: Optional[List[Union[Input, Dict]]] = None,  # noqa
+        interfaces: Optional[List[Union[TypeRef, Dict]]] = None,
+        enumValues: Optional[List[Union[EnumValue, Dict]]] = None,  # noqa
+        possibleTypes: Optional[List[Union[TypeRef, Dict]]] = None,  # noqa
     ):
         self.kind: Optional[Kind] = Kind(kind) if kind else None
         self.name: Optional[str] = name

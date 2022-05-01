@@ -10,7 +10,13 @@ from typing import Dict, Iterable, Optional, List
 from qlient.builder import TypedGQLQueryBuilder, Fields
 from qlient.models import GraphQLResponse
 from qlient.schema.types import Field
-from qlient.types import GraphQLVariables, GraphQLQuery, GraphQLOperation, GraphQLContext, GraphQLRoot
+from qlient.types import (
+    GraphQLVariables,
+    GraphQLQuery,
+    GraphQLOperation,
+    GraphQLContext,
+    GraphQLRoot,
+)
 
 
 class OperationProxy(abc.ABC):
@@ -52,7 +58,7 @@ class OperationProxy(abc.ABC):
             operation=self.operation_field.name,
             variables=self._variables,
             context=self._context,
-            root=self._root
+            root=self._root,
         )
 
     def __str__(self) -> str:
@@ -82,11 +88,11 @@ class OperationProxy(abc.ABC):
         return self.query
 
     def __call__(
-            self,
-            _fields: Optional[Fields] = None,
-            _context: GraphQLContext = None,
-            _root: GraphQLRoot = None,
-            **query_variables
+        self,
+        _fields: Optional[Fields] = None,
+        _context: GraphQLContext = None,
+        _root: GraphQLRoot = None,
+        **query_variables,
     ) -> GraphQLResponse:
         if _fields:
             self.select(_fields)
@@ -133,6 +139,7 @@ class OperationServiceProxy(abc.ABC):
     def __init__(self, client):
         """Instantiate a new instance of ServiceProxy"""
         from qlient.client import Client  # type hint here due to circular dependency
+
         self.client: Client = client
         self.operations: Dict[str, OperationProxy] = self.get_bindings()
 
@@ -173,22 +180,24 @@ class OperationServiceProxy(abc.ABC):
         return list(itertools.chain(dir(super()), self.operations))
 
     def __call__(
-            self,
-            query: GraphQLQuery,
-            *,
-            operation: GraphQLOperation = None,
-            variables: GraphQLVariables = None,
-            context: GraphQLContext = None,
-            root: GraphQLRoot = None,
-            **kwargs
+        self,
+        query: GraphQLQuery,
+        *,
+        operation: GraphQLOperation = None,
+        variables: GraphQLVariables = None,
+        context: GraphQLContext = None,
+        root: GraphQLRoot = None,
+        **kwargs,
     ) -> GraphQLResponse:
         """Send a query to the graphql server"""
-        response_body = self.client.backend.execute_query(query, variables, operation, context, root)
+        response_body = self.client.backend.execute_query(
+            query, variables, operation, context, root
+        )
         return GraphQLResponse(
             response=response_body,
             query=query,
             variables=variables,
-            operation_name=operation
+            operation_name=operation,
         )
 
     def __str__(self) -> str:

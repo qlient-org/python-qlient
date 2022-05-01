@@ -1,14 +1,6 @@
 from typing import Union, Dict, List, Optional, Any
 
-JSON = Union[
-    str,
-    int,
-    float,
-    bool,
-    None,
-    Dict[str, "JSON"],
-    List["JSON"]
-]
+JSON = Union[str, int, float, bool, None, Dict[str, "JSON"], List["JSON"]]
 
 GraphQLQuery = str
 GraphQLVariables = Optional[Dict[str, JSON]]

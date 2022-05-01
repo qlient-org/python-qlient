@@ -18,10 +18,10 @@ class Schema:
     """Represents a graphql schema"""
 
     def __init__(
-            self,
-            provider: SchemaProvider,
-            settings: Optional[Settings] = None,
-            cache: Optional[Cache] = None,
+        self,
+        provider: SchemaProvider,
+        settings: Optional[Settings] = None,
+        cache: Optional[Cache] = None,
     ):
         self.schema_provider: SchemaProvider = provider
         self.settings: Settings = settings or Settings()
@@ -29,10 +29,12 @@ class Schema:
 
         logger.debug("Schema introspection started")
         from qlient.schema.loader import load_schema
+
         self.raw: Dict = load_schema(self.schema_provider, self.cache)
         logger.debug("Schema loaded")
 
         from qlient.schema.parser import parse_schema, ParseResult
+
         parse_result: ParseResult = parse_schema(self.raw)
         logger.debug("Schema parsed")
 
@@ -50,7 +52,9 @@ class Schema:
     def __repr__(self) -> str:
         """Return a more detailed string representation of the schema instance"""
         class_name = self.__class__.__name__
-        return f"<{class_name}(" \
-               f"query_type={self.query_type}, " \
-               f"mutation_type={self.mutation_type}, " \
-               f"subscription_type={self.subscription_type})>"
+        return (
+            f"<{class_name}("
+            f"query_type={self.query_type}, "
+            f"mutation_type={self.mutation_type}, "
+            f"subscription_type={self.subscription_type})>"
+        )

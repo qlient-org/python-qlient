@@ -115,16 +115,20 @@ class SqliteCache(Cache):
 
     INSERT_STMT = f"INSERT INTO {TABLE_NAME} (URL, SCHEMA, TIMESTAMP_CREATED) VALUES (?, ?, ?)"  # skipcq: BAN-B608
     DELETE_STMT = f"DELETE FROM {TABLE_NAME} WHERE URL = ?"  # skipcq: BAN-B608
-    DELETE_EXPIRED_STMT = f"DELETE FROM {TABLE_NAME} WHERE TIMESTAMP_CREATED <= ?"  # skipcq: BAN-B608
+    DELETE_EXPIRED_STMT = (
+        f"DELETE FROM {TABLE_NAME} WHERE TIMESTAMP_CREATED <= ?"  # skipcq: BAN-B608
+    )
     SELECT_STMT = f"SELECT SCHEMA, TIMESTAMP_CREATED FROM {TABLE_NAME} WHERE URL = ?"  # skipcq: BAN-B608
-    LENGTH_STMT = f"SELECT COUNT(URL) AS CACHE_SIZE FROM {TABLE_NAME}"  # skipcq: BAN-B608
+    LENGTH_STMT = (
+        f"SELECT COUNT(URL) AS CACHE_SIZE FROM {TABLE_NAME}"  # skipcq: BAN-B608
+    )
     ITER_STMT = f"SELECT URL, SCHEMA FROM {TABLE_NAME}"  # skipcq: BAN-B608
 
     def __init__(
-            self,
-            path: Optional[str] = None,
-            expires_in: Union[int, datetime.timedelta] = ONE_HOUR,
-            settings: Optional[Settings] = None,
+        self,
+        path: Optional[str] = None,
+        expires_in: Union[int, datetime.timedelta] = ONE_HOUR,
+        settings: Optional[Settings] = None,
     ):
         """Initialize a new sqlite cache
 
@@ -156,7 +160,9 @@ class SqliteCache(Cache):
         """
         logger.debug(f"Creating sqlite3 connection to {self.path}")
         with self.__lock:
-            connection = sqlite3.connect(self.path, detect_types=sqlite3.PARSE_DECLTYPES)
+            connection = sqlite3.connect(
+                self.path, detect_types=sqlite3.PARSE_DECLTYPES
+            )
             yield connection
             connection.close()
 

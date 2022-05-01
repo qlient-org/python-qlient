@@ -5,18 +5,17 @@ from qlient.types import (
     GraphQLErrors,
     GraphQLExtensions,
     GraphQLData,
-    GraphQLReturnType
+    GraphQLReturnType,
 )
 
 
 class GraphQLResponse:
-
     def __init__(
-            self,
-            response: GraphQLReturnType,
-            query: GraphQLQuery,
-            variables: GraphQLVariables = None,
-            operation_name: GraphQLOperation = None,
+        self,
+        response: GraphQLReturnType,
+        query: GraphQLQuery,
+        variables: GraphQLVariables = None,
+        operation_name: GraphQLOperation = None,
     ):
         self.raw: GraphQLReturnType = response
 
