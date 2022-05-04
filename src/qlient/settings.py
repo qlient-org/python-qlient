@@ -1,8 +1,4 @@
-"""This file contains the settings that can be overwritten in the qlient Client
-
-:author: Daniel Seifert
-:created: 09.09.2021
-"""
+"""This file contains the settings that can be overwritten in the qlient Client"""
 import json
 
 
@@ -10,12 +6,12 @@ class Settings:
     """Class that represents the settings that can be adjusted to your liking"""
 
     def __init__(
-        self,
-        introspect: bool = True,
-        validate_variables: bool = True,
-        validate_fields: bool = True,
-        json_loads=json.loads,
-        json_dumps=json.dumps,
+            self,
+            introspect: bool = True,
+            validate_variables: bool = True,
+            validate_fields: bool = True,
+            json_loads=json.loads,
+            json_dumps=json.dumps,
     ):
         self.introspect: bool = introspect
         self.validate_variables: bool = validate_variables

@@ -34,6 +34,7 @@ include = [
 python = ">=3.7,<4.0"
 requests = "^2.27.1"
 platformdirs = "^2.5.1"
+importlib-metadata = "^4.11.3"
 
 [tool.poetry.dev-dependencies]
 coverage = "^6.3.2"
@@ -46,18 +47,8 @@ mkdocs = "^1.2.3"
 mkdocs-material = "^8.2.1"
 mkdocs-exclude = "^1.0.2"
 mkdocs-include-markdown-plugin = "^3.3.0"
-cleo = "^0.8.1"
-tomlkit = "^0.10.0"
-CacheControl = "^0.12.10"
-cachy = "^0.3.0"
-html5lib = "^1.1"
-pkginfo = "^1.8.2"
-virtualenv = "^20.13.1"
-lockfile = "^0.12.2"
-pexpect = "^4.8.0"
-shellingham = "^1.4.0"
-flake8 = "^4.0.1"
 black = "^22.3.0"
+mkdocstrings = {extras = ["python"], version = "^0.18.1"}
 
 
 [build-system]

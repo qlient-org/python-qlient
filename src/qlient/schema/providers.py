@@ -1,18 +1,15 @@
-"""This file contains the different schema providers
-
-:author: Daniel Seifert
-:created: 13.01.2022
-"""
+"""This file contains the different schema providers"""
 import abc
 import io
 import logging
 import pathlib
 from typing import Union, IO
 
+from qlient import __meta__
 from qlient.backend import Backend
 from qlient.schema.types import RawSchema
 
-logger = logging.getLogger("qlient")
+logger = logging.getLogger(__meta__.__title__)
 
 
 class SchemaProvider(abc.ABC):
@@ -29,7 +26,8 @@ class SchemaProvider(abc.ABC):
         This function gets called in order to load the schema from the source.
         Note that this function is not called with any arguments.
 
-        :return: The raw schema in it's json form
+        Returns:
+            The raw schema in it's json form
         """
         raise NotImplementedError
 
@@ -41,7 +39,8 @@ class SchemaProvider(abc.ABC):
         For example this can be a unique url or hostname.
         Or even a static key if the schema remains the same for the backend.
 
-        :return: a string that uniquely identifies the schema
+        Returns:
+            a string that uniquely identifies the schema
         """
         raise NotImplementedError
 
@@ -56,7 +55,8 @@ class StaticSchemaProvider(SchemaProvider):
     def load_schema(self) -> RawSchema:
         """Method that returns the schema that was passed by in the __init__ function.
 
-        :return: The schema that was passed by in the __init__ function.
+        Returns:
+            The schema that was passed by in the __init__ function.
         """
         return self.raw_schema
 
@@ -68,7 +68,8 @@ class StaticSchemaProvider(SchemaProvider):
         Caching does not make sense for this provider, matter of fact, it's actually slower to use caching
         when you have a static schema provider because there are more calls being made.
 
-        :return: the unique cache key of this schema.
+        Returns:
+            the unique cache key of this schema.
         """
         return self._cache_key
 
@@ -89,7 +90,8 @@ class FileSchemaProvider(SchemaProvider):
     def load_schema(self) -> RawSchema:
         """Method to load the schema from the local file
 
-        :return: the schema from the file
+        Returns:
+            the schema from the file
         """
         logger.debug(f"Reading local schema from `{self.file}`")
         import json
@@ -102,7 +104,8 @@ class FileSchemaProvider(SchemaProvider):
 
         This uses the absolute filepath as cache key.
 
-        :return: the absolute filepath
+        Returns:
+            the absolute filepath
         """
         return self.filepath
 
@@ -214,7 +217,8 @@ class BackendSchemaProvider(SchemaProvider):
     def load_schema(self) -> RawSchema:
         """Send the introspection query to the backend and return the given schema
 
-        :return: the given schema from the backend.
+        Returns:
+            the given schema from the backend.
         """
         if not self.should_introspect:
             logger.warning("Schema introspection was disabled by user.")
@@ -233,8 +237,9 @@ class BackendSchemaProvider(SchemaProvider):
         """Property to return the cache key that uniquely identifies this schema in the cache.
 
         This uses the backends cache key property as cache key.
-        See ref:`Backend.cache_key` for more information.
+        See `Backend.cache_key` for more information.
 
-        :return: the cache key as defined by the backend.
+        Returns:
+            the cache key as defined by the backend.
         """
         return self.backend.cache_key

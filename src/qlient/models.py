@@ -1,3 +1,4 @@
+"""This module contains the qlient models"""
 from qlient.types import (
     GraphQLVariables,
     GraphQLQuery,
@@ -10,12 +11,14 @@ from qlient.types import (
 
 
 class GraphQLResponse:
+    """Represents the graph ql response type"""
+
     def __init__(
-        self,
-        response: GraphQLReturnType,
-        query: GraphQLQuery,
-        variables: GraphQLVariables = None,
-        operation_name: GraphQLOperation = None,
+            self,
+            response: GraphQLReturnType,
+            query: GraphQLQuery,
+            variables: GraphQLVariables = None,
+            operation_name: GraphQLOperation = None,
     ):
         self.raw: GraphQLReturnType = response
 

@@ -1,7 +1,7 @@
 site_name: qlient
 site_url: https://qlient-org.github.io/python-qlient/
 site_description: A fast and modern graphql client library designed with simplicity in mind.
-strict: true
+strict: false
 
 nav:
   - Overview: index.md
@@ -15,6 +15,7 @@ nav:
       - usage/schema.md
       - usage/schema_providers.md
       - usage/cache.md
+  - API: api.md
 
 repo_name: qlient-org/python-qlient
 repo_url: https://github.com/qlient-org/python-qlient
@@ -47,3 +48,4 @@ markdown_extensions:
 plugins:
   - include-markdown
   - search
+  - mkdocstrings

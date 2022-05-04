@@ -1,10 +1,25 @@
-/venv/
-/env/
-/virtualenv/
-/.idea/
-/build/
-/dist/
-/.pytest_cache/**
-/*.egg-info/
+# virtualenvs
+venv/
+env/
+virtualenv/
+
+# jetbrains config
+.idea/
+
+# vscode config
+.vscode/
+
+# builds and distributions
+build/
+dist/
+
+# pytest
+.pytest_cache/
+
+*.egg-info
+
+# make file install stamp
 .install.stamp
+
+# code coverage
 .coverage

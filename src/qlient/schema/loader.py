@@ -1,23 +1,23 @@
-"""This file contains the loader functions for the graphql schema
-
-:author: Daniel Seifert
-:created: 10.09.2021
-"""
+"""This file contains the loader functions for the graphql schema"""
 import logging
 from typing import Dict, Optional
 
+from qlient import __meta__
 from qlient.cache import Cache
 from qlient.schema.providers import SchemaProvider
 
-logger = logging.getLogger("qlient")
+logger = logging.getLogger(__meta__.__title__)
 
 
 def load_schema(provider: SchemaProvider, cache: Optional[Cache]) -> Dict:
     """Load the schema from the given provider
 
-    :param provider: holds either None or the schema provider
-    :param cache: holds the cache that contains the schema
-    :return: the schema
+    Args:
+        provider: holds either None or the schema provider
+        cache: holds the cache that contains the schema
+
+    Returns:
+        the schema
     """
     schema: Optional[Dict] = (
         cache.get(provider.cache_key) if cache is not None else None

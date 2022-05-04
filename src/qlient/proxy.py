@@ -1,8 +1,4 @@
-"""This file contains the operation proxies
-
-:author: Daniel Seifert
-:created: 16.09.2021
-"""
+"""This file contains the operation proxies"""
 import abc
 import itertools
 from typing import Dict, Iterable, Optional, List
@@ -19,10 +15,11 @@ from qlient.types import (
 )
 
 
-class OperationProxy(abc.ABC):
+class OperationProxy:
     """Base class for all graphql operations"""
 
-    def __init__(self, proxy: "OperationServiceProxy", operation_field: Field):
+    def __init__(self, operation_type: str, proxy: "OperationServiceProxy", operation_field: Field):
+        self.operation_type: str = operation_type
         self._proxy: "OperationServiceProxy" = proxy
         self.operation_field: Field = operation_field
 
@@ -37,22 +34,60 @@ class OperationProxy(abc.ABC):
         self._root: GraphQLRoot = None
 
     def select(self, *args, **kwargs) -> "OperationProxy":
+        """Method to select fields
+
+        Args:
+            *args: holds the fields to select
+            **kwargs: holds nested fields to select
+
+        Returns:
+            self
+        """
         self._variables.update(self.query_builder.fields(*args, **kwargs))
         return self
 
     def variables(self, **kwargs) -> "OperationProxy":
+        """Method to register variables for the root level
+
+        Args:
+            **kwargs: holds variables for the root level
+
+        Returns:
+            self
+        """
         self._variables.update(self.query_builder.variables(**kwargs))
         return self
 
     def context(self, context: GraphQLContext) -> "OperationProxy":
+        """Method to set the execution context for the operation
+
+        Args:
+            context: holds the context
+
+        Returns:
+            self
+        """
         self._context = context
         return self
 
     def root(self, root: GraphQLRoot) -> "OperationProxy":
+        """Method to set the execution root for the operation
+
+        Args:
+            root: holds the operation root
+
+        Returns:
+            self
+        """
         self._root = root
         return self
 
     def execute(self) -> GraphQLResponse:
+        """Method to execute the operation and return the graphql response.
+
+        Returns:
+            The graphql response as returned from the server
+        """
         return self._proxy(
             query=self.query,
             operation=self.operation_field.name,
@@ -72,27 +107,23 @@ class OperationProxy(abc.ABC):
         return f"{class_name}(field={self.operation_field})"
 
     @property
-    @abc.abstractmethod
-    def operation_type(self) -> str:
-        """Return the operation type.
-
-        :return: Either query, mutation or subscription (Depends on the class name)
-        """
-        raise NotImplementedError
-
-    @property
     def query(self) -> GraphQLQuery:
+        """Property to build the graphql query string
+
+        Returns:
+            The GraphQL Query String
+        """
         return self.query_builder.build()
 
     def __gql__(self) -> GraphQLQuery:
         return self.query
 
     def __call__(
-        self,
-        _fields: Optional[Fields] = None,
-        _context: GraphQLContext = None,
-        _root: GraphQLRoot = None,
-        **query_variables,
+            self,
+            _fields: Optional[Fields] = None,
+            _context: GraphQLContext = None,
+            _root: GraphQLRoot = None,
+            **query_variables,
     ) -> GraphQLResponse:
         if _fields:
             self.select(_fields)
@@ -108,25 +139,22 @@ class OperationProxy(abc.ABC):
 class QueryProxy(OperationProxy):
     """Represents the operation proxy for queries"""
 
-    @property
-    def operation_type(self) -> str:
-        return "query"
+    def __init__(self, proxy: "OperationServiceProxy", operation_field: Field):
+        super(QueryProxy, self).__init__("query", proxy, operation_field)
 
 
 class MutationProxy(OperationProxy):
     """Represents the operation proxy for mutations"""
 
-    @property
-    def operation_type(self) -> str:
-        return "mutation"
+    def __init__(self, proxy: "OperationServiceProxy", operation_field: Field):
+        super(MutationProxy, self).__init__("mutation", proxy, operation_field)
 
 
 class SubscriptionProxy(OperationProxy):
     """Represents the operation proxy for subscriptions"""
 
-    @property
-    def operation_type(self) -> str:
-        return "subscription"
+    def __init__(self, proxy: "OperationServiceProxy", operation_field: Field):
+        super(SubscriptionProxy, self).__init__("subscription", proxy, operation_field)
 
 
 class OperationServiceProxy(abc.ABC):
@@ -149,9 +177,14 @@ class OperationServiceProxy(abc.ABC):
     def __getattr__(self, key: str) -> OperationProxy:
         """Return the OperationProxy for the given key.
 
-        :param key: holds the operation key
-        :return: the according OperationProxy
-        :raises: AttributeError when the no operation with that key exists.
+        Args:
+            key: holds the operation key
+
+        Returns:
+            the according OperationProxy
+
+        Raises:
+            AttributeError when the no operation with that key exists.
         """
         return self[key]
 
@@ -159,9 +192,14 @@ class OperationServiceProxy(abc.ABC):
     def __getitem__(self, key: str) -> OperationProxy:
         """Return the OperationProxy for the given key.
 
-        :param key: holds the operation key
-        :return: the according OperationProxy
-        :raises: AttributeError when the no operation with that key exists.
+        Args:
+            key: holds the operation key
+
+        Returns:
+            the according OperationProxy
+
+        Raises:
+            AttributeError when the no operation with that key exists.
         """
         try:
             return self.operations[key]
@@ -180,14 +218,14 @@ class OperationServiceProxy(abc.ABC):
         return list(itertools.chain(dir(super()), self.operations))
 
     def __call__(
-        self,
-        query: GraphQLQuery,
-        *,
-        operation: GraphQLOperation = None,
-        variables: GraphQLVariables = None,
-        context: GraphQLContext = None,
-        root: GraphQLRoot = None,
-        **kwargs,
+            self,
+            query: GraphQLQuery,
+            *,
+            operation: GraphQLOperation = None,
+            variables: GraphQLVariables = None,
+            context: GraphQLContext = None,
+            root: GraphQLRoot = None,
+            **kwargs,
     ) -> GraphQLResponse:
         """Send a query to the graphql server"""
         response_body = self.client.backend.execute_query(
@@ -212,6 +250,7 @@ class OperationServiceProxy(abc.ABC):
 
     @property
     def supported_bindings(self) -> List[str]:
+        """Property to list the supported bindings aka the keys of the operations dict"""
         return list(self.operations.keys())
 
 

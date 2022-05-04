@@ -1,8 +1,4 @@
-"""This file contains the graphql schema class
-
-:author: Daniel Seifert
-:created: 09.09.2021
-"""
+"""This file contains the graphql schema class"""
 import enum
 from typing import Optional, Dict, List, Any, Union
 
@@ -34,8 +30,11 @@ class TypeRef:
     def parse(cls, type_ref: Union["TypeRef", Dict]) -> "TypeRef":
         """Parse a single type reference
 
-        :param type_ref: holds the type reference to parse
-        :return: the parsed type ref
+        Args:
+            type_ref: holds the type reference to parse
+
+        Returns:
+            the parsed type ref
         """
         if isinstance(type_ref, dict):
             type_ref = cls(**type_ref)
@@ -45,12 +44,15 @@ class TypeRef:
 
     @classmethod
     def parse_list(
-        cls, type_refs: Optional[List[Union["TypeRef", Dict]]]
+            cls, type_refs: Optional[List[Union["TypeRef", Dict]]]
     ) -> List["TypeRef"]:
         """Parse a list of type_refs
 
-        :param type_refs: holds the type_ref list to parse
-        :return: a list of type_refs
+        Args:
+            type_refs: holds the type_ref list to parse
+
+        Returns:
+            a list of type_refs
         """
         return (
             [cls.parse(type_ref) for type_ref in type_refs if type_ref]
@@ -59,10 +61,10 @@ class TypeRef:
         )
 
     def __init__(
-        self,
-        kind: Union[str, Kind, None] = None,
-        name: Optional[str] = None,
-        ofType: Optional["TypeRef"] = None,  # noqa
+            self,
+            kind: Union[str, Kind, None] = None,
+            name: Optional[str] = None,
+            ofType: Optional["TypeRef"] = None,  # noqa
     ):
         self.kind = Kind(kind) if kind else None
         self.name = name
@@ -93,7 +95,8 @@ class TypeRef:
     def infer_type_refs(self, types_dict: Dict[str, "Type"]):
         """Method to recursively infer types down to the deepest type level
 
-        :param types_dict: holds the mapping of type name to type
+        Args:
+            types_dict: holds the mapping of type name to type
         """
         self.type = types_dict.get(self.name)
         if self.of_type_ref is not None:
@@ -105,7 +108,8 @@ class TypeRef:
 
         See docstring of :ref:`__gql__` for more information
 
-        :return: the graphql type representation for this.
+        Returns:
+            the graphql type representation for this.
         """
         return self.__gql__()
 
@@ -115,7 +119,8 @@ class TypeRef:
 
         As long as the `of_type` property is not None, it will call the `leaf_type_name` property of the `of_type`.
 
-        :return:  The name of the very last (leaf) `of_type` Type Ref.
+        Returns:
+            The name of the very last (leaf) `of_type` Type Ref.
         """
         return (
             self.name if self.of_type_ref is None else self.of_type_ref.leaf_type_name
@@ -125,7 +130,8 @@ class TypeRef:
     def leaf_type(self) -> Optional["Type"]:
         """Property to return the very last (leaf) `of_type` type.
 
-        :return: The type of the very last (leaf) `of_type`
+        Returns:
+            The type of the very last (leaf) `of_type`
         """
         return self.type if self.of_type_ref is None else self.of_type_ref.leaf_type
 
@@ -142,8 +148,11 @@ class Input:
     def parse(cls, input_value: Union["Input", Dict]) -> "Input":
         """Parse a single input value
 
-        :param input_value: holds the input value to parse
-        :return: the parsed input
+        Args:
+            input_value: holds the input value to parse
+
+        Returns:
+            the parsed input
         """
         if isinstance(input_value, dict):
             input_value = cls(**input_value)
@@ -155,8 +164,11 @@ class Input:
     def parse_list(cls, inputs: Optional[List[Union["Input", Dict]]]) -> List["Input"]:
         """Parse a list of inputs
 
-        :param inputs: holds the input list to parse
-        :return: a list of inputs
+        Args:
+            inputs: holds the input list to parse
+
+        Returns:
+            a list of inputs
         """
         return (
             [cls.parse(input_value) for input_value in inputs if input_value]
@@ -165,12 +177,12 @@ class Input:
         )
 
     def __init__(
-        self,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        # skipcq: PYL-W0622
-        type: Optional[TypeRef] = None,  # noqa
-        defaultValue: Optional[Any] = None,  # noqa
+            self,
+            name: Optional[str] = None,
+            description: Optional[str] = None,
+            # skipcq: PYL-W0622
+            type: Optional[TypeRef] = None,  # noqa
+            defaultValue: Optional[Any] = None,  # noqa
     ):
         self.name = name
         self.description = description
@@ -199,8 +211,11 @@ class Directive:
     def parse(cls, directive: Union["Directive", Dict]) -> "Directive":
         """Parse a single directive
 
-        :param directive: holds the directive to parse
-        :return: the parsed directive
+        Args:
+            directive: holds the directive to parse
+
+        Returns:
+            the parsed directive
         """
         if isinstance(directive, dict):
             directive = cls(**directive)
@@ -210,12 +225,15 @@ class Directive:
 
     @classmethod
     def parse_list(
-        cls, directives: Optional[List[Union["Directive", Dict]]]
+            cls, directives: Optional[List[Union["Directive", Dict]]]
     ) -> List["Directive"]:
         """Parse a list of directives
 
-        :param directives: holds the directive list to parse
-        :return: a list of directives
+        Args:
+            directives: holds the directive list to parse
+
+        Returns:
+            a list of directives
         """
         return (
             [cls.parse(directive) for directive in directives if directive]
@@ -224,11 +242,11 @@ class Directive:
         )
 
     def __init__(
-        self,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        locations: Optional[List[str]] = None,
-        args: Optional[List[Input]] = None,
+            self,
+            name: Optional[str] = None,
+            description: Optional[str] = None,
+            locations: Optional[List[str]] = None,
+            args: Optional[List[Input]] = None,
     ):
         self.name: Optional[str] = name
         self.description: Optional[str] = description
@@ -239,7 +257,8 @@ class Directive:
     def arg_name_to_arg(self) -> Dict[str, Input]:
         """Property for mapping the argument name to the argument for faster lookups
 
-        :return: A dictionary where the argument name is mapped to the argument itself
+        Returns:
+            A dictionary where the argument name is mapped to the argument itself
         """
         return {arg.name: arg for arg in self.args}
 
@@ -267,8 +286,11 @@ class Field:
     def parse(cls, field: Union["Field", Dict]) -> "Field":
         """Parse a single field
 
-        :param field: holds the field to parse
-        :return: the parsed field
+        Args:
+            field: holds the field to parse
+
+        Returns:
+            the parsed field
         """
         if isinstance(field, dict):
             field = cls(**field)
@@ -280,20 +302,23 @@ class Field:
     def parse_list(cls, fields: Optional[List[Union["Field", Dict]]]) -> List["Field"]:
         """Parse a list of fields
 
-        :param fields: holds the field list to parse
-        :return: a list of fields
+        Args:
+            fields: holds the field list to parse
+
+        Returns:
+            a list of fields
         """
         return [cls.parse(field) for field in fields if field] if fields else []
 
     def __init__(
-        self,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        args: Optional[List[Input]] = None,
-        # skipcq: PYL-W0622
-        type: Optional[TypeRef] = None,  # noqa
-        isDeprecated: Optional[bool] = None,  # noqa
-        deprecationReason: Optional[str] = None,  # noqa
+            self,
+            name: Optional[str] = None,
+            description: Optional[str] = None,
+            args: Optional[List[Input]] = None,
+            # skipcq: PYL-W0622
+            type: Optional[TypeRef] = None,  # noqa
+            isDeprecated: Optional[bool] = None,  # noqa
+            deprecationReason: Optional[str] = None,  # noqa
     ):
         self.name: Optional[str] = name
         self.description: Optional[str] = description
@@ -317,7 +342,8 @@ class Field:
     def arg_name_to_arg(self) -> Dict[str, Input]:
         """Property for mapping the argument name to the argument for faster lookups
 
-        :return: A dictionary where the argument name is mapped to the argument itself
+        Returns:
+            A dictionary where the argument name is mapped to the argument itself
         """
         return {arg.name: arg for arg in self.args}
 
@@ -327,7 +353,8 @@ class Field:
 
         The output type name can only be looked up if the `self.type` property is not None
 
-        :return: Either None (if `self.type` is None) or the leaf type name
+        Returns:
+            Either None (if `self.type` is None) or the leaf type name
         """
         if self.type is None:
             return None
@@ -341,8 +368,11 @@ class EnumValue:
     def parse(cls, enum_value: Union["EnumValue", Dict]) -> "EnumValue":
         """Parse a single field
 
-        :param enum_value: holds the field to parse
-        :return: the parsed field
+        Args:
+            enum_value: holds the field to parse
+
+        Returns:
+            the parsed field
         """
         if isinstance(enum_value, dict):
             enum_value = cls(**enum_value)
@@ -352,12 +382,15 @@ class EnumValue:
 
     @classmethod
     def parse_list(
-        cls, enum_values: Optional[List[Union["EnumValue", Dict]]]
+            cls, enum_values: Optional[List[Union["EnumValue", Dict]]]
     ) -> List["EnumValue"]:
         """Parse a list of enum values
 
-        :param enum_values: holds the list of enum values to parse
-        :return: a list of enum values
+        Args:
+            enum_values: holds the list of enum values to parse
+
+        Returns:
+            a list of enum values
         """
         return (
             [cls.parse(enum_value) for enum_value in enum_values if enum_value]
@@ -366,11 +399,11 @@ class EnumValue:
         )
 
     def __init__(
-        self,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        isDeprecated: Optional[bool] = None,  # noqa
-        deprecationReason: Optional[str] = None,  # noqa
+            self,
+            name: Optional[str] = None,
+            description: Optional[str] = None,
+            isDeprecated: Optional[bool] = None,  # noqa
+            deprecationReason: Optional[str] = None,  # noqa
     ):
         self.name: Optional[str] = name
         self.description: Optional[str] = description
@@ -403,8 +436,11 @@ class Type:
     def parse(cls, type_value: Union["Type", Dict]) -> "Type":
         """Parse a single field
 
-        :param type_value: holds the field to parse
-        :return: the parsed field
+        Args:
+            type_value: holds the field to parse
+
+        Returns:
+            the parsed field
         """
         if isinstance(type_value, dict):
             type_value = cls(**type_value)
@@ -413,15 +449,15 @@ class Type:
         return type_value
 
     def __init__(
-        self,
-        kind: Union[str, Kind, None] = None,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        fields: Optional[List[Union[Field, Dict]]] = None,
-        inputFields: Optional[List[Union[Input, Dict]]] = None,  # noqa
-        interfaces: Optional[List[Union[TypeRef, Dict]]] = None,
-        enumValues: Optional[List[Union[EnumValue, Dict]]] = None,  # noqa
-        possibleTypes: Optional[List[Union[TypeRef, Dict]]] = None,  # noqa
+            self,
+            kind: Union[str, Kind, None] = None,
+            name: Optional[str] = None,
+            description: Optional[str] = None,
+            fields: Optional[List[Union[Field, Dict]]] = None,
+            inputFields: Optional[List[Union[Input, Dict]]] = None,  # noqa
+            interfaces: Optional[List[Union[TypeRef, Dict]]] = None,
+            enumValues: Optional[List[Union[EnumValue, Dict]]] = None,  # noqa
+            possibleTypes: Optional[List[Union[TypeRef, Dict]]] = None,  # noqa
     ):
         self.kind: Optional[Kind] = Kind(kind) if kind else None
         self.name: Optional[str] = name
@@ -438,7 +474,8 @@ class Type:
         This method iterates over each and all fields, input fields, interfaces and possible types to infer
         the `types` of the instance.
 
-        :param types_dict: Holds a dictionary with the name of the typed mapped to the actual graphql schema type.
+        Args:
+            types_dict: Holds a dictionary with the name of the typed mapped to the actual graphql schema type.
         """
         if self.fields is not None:
             for type_field in self.fields:
@@ -460,7 +497,8 @@ class Type:
     def field_name_to_field(self) -> Dict[str, Field]:
         """Property for mapping the field name to the field for faster lookups
 
-        :return: A dictionary where the field name is mapped to the field itself
+        Returns:
+            A dictionary where the field name is mapped to the field itself
         """
         return {
             field.name: field

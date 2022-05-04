@@ -1,3 +1,4 @@
+"""This file contains all the types definitions that can be used for type hinting"""
 from typing import Union, Dict, List, Optional, Any
 
 JSON = Union[str, int, float, bool, None, Dict[str, "JSON"], List["JSON"]]

@@ -1,11 +1,8 @@
-"""This file contains the graphql client
-
-:author: Daniel Seifert
-:created: 09.09.2021
-"""
+"""This file contains the graphql client"""
 import logging
 from typing import Optional, Union
 
+from qlient import __meta__
 from qlient.backend import Backend, HTTPBackend
 from qlient.cache import Cache
 from qlient.proxy import QueryServiceProxy, MutationServiceProxy
@@ -13,18 +10,18 @@ from qlient.schema.providers import BackendSchemaProvider
 from qlient.schema.schema import Schema
 from qlient.settings import Settings
 
-logger = logging.getLogger("qlient")
+logger = logging.getLogger(__meta__.__title__)
 
 
 class Client:
     """This class represents the base qlient Client."""
 
     def __init__(
-        self,
-        backend: Union[str, Backend],
-        schema: Optional[Schema] = None,
-        settings: Optional[Settings] = None,
-        cache: Optional[Cache] = None,
+            self,
+            backend: Union[str, Backend],
+            schema: Optional[Schema] = None,
+            settings: Optional[Settings] = None,
+            cache: Optional[Cache] = None,
     ):
         self.settings: Settings = settings or Settings()
 
@@ -53,9 +50,10 @@ class Client:
     def query(self) -> QueryServiceProxy:
         """Cached property for the query service
 
-        If the :ref:`_query_service` is None, create a new QueryService.
+        If the `_query_service` is None, create a new QueryService.
 
-        :return: the query service in use
+        Returns:
+            the query service in use
         """
         if self._query_service is None:
             self._query_service = QueryServiceProxy(self)
@@ -65,9 +63,10 @@ class Client:
     def mutation(self) -> MutationServiceProxy:
         """Cached property for the mutation service
 
-        if the ref:`_mutation_service` is None, create a new MutationService.
+        if the `_mutation_service` is None, create a new MutationService.
 
-        :return: the mutation service to use
+        Returns:
+            the mutation service to use
         """
         if self._mutation_service is None:
             self._mutation_service = MutationServiceProxy(self)

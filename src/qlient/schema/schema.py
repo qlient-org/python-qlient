@@ -1,27 +1,24 @@
-"""This file contains the graphql schema
-
-:author: Daniel Seifert
-:created: 16.09.2021
-"""
+"""This file contains the graphql schema"""
 import logging
 from typing import Optional, Dict
 
+from qlient import __meta__
 from qlient.cache import Cache
 from qlient.schema.providers import SchemaProvider
 from qlient.schema.types import Type, Directive
 from qlient.settings import Settings
 
-logger = logging.getLogger("qlient")
+logger = logging.getLogger(__meta__.__title__)
 
 
 class Schema:
     """Represents a graphql schema"""
 
     def __init__(
-        self,
-        provider: SchemaProvider,
-        settings: Optional[Settings] = None,
-        cache: Optional[Cache] = None,
+            self,
+            provider: SchemaProvider,
+            settings: Optional[Settings] = None,
+            cache: Optional[Cache] = None,
     ):
         self.schema_provider: SchemaProvider = provider
         self.settings: Settings = settings or Settings()

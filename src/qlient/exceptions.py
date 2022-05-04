@@ -1,8 +1,4 @@
-"""This file contains all qlient specific exceptions
-
-:author: Daniel Seifert
-:created: 12.09.2021
-"""
+"""This file contains all qlient specific exceptions"""
 from typing import Dict
 
 

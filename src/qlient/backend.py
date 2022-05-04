@@ -1,14 +1,11 @@
-"""This file contains the different transports
-
-:author: Daniel Seifert
-:created: 09.09.2021
-"""
+"""This file contains the different qlient backends"""
 import abc
 import logging
 from typing import Optional
 
 import requests
 
+from qlient import __meta__
 from qlient.types import (
     GraphQLVariables,
     GraphQLQuery,
@@ -18,7 +15,7 @@ from qlient.types import (
     GraphQLRoot,
 )
 
-logger = logging.getLogger("qlient")
+logger = logging.getLogger(__meta__.__title__)
 
 
 class Backend(abc.ABC):
@@ -45,12 +42,15 @@ class Backend(abc.ABC):
         If you want to create an async backend, make sure that the `execute_query` method
         returns a result and not a Promise.
 
-        :param query: holds the graphql query
-        :param variables: optional, holds variables that are mentioned in the query
-        :param operation_name: optional, holds the name of this specific operation
-        :param context: optional, holds a graphql context
-        :param root: optional, holds a root value for this query
-        :return: the result of the graphql backend
+        Args:
+            query: holds the graphql query
+            variables: optional, holds variables that are mentioned in the query
+            operation_name: optional, holds the name of this specific operation
+            context: optional, holds a graphql context
+            root: optional, holds a root value for this query
+
+        Returns:
+            the result of the graphql backend
         """
         raise NotImplementedError
 
@@ -64,7 +64,8 @@ class Backend(abc.ABC):
 
         This cache key is required for the BackendSchemaProvider.
 
-        :return: a string that uniquely identifies the schema
+        Returns:
+            a string that uniquely identifies the schema
         """
         raise NotImplementedError
 
@@ -95,12 +96,15 @@ class HTTPBackend(Backend):
     ) -> GraphQLReturnType:
         """Send a query to the http graphql backend
 
-        :param query: holds the query
-        :param variables: holds variables that should be sent with in the query
-        :param operation_name: holds the name of the operation
-        :param context: ignored in http
-        :param root: ignored in http
-        :return: the response parsed as dictionary
+        Args:
+            query: holds the query
+            variables: holds variables that should be sent with in the query
+            operation_name: holds the name of the operation
+            context: ignored in http
+            root: ignored in http
+
+        Returns:
+            the response parsed as dictionary
         """
         logger.info(f"Sending operation `{operation_name}` to `{self.endpoint}`")
         logger.debug(f"Query: {query}")
@@ -121,7 +125,8 @@ class HTTPBackend(Backend):
     def cache_key(self) -> str:
         """The http backend uses the http server uri as the unique cache key.
 
-        :return: the endpoint where the graphql server is running.
+        Returns:
+            the endpoint where the graphql server is running.
         """
         return self.endpoint
 
