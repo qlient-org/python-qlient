@@ -5,7 +5,11 @@ from typing import Optional, Union
 from qlient import __meta__
 from qlient.backend import Backend, HTTPBackend
 from qlient.cache import Cache
-from qlient.proxy import QueryServiceProxy, MutationServiceProxy
+from qlient.proxy import (
+    QueryServiceProxy,
+    MutationServiceProxy,
+    SubscriptionServiceProxy,
+)
 from qlient.schema.providers import BackendSchemaProvider
 from qlient.schema.schema import Schema
 from qlient.settings import Settings
@@ -17,11 +21,11 @@ class Client:
     """This class represents the base qlient Client."""
 
     def __init__(
-            self,
-            backend: Union[str, Backend],
-            schema: Optional[Schema] = None,
-            settings: Optional[Settings] = None,
-            cache: Optional[Cache] = None,
+        self,
+        backend: Union[str, Backend],
+        schema: Optional[Schema] = None,
+        settings: Optional[Settings] = None,
+        cache: Optional[Cache] = None,
     ):
         self.settings: Settings = settings or Settings()
 
@@ -45,6 +49,7 @@ class Client:
 
         self._query_service: Optional[QueryServiceProxy] = None
         self._mutation_service: Optional[MutationServiceProxy] = None
+        self._subscription_service: Optional[SubscriptionServiceProxy] = None
 
     @property
     def query(self) -> QueryServiceProxy:
@@ -71,6 +76,19 @@ class Client:
         if self._mutation_service is None:
             self._mutation_service = MutationServiceProxy(self)
         return self._mutation_service
+
+    @property
+    def subscription(self) -> SubscriptionServiceProxy:
+        """Cached property for the subscription service
+
+        if the `_subscription_service` is None, create a new MutationService.
+
+        Returns:
+            the subscription service to use
+        """
+        if self._subscription_service is None:
+            self._subscription_service = SubscriptionServiceProxy(self)
+        return self._subscription_service
 
     def __str__(self) -> str:
         """Return a simple string representation of the client"""

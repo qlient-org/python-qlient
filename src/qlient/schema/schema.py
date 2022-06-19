@@ -15,10 +15,10 @@ class Schema:
     """Represents a graphql schema"""
 
     def __init__(
-            self,
-            provider: SchemaProvider,
-            settings: Optional[Settings] = None,
-            cache: Optional[Cache] = None,
+        self,
+        provider: SchemaProvider,
+        settings: Optional[Settings] = None,
+        cache: Optional[Cache] = None,
     ):
         self.schema_provider: SchemaProvider = provider
         self.settings: Settings = settings or Settings()

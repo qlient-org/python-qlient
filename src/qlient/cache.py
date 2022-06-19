@@ -120,10 +120,10 @@ class SqliteCache(Cache):
     ITER_STMT = f"SELECT URL, SCHEMA FROM {TABLE_NAME}"  # skipcq: BAN-B608
 
     def __init__(
-            self,
-            path: Optional[str] = None,
-            expires_in: Union[int, datetime.timedelta] = ONE_HOUR,
-            settings: Optional[Settings] = None,
+        self,
+        path: Optional[str] = None,
+        expires_in: Union[int, datetime.timedelta] = ONE_HOUR,
+        settings: Optional[Settings] = None,
     ):
         """Initialize a new sqlite cache
 

@@ -1,9 +1,8 @@
 # skipcq: PY-D0003
-def test_query_service():
+def test_query_service(swapi_schema):
     from qlient.client import Client
     from qlient.proxy import QueryServiceProxy, QueryProxy
-    from __base__ import make_test_schema
-    client = Client("https://...", schema=make_test_schema())
+    client = Client("https://...", schema=swapi_schema)
     service = QueryServiceProxy(client)
     assert service.operations != {}
     assert "allPeople" in service
@@ -11,11 +10,10 @@ def test_query_service():
 
 
 # skipcq: PY-D0003
-def test_query_query_select():
+def test_query_query_select(swapi_schema):
     from qlient.client import Client
     from qlient.proxy import QueryServiceProxy
-    from __base__ import make_test_schema
-    client = Client("https://...", schema=make_test_schema())
+    client = Client("https://...", schema=swapi_schema)
     service = QueryServiceProxy(client)
     expected = "query film { film { id title episodeID } }"
     actual = service.film.select("id", "title", "episodeID").__gql__()
@@ -23,11 +21,10 @@ def test_query_query_select():
 
 
 # skipcq: PY-D0003
-def test_query_query_variables():
+def test_query_query_variables(swapi_schema):
     from qlient.client import Client
     from qlient.proxy import QueryServiceProxy
-    from __base__ import make_test_schema
-    client = Client("https://...", schema=make_test_schema())
+    client = Client("https://...", schema=swapi_schema)
     service = QueryServiceProxy(client)
     expected = "query film($id: ID) { film(id: $id) { id title episodeID } }"
     actual = service.film.variables(id="ZmlsbXM6MQ==").select("id", "title", "episodeID").__gql__()
@@ -35,10 +32,9 @@ def test_query_query_variables():
 
 
 # skipcq: PY-D0003
-def test_mutation_service():
+def test_mutation_service(swapi_schema):
     from qlient.client import Client
     from qlient.proxy import MutationServiceProxy
-    from __base__ import make_test_schema
-    client = Client("https://...", schema=make_test_schema())
+    client = Client("https://...", schema=swapi_schema)
     service = MutationServiceProxy(client)
     assert service.operations == {}

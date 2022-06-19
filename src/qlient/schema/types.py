@@ -44,7 +44,7 @@ class TypeRef:
 
     @classmethod
     def parse_list(
-            cls, type_refs: Optional[List[Union["TypeRef", Dict]]]
+        cls, type_refs: Optional[List[Union["TypeRef", Dict]]]
     ) -> List["TypeRef"]:
         """Parse a list of type_refs
 
@@ -61,10 +61,10 @@ class TypeRef:
         )
 
     def __init__(
-            self,
-            kind: Union[str, Kind, None] = None,
-            name: Optional[str] = None,
-            ofType: Optional["TypeRef"] = None,  # noqa
+        self,
+        kind: Union[str, Kind, None] = None,
+        name: Optional[str] = None,
+        ofType: Optional["TypeRef"] = None,  # noqa
     ):
         self.kind = Kind(kind) if kind else None
         self.name = name
@@ -177,12 +177,12 @@ class Input:
         )
 
     def __init__(
-            self,
-            name: Optional[str] = None,
-            description: Optional[str] = None,
-            # skipcq: PYL-W0622
-            type: Optional[TypeRef] = None,  # noqa
-            defaultValue: Optional[Any] = None,  # noqa
+        self,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        # skipcq: PYL-W0622
+        type: Optional[TypeRef] = None,  # noqa
+        defaultValue: Optional[Any] = None,  # noqa
     ):
         self.name = name
         self.description = description
@@ -225,7 +225,7 @@ class Directive:
 
     @classmethod
     def parse_list(
-            cls, directives: Optional[List[Union["Directive", Dict]]]
+        cls, directives: Optional[List[Union["Directive", Dict]]]
     ) -> List["Directive"]:
         """Parse a list of directives
 
@@ -242,11 +242,11 @@ class Directive:
         )
 
     def __init__(
-            self,
-            name: Optional[str] = None,
-            description: Optional[str] = None,
-            locations: Optional[List[str]] = None,
-            args: Optional[List[Input]] = None,
+        self,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        locations: Optional[List[str]] = None,
+        args: Optional[List[Input]] = None,
     ):
         self.name: Optional[str] = name
         self.description: Optional[str] = description
@@ -311,14 +311,14 @@ class Field:
         return [cls.parse(field) for field in fields if field] if fields else []
 
     def __init__(
-            self,
-            name: Optional[str] = None,
-            description: Optional[str] = None,
-            args: Optional[List[Input]] = None,
-            # skipcq: PYL-W0622
-            type: Optional[TypeRef] = None,  # noqa
-            isDeprecated: Optional[bool] = None,  # noqa
-            deprecationReason: Optional[str] = None,  # noqa
+        self,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        args: Optional[List[Input]] = None,
+        # skipcq: PYL-W0622
+        type: Optional[TypeRef] = None,  # noqa
+        isDeprecated: Optional[bool] = None,  # noqa
+        deprecationReason: Optional[str] = None,  # noqa
     ):
         self.name: Optional[str] = name
         self.description: Optional[str] = description
@@ -382,7 +382,7 @@ class EnumValue:
 
     @classmethod
     def parse_list(
-            cls, enum_values: Optional[List[Union["EnumValue", Dict]]]
+        cls, enum_values: Optional[List[Union["EnumValue", Dict]]]
     ) -> List["EnumValue"]:
         """Parse a list of enum values
 
@@ -399,11 +399,11 @@ class EnumValue:
         )
 
     def __init__(
-            self,
-            name: Optional[str] = None,
-            description: Optional[str] = None,
-            isDeprecated: Optional[bool] = None,  # noqa
-            deprecationReason: Optional[str] = None,  # noqa
+        self,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        isDeprecated: Optional[bool] = None,  # noqa
+        deprecationReason: Optional[str] = None,  # noqa
     ):
         self.name: Optional[str] = name
         self.description: Optional[str] = description
@@ -449,15 +449,15 @@ class Type:
         return type_value
 
     def __init__(
-            self,
-            kind: Union[str, Kind, None] = None,
-            name: Optional[str] = None,
-            description: Optional[str] = None,
-            fields: Optional[List[Union[Field, Dict]]] = None,
-            inputFields: Optional[List[Union[Input, Dict]]] = None,  # noqa
-            interfaces: Optional[List[Union[TypeRef, Dict]]] = None,
-            enumValues: Optional[List[Union[EnumValue, Dict]]] = None,  # noqa
-            possibleTypes: Optional[List[Union[TypeRef, Dict]]] = None,  # noqa
+        self,
+        kind: Union[str, Kind, None] = None,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        fields: Optional[List[Union[Field, Dict]]] = None,
+        inputFields: Optional[List[Union[Input, Dict]]] = None,  # noqa
+        interfaces: Optional[List[Union[TypeRef, Dict]]] = None,
+        enumValues: Optional[List[Union[EnumValue, Dict]]] = None,  # noqa
+        possibleTypes: Optional[List[Union[TypeRef, Dict]]] = None,  # noqa
     ):
         self.kind: Optional[Kind] = Kind(kind) if kind else None
         self.name: Optional[str] = name

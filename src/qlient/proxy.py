@@ -1,7 +1,7 @@
 """This file contains the operation proxies"""
 import abc
 import itertools
-from typing import Dict, Iterable, Optional, List
+from typing import Dict, Iterable, Optional, List, Any
 
 from qlient.builder import TypedGQLQueryBuilder, Fields
 from qlient.models import GraphQLResponse
@@ -18,7 +18,12 @@ from qlient.types import (
 class OperationProxy:
     """Base class for all graphql operations"""
 
-    def __init__(self, operation_type: str, proxy: "OperationServiceProxy", operation_field: Field):
+    def __init__(
+        self,
+        operation_type: str,
+        proxy: "OperationServiceProxy",
+        operation_field: Field,
+    ):
         self.operation_type: str = operation_type
         self._proxy: "OperationServiceProxy" = proxy
         self.operation_field: Field = operation_field
@@ -119,11 +124,11 @@ class OperationProxy:
         return self.query
 
     def __call__(
-            self,
-            _fields: Optional[Fields] = None,
-            _context: GraphQLContext = None,
-            _root: GraphQLRoot = None,
-            **query_variables,
+        self,
+        _fields: Optional[Fields] = None,
+        _context: GraphQLContext = None,
+        _root: GraphQLRoot = None,
+        **query_variables,
     ) -> GraphQLResponse:
         if _fields:
             self.select(_fields)
@@ -218,25 +223,16 @@ class OperationServiceProxy(abc.ABC):
         return list(itertools.chain(dir(super()), self.operations))
 
     def __call__(
-            self,
-            query: GraphQLQuery,
-            *,
-            operation: GraphQLOperation = None,
-            variables: GraphQLVariables = None,
-            context: GraphQLContext = None,
-            root: GraphQLRoot = None,
-            **kwargs,
-    ) -> GraphQLResponse:
-        """Send a query to the graphql server"""
-        response_body = self.client.backend.execute_query(
-            query, variables, operation, context, root
-        )
-        return GraphQLResponse(
-            response=response_body,
-            query=query,
-            variables=variables,
-            operation_name=operation,
-        )
+        self,
+        query: GraphQLQuery,
+        *,
+        operation: GraphQLOperation = None,
+        variables: GraphQLVariables = None,
+        context: GraphQLContext = None,
+        root: GraphQLRoot = None,
+        **kwargs,
+    ) -> Any:
+        raise NotImplementedError
 
     def __str__(self) -> str:
         """Return a simple string representation of this instance"""
@@ -257,7 +253,28 @@ class OperationServiceProxy(abc.ABC):
 class QueryServiceProxy(OperationServiceProxy):
     """Represents the query service"""
 
-    def get_bindings(self) -> Dict[str, OperationProxy]:
+    def __call__(
+        self,
+        query: GraphQLQuery,
+        *,
+        operation: GraphQLOperation = None,
+        variables: GraphQLVariables = None,
+        context: GraphQLContext = None,
+        root: GraphQLRoot = None,
+        **kwargs,
+    ) -> GraphQLResponse:
+        """Send a query to the graphql server"""
+        response_body = self.client.backend.execute_query(
+            query, variables, operation, context, root
+        )
+        return GraphQLResponse(
+            response=response_body,
+            query=query,
+            variables=variables,
+            operation_name=operation,
+        )
+
+    def get_bindings(self) -> Dict[str, QueryProxy]:
         """Method to get the query service bindings"""
         bindings = {}
         if not self.client.schema.query_type:
@@ -271,7 +288,28 @@ class QueryServiceProxy(OperationServiceProxy):
 class MutationServiceProxy(OperationServiceProxy):
     """Represents the mutation service"""
 
-    def get_bindings(self) -> Dict[str, OperationProxy]:
+    def __call__(
+        self,
+        query: GraphQLQuery,
+        *,
+        operation: GraphQLOperation = None,
+        variables: GraphQLVariables = None,
+        context: GraphQLContext = None,
+        root: GraphQLRoot = None,
+        **kwargs,
+    ) -> GraphQLResponse:
+        """Send a query to the graphql server"""
+        response_body = self.client.backend.execute_mutation(
+            query, variables, operation, context, root
+        )
+        return GraphQLResponse(
+            response=response_body,
+            query=query,
+            variables=variables,
+            operation_name=operation,
+        )
+
+    def get_bindings(self) -> Dict[str, MutationProxy]:
         """Method to get the mutation service bindings"""
         bindings = {}
         if not self.client.schema.mutation_type:
@@ -279,4 +317,35 @@ class MutationServiceProxy(OperationServiceProxy):
 
         for field in self.client.schema.mutation_type.fields:
             bindings[field.name] = MutationProxy(self, field)
+        return bindings
+
+
+class SubscriptionServiceProxy(OperationServiceProxy):
+    """Represents the subscription service"""
+
+    def __call__(
+        self,
+        query: GraphQLQuery,
+        *,
+        operation: GraphQLOperation = None,
+        variables: GraphQLVariables = None,
+        context: GraphQLContext = None,
+        root: GraphQLRoot = None,
+        **kwargs,
+    ) -> GraphQLResponse:
+        """Send a query to the graphql server"""
+        pass
+
+    def get_bindings(self) -> Dict[str, SubscriptionProxy]:
+        """Method to get the subscription service bindings
+
+        Returns:
+            A dictionary with the service name bound to the subscription service proxy
+        """
+        bindings = {}
+        if not self.client.schema.subscription_type:
+            return bindings
+
+        for field in self.client.schema.subscription_type.fields:
+            bindings[field.name] = SubscriptionProxy(self, field)
         return bindings

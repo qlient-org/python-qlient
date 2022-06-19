@@ -15,38 +15,34 @@ def test_directive_with_variables():
 
 
 # skipcq: PY-D0003
-def test_prepared_directive():
+def test_prepared_directive(swapi_schema):
     from qlient.builder import Directive, PreparedDirective
-    from __base__ import make_test_schema
     my_directive = Directive("include")
-    prepared_directive = my_directive.prepare(make_test_schema())
+    prepared_directive = my_directive.prepare(swapi_schema)
     assert isinstance(prepared_directive, PreparedDirective)
 
 
 # skipcq: PY-D0003
-def test_prepared_directive_with_variables():
+def test_prepared_directive_with_variables(swapi_schema):
     from qlient.builder import Directive, PreparedDirective
-    from __base__ import make_test_schema
     my_directive = Directive("include", **{"if": True})
-    prepared_directive = my_directive.prepare(make_test_schema())
+    prepared_directive = my_directive.prepare(swapi_schema)
     assert isinstance(prepared_directive, PreparedDirective)
     assert prepared_directive.name == "include"
     assert "if" in prepared_directive.var_name_to_var_ref
 
 
 # skipcq: PY-D0003
-def test_prepared_directive_gql():
+def test_prepared_directive_gql(swapi_schema):
     from qlient.builder import Directive
-    from __base__ import make_test_schema
     my_directive = Directive("include")
-    prepared_directive = my_directive.prepare(make_test_schema())
+    prepared_directive = my_directive.prepare(swapi_schema)
     assert prepared_directive.__gql__() == "@include"
 
 
 # skipcq: PY-D0003
-def test_prepared_directive_with_variables_gql():
+def test_prepared_directive_with_variables_gql(swapi_schema):
     from qlient.builder import Directive
-    from __base__ import make_test_schema
     my_directive = Directive("include", **{"if": True})
-    prepared_directive = my_directive.prepare(make_test_schema())
+    prepared_directive = my_directive.prepare(swapi_schema)
     assert prepared_directive.__gql__() == f"@include(if: $include_{id(prepared_directive)}_if)"
