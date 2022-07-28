@@ -1,12 +1,19 @@
 # Qlient: Python GraphQL Client
 
-[![qlient-org](https://circleci.com/gh/qlient-org/python-qlient.svg?style=svg)](https://circleci.com/gh/qlient-org/python-qlient)
-[![DeepSource](https://deepsource.io/gh/qlient-org/python-qlient.svg/?label=resolved+issues&token=WQWScZui5Jy-cNg3fzvWxqhW)](https://deepsource.io/gh/qlient-org/python-qlient/?ref=repository-badge)
+[![DeepSource](https://deepsource.io/gh/qlient-org/python-qlient.svg/?label=active+issues&token=2ZJ0b1dinekjVtwgJHSy286C)](https://deepsource.io/gh/qlient-org/python-qlient/?ref=repository-badge)
+[![DeepSource](https://deepsource.io/gh/qlient-org/python-qlient.svg/?label=resolved+issues&token=2ZJ0b1dinekjVtwgJHSy286C)](https://deepsource.io/gh/qlient-org/python-qlient/?ref=repository-badge)
 [![pypi](https://img.shields.io/pypi/v/qlient.svg)](https://pypi.python.org/pypi/qlient)
 [![versions](https://img.shields.io/pypi/pyversions/qlient.svg)](https://github.com/qlient-org/python-qlient)
 [![license](https://img.shields.io/github/license/qlient-org/python-qlient.svg)](https://github.com/qlient-org/python-qlient/blob/master/LICENSE)
+[![codestyle](https://img.shields.io/badge/code%20style-black-black)](https://github.com/psf/black)
 
 A fast and modern graphql client designed with simplicity in mind.
+
+## Key Features
+
+* Compatible with Python 3.7 and above
+* Build on top of [qlient-core](https://github.com/qlient-org/python-qlient-core), [requests](https://github.com/psf/requests) and [websocket-client](https://github.com/websocket-client/websocket-client/)
+* support for subscriptions
 
 ## Help
 
@@ -21,7 +28,7 @@ pip install qlient
 ## Quick Start
 
 ````python
-from qlient import Client, GraphQLResponse
+from qlient.http import HTT, GraphQLResponse
 
 client = Client("https://swapi-graphql.netlify.app/.netlify/functions/index")
 

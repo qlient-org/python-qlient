@@ -1,0 +1,30 @@
+name: Qlient Requests - Docs
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+      - name: Set up Poetry
+        uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: 1.1.13
+      - name: Install dependencies
+        run: poetry install
+      - name: Build And Commit Site
+        run: |
+          poetry run mkdocs build
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add site
+          git commit -m "ci: build and commit documentation"
+          git push

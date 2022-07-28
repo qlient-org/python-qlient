@@ -16,5 +16,5 @@ client = Client(
         path="/path/to/my/schema_cache.sqlite",
         expires_in=86400,  # seconds
         settings=settings,
-    )
+    ),
 )

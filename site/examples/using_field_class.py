@@ -3,12 +3,10 @@ from qlient import Field, Directive
 my_field = Field(
     # Mandatory, the name of the field
     "repository",
-
     # Schema Field specific inputs
     # say we want the last 5 repositories where the name matches abc
     last=5,
     name="*abc*",
-
     # Qlient Field specific arguments start with a `_`
     # These arguments are Optional and can be left empty
     # Optional, the alias of the field

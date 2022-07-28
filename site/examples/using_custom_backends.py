@@ -10,7 +10,7 @@ from qlient.types import (
     GraphQLOperation,
     GraphQLReturnType,
     GraphQLContext,
-    GraphQLRoot
+    GraphQLRoot,
 )
 
 
@@ -20,9 +20,7 @@ class Book:
     author: str
 
 
-my_books = [
-    Book(title="The Great Gatsby", author="F. Scott Fitzgerald")
-]
+my_books = [Book(title="The Great Gatsby", author="F. Scott Fitzgerald")]
 
 
 @strawberry.type
@@ -49,22 +47,23 @@ my_book_schema = strawberry.Schema(query=Query, mutation=Mutation)
 # down below we create a custom backend for our client
 # this backend executes all queries locally using the given strawberry.Schema
 class StrawberryBackend(Backend):
-
     def __init__(self, schema: strawberry.Schema):
         self.schema = schema
 
     def execute_query(
-            self,
-            query: GraphQLQuery,
-            variables: GraphQLVariables = None,
-            operation_name: GraphQLOperation = None,
-            context: GraphQLContext = None,
-            root: GraphQLRoot = None,
+        self,
+        query: GraphQLQuery,
+        variables: GraphQLVariables = None,
+        operation_name: GraphQLOperation = None,
+        context: GraphQLContext = None,
+        root: GraphQLRoot = None,
     ) -> GraphQLReturnType:
         # here we execute the given query on the local strawberry schema
         # as described in the testing section of the strawberry documentation
         # https://strawberry.rocks/docs/operations/testing
-        result = self.schema.execute_sync(query, variables, context, root, operation_name)
+        result = self.schema.execute_sync(
+            query, variables, context, root, operation_name
+        )
         return {
             "data": result.data,
             "errors": result.errors,
@@ -85,12 +84,12 @@ client = Client(StrawberryBackend(my_book_schema))
 # https://strawberry.rocks/docs/types/schema-configurations
 response: GraphQLResponse = client.query.getBooks(_fields=["title", "author"])
 
-print(response.data)  # {"getBooks": [{"title": "The Great Gatsby", "author": "F. Scott Fitzgerald"}]}
+print(
+    response.data
+)  # {"getBooks": [{"title": "The Great Gatsby", "author": "F. Scott Fitzgerald"}]}
 
 response: GraphQLResponse = client.mutation.addBook(
-    title="1984",
-    author="George Orwell",
-    _fields=["title", "author"]
+    title="1984", author="George Orwell", _fields=["title", "author"]
 )
 
 print(response.data)
