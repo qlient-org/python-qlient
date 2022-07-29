@@ -2,13 +2,7 @@ from qlient import Client, Fields
 
 client: Client = Client("https://swapi-graphql.netlify.app/.netlify/functions/index")
 
-nested_fields = Fields(
-    people=Fields(
-        "id",
-        "name",
-        homeworld="name"
-    )
-)
+nested_fields = Fields(people=Fields("id", "name", homeworld="name"))
 
 response = client.query.allPeople(first=3, _fields=nested_fields)
 

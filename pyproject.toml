@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qlient"
-version = "0.2.3-beta"
+version = "1.0.0"
 description = "A fast and modern graphql client designed with simplicity in mind."
 authors = ["Daniel Seifert <info@danielseifert.ch>"]
 maintainers = ["Daniel Seifert <info@danielseifert.ch>"]
@@ -11,7 +11,7 @@ repository = "https://github.com/qlient-org/python-qlient"
 documentation = "https://qlient-org.github.io/python-qlient/"
 keywords = ["graphql", "client", "api", "query", "mutation"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Natural Language :: English",
     "Intended Audience :: Developers",
@@ -32,30 +32,22 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
+qlient-core = "^1.0.1"
 requests = "^2.27.1"
-platformdirs = "^2.5.1"
+websocket-client = "^1.3.3"
 
 [tool.poetry.dev-dependencies]
-coverage = "^6.3.2"
-pytest = "^7.0.1"
-requests-mock = "^1.9.3"
-strawberry-graphql = "^0.98.0"
-hypothesis = "^6.37.2"
-yappi = "^1.3.3"
-mkdocs = "^1.2.3"
-mkdocs-material = "^8.2.1"
-mkdocs-exclude = "^1.0.2"
-mkdocs-include-markdown-plugin = "^3.3.0"
-cleo = "^0.8.1"
-tomlkit = "^0.10.0"
-CacheControl = "^0.12.10"
-cachy = "^0.3.0"
-html5lib = "^1.1"
-pkginfo = "^1.8.2"
-virtualenv = "^20.13.1"
-lockfile = "^0.12.2"
-pexpect = "^4.8.0"
-shellingham = "^1.4.0"
+coverage = "^6.4.1"
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+pytest-asyncio = "^0.19.0"
+black = "^22.3.0"
+mkdocs = "^1.3.0"
+mkdocs-material = "^8.3.9"
+mkdocstrings = { version = "^0.19.0", extras = ["python"] }
+mkdocs-include-markdown-plugin = "^3.5.2"
+strawberry-graphql = {extras = ["fastapi"], version = "^0.122.0"}
+uvicorn = {extras = ["standard"], version = "^0.18.2"}
 
 
 [build-system]

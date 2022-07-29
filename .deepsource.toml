@@ -1,11 +1,15 @@
 version = 1
 
 test_patterns = ["tests/**"]
+exclude_patterns = ["docs/**", "site/**"]
 
 [[analyzers]]
 name = "python"
 enabled = true
 
   [analyzers.meta]
-  max_line_length = 120
   runtime_version = "3.x.x"
+
+[[transformers]]
+name = "black"
+enabled = true

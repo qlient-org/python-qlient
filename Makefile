@@ -30,7 +30,7 @@ clean:
 
 .PHONY: test
 test: $(INSTALL_STAMP)
-	$(POETRY) run coverage run -m pytest
+	$(POETRY) run pytest --cov=src
 
 
 .PHONY: report
