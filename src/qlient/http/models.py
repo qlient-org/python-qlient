@@ -4,22 +4,26 @@ from typing import AsyncGenerator, Optional
 import websocket
 from qlient.core import GraphQLResponse, GraphQLSubscriptionRequest
 
-from qlient.http.consts import CONNECTION_TERMINATE, CONNECTION_ERROR, COMPLETE, CONNECTION_KEEP_ALIVE, STOP
+from qlient.http.consts import (
+    CONNECTION_TERMINATE,
+    CONNECTION_ERROR,
+    COMPLETE,
+    CONNECTION_KEEP_ALIVE,
+    STOP,
+)
 from qlient.http.settings import HTTPSettings
 
 
 class GraphQLSubscriptionResponse(GraphQLResponse):
-    """Model for a subscription response
-
-    """
+    """Model for a subscription response"""
 
     request: GraphQLSubscriptionRequest
 
     def __init__(
-            self,
-            request: GraphQLSubscriptionRequest,
-            socket: websocket.WebSocket,
-            settings: Optional[HTTPSettings] = None,
+        self,
+        request: GraphQLSubscriptionRequest,
+        socket: websocket.WebSocket,
+        settings: Optional[HTTPSettings] = None,
     ):
         if settings is None:
             settings = HTTPSettings()
@@ -28,7 +32,9 @@ class GraphQLSubscriptionResponse(GraphQLResponse):
         self.ws: websocket.WebSocket = socket
         self.settings: HTTPSettings = settings
 
-        super(GraphQLSubscriptionResponse, self).__init__(request, self.message_generator())
+        super(GraphQLSubscriptionResponse, self).__init__(
+            request, self.message_generator()
+        )
 
     def message_generator(self) -> AsyncGenerator:
         """The message generator
@@ -62,7 +68,9 @@ class GraphQLSubscriptionResponse(GraphQLResponse):
         """
         if not self.ws.connected:
             return
-        self.ws.send(self.settings.json_dumps({"type": STOP, "id": self.request.subscription_id}))
+        self.ws.send(
+            self.settings.json_dumps({"type": STOP, "id": self.request.subscription_id})
+        )
 
     def close(self):
         self.stop()

@@ -64,14 +64,12 @@ def qlient_fastapi_app(strawberry_schema) -> fastapi.FastAPI:
 
 @pytest.fixture(scope="session", autouse=True)
 def qlient_fastapi_app_proc(qlient_fastapi_app):
+    def _target():
+        uvicorn.run(qlient_fastapi_app, host="127.0.0.1", port=8080)
+
     proc = multiprocessing.Process(
-        target=uvicorn.run,
-        args=(qlient_fastapi_app,),
-        kwargs={
-            "host": "127.0.0.1",
-            "port": 8080,
-        },
-        daemon=True
+        target=_target,
+        daemon=True,
     )
     proc.start()
 

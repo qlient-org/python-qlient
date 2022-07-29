@@ -1,4 +1,4 @@
-name: Qlient Requests - Pytest
+name: Qlient HTTP Requests - Pytest
 
 on: [push]
 

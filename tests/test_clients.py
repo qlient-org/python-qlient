@@ -40,4 +40,3 @@ def test_async_client_subscription_with_auto_sub_id(qlient_http_client):
     assert isinstance(response.request, GraphQLSubscriptionRequest)
     assert isinstance(response.request.subscription_id, str)
     response.close()
-

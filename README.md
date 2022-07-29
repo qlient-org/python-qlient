@@ -12,25 +12,34 @@ A fast and modern graphql client designed with simplicity in mind.
 ## Key Features
 
 * Compatible with Python 3.7 and above
-* Build on top of [qlient-core](https://github.com/qlient-org/python-qlient-core), [requests](https://github.com/psf/requests) and [websocket-client](https://github.com/websocket-client/websocket-client/)
+* Build on top of
+  [qlient-core](https://github.com/qlient-org/python-qlient-core),
+  [requests](https://github.com/psf/requests)
+  and [websocket-client](https://github.com/websocket-client/websocket-client/)
 * support for subscriptions
 
 ## Help
 
-See [documentation](https://qlient-org.github.io/python-qlient/) for more details
+See [documentation](https://qlient-org.github.io/python-qlient/) for more details.
+
+If you want more information about the internals,
+I kindly refer you to the [qlient-core documentation](https://qlient-org.github.io/python-qlient-core/).
+
+If you are looking for an asynchronous implementation,
+I kindly refer you to the [qlient-aiohttp](https://github.com/qlient-org/python-qlient-aiohttp) sister project.
 
 ## Installation
 
-```shell script
+```shell
 pip install qlient
 ```
 
 ## Quick Start
 
 ````python
-from qlient.http import HTT, GraphQLResponse
+from qlient.http import HTTPClient, GraphQLResponse
 
-client = Client("https://swapi-graphql.netlify.app/.netlify/functions/index")
+client = HTTPClient("https://swapi-graphql.netlify.app/.netlify/functions/index")
 
 res: GraphQLResponse = client.query.film(
     # swapi graphql input fields
@@ -40,7 +49,7 @@ res: GraphQLResponse = client.query.film(
     _fields=["id", "title", "episodeID"]
 )
 
-print(res.query)  # query film($id: ID) { film(id: $id) { id title episodeID } }
-print(res.variables)  # {'id': 'ZmlsbXM6MQ=='}
+print(res.request.query)  # query film($id: ID) { film(id: $id) { id title episodeID } }
+print(res.request.variables)  # {'id': 'ZmlsbXM6MQ=='}
 print(res.data)  # {'film': {'id': 'ZmlsbXM6MQ==', 'title': 'A New Hope', 'episodeID': 4}}
 ````

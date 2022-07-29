@@ -14,8 +14,13 @@ from qlient.core import (
     GraphQLRequest,
 )
 
-from qlient.http.consts import GRAPHQL_WS_PROTOCOL, GRAPHQL_TRANSPORT_WS_PROTOCOL, CONNECTION_INIT, \
-    CONNECTION_ACKNOWLEDGED, START
+from qlient.http.consts import (
+    GRAPHQL_WS_PROTOCOL,
+    GRAPHQL_TRANSPORT_WS_PROTOCOL,
+    CONNECTION_INIT,
+    CONNECTION_ACKNOWLEDGED,
+    START,
+)
 from qlient.http.exceptions import ConnectionRejected
 from qlient.http.models import GraphQLSubscriptionResponse
 from qlient.http.settings import HTTPSettings
@@ -74,11 +79,11 @@ class HTTPBackend(Backend):
         }
 
     def __init__(
-            self,
-            endpoint: str,
-            ws_endpoint: str = None,
-            session: requests.Session = None,
-            settings: HTTPSettings = None,
+        self,
+        endpoint: str,
+        ws_endpoint: str = None,
+        session: requests.Session = None,
+        settings: HTTPSettings = None,
     ):
         if settings is None:
             settings = HTTPSettings()
@@ -135,7 +140,7 @@ class HTTPBackend(Backend):
         return self.execute_query(request)
 
     def execute_subscription(
-            self, request: GraphQLSubscriptionRequest
+        self, request: GraphQLSubscriptionRequest
     ) -> GraphQLResponse:
         """Initiate a subscription and start listening to messages.
 
@@ -153,26 +158,35 @@ class HTTPBackend(Backend):
         """
         payload_dict = self.make_payload(request)
         request.subscription_id = (
-                request.subscription_id or self.generate_subscription_id()
+            request.subscription_id or self.generate_subscription_id()
         )
         ws = websocket.WebSocket()
 
         logger.debug(f"Connection websocket to '{self.ws_endpoint}'")
-        ws.connect(self.ws_endpoint, subprotocols=[GRAPHQL_WS_PROTOCOL, GRAPHQL_TRANSPORT_WS_PROTOCOL])
+        ws.connect(
+            self.ws_endpoint,
+            subprotocols=[GRAPHQL_WS_PROTOCOL, GRAPHQL_TRANSPORT_WS_PROTOCOL],
+        )
 
         # initiate connection
         logger.debug(f"Sending initiation payload")
-        ws.send(self.settings.json_dumps({"type": CONNECTION_INIT, "payload": request.options}))
+        ws.send(
+            self.settings.json_dumps(
+                {"type": CONNECTION_INIT, "payload": request.options}
+            )
+        )
 
         initiation_response = self.settings.json_loads(ws.recv())
         if initiation_response["type"] != CONNECTION_ACKNOWLEDGED:
             logger.critical(f"The server did not acknowledged the connection.")
-            raise ConnectionRejected(
-                "The server did not acknowledge the connection."
-            )
+            raise ConnectionRejected("The server did not acknowledge the connection.")
 
         # connection acknowledged, start subscription
         logger.debug(f"Connection acknowledged, starting subscription.")
-        ws.send(self.settings.json_dumps({"type": START, "id": request.subscription_id, "payload": payload_dict}))
+        ws.send(
+            self.settings.json_dumps(
+                {"type": START, "id": request.subscription_id, "payload": payload_dict}
+            )
+        )
 
         return GraphQLSubscriptionResponse(request, ws, settings=self.settings)

@@ -1,4 +1,4 @@
-name: Qlient Requests - Publish
+name: Qlient HTTP Requests - Publish
 
 on:
   release:
