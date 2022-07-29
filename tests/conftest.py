@@ -1,5 +1,6 @@
 import asyncio
 import multiprocessing
+import threading
 import time
 from typing import List, AsyncGenerator
 
@@ -53,25 +54,31 @@ def strawberry_schema() -> strawberry.Schema:
     return strawberry.Schema(query=Query, mutation=Mutation, subscription=Subscription)
 
 
-@pytest.fixture(scope="session", autouse=True)
-def qlient_fastapi_app_proc(strawberry_schema):
-    def _target():
-        app = fastapi.FastAPI()
-        graphql_app = GraphQL(strawberry_schema)
-        app.add_route("/graphql", graphql_app)
-        app.add_websocket_route("/graphql", graphql_app)
-        uvicorn.run(app, host="127.0.0.1", port=8080)
+@pytest.fixture(scope="session")
+def qlient_fastapi_app(strawberry_schema) -> fastapi.FastAPI:
+    app = fastapi.FastAPI()
+    graphql_app = GraphQL(strawberry_schema)
+    app.add_route("/graphql", graphql_app)
+    app.add_websocket_route("/graphql", graphql_app)
+    return app
 
-    proc = multiprocessing.Process(
-        target=_target,
+
+@pytest.fixture(scope="session", autouse=True)
+def qlient_fastapi_app_proc(qlient_fastapi_app):
+    thread = threading.Thread(
+        target=uvicorn.run,
+        args=(qlient_fastapi_app,),
+        kwargs={
+            "host": "127.0.0.1",
+            "port": 8080,
+        },
         daemon=True,
     )
-    proc.start()
+    thread.start()
 
     time.sleep(1)
 
     yield
-    proc.terminate()
 
 
 @pytest.fixture
