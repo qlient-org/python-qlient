@@ -75,5 +75,5 @@ def qlient_fastapi_app_proc(strawberry_schema):
 
 
 @pytest.fixture
-def qlient_http_client(qlient_fastapi_app_proc) -> HTTPClient:
+def qlient_http_client() -> HTTPClient:
     return HTTPClient("http://127.0.0.1:8080/graphql")
