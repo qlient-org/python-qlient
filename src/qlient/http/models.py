@@ -73,5 +73,9 @@ class GraphQLSubscriptionResponse(GraphQLResponse):
         )
 
     def close(self):
+        """Method to close the websocket
+
+        This will stop the subscription before closing the socket.
+        """
         self.stop()
         self.ws.close()
