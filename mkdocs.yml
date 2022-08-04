@@ -43,3 +43,8 @@ plugins:
   - mike
   - include-markdown
   - search
+
+extra:
+  version:
+    default: latest
+    provider: mike
