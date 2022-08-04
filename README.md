@@ -1,5 +1,7 @@
 # Qlient: Python GraphQL Client
 
+_This project is young so there might be bugs but I am very reactive so feel free to open issues._
+
 [![DeepSource](https://deepsource.io/gh/qlient-org/python-qlient.svg/?label=active+issues&token=2ZJ0b1dinekjVtwgJHSy286C)](https://deepsource.io/gh/qlient-org/python-qlient/?ref=repository-badge)
 [![DeepSource](https://deepsource.io/gh/qlient-org/python-qlient.svg/?label=resolved+issues&token=2ZJ0b1dinekjVtwgJHSy286C)](https://deepsource.io/gh/qlient-org/python-qlient/?ref=repository-badge)
 [![pypi](https://img.shields.io/pypi/v/qlient.svg)](https://pypi.python.org/pypi/qlient)
