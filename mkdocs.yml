@@ -40,5 +40,6 @@ markdown_extensions:
       permalink: true
 
 plugins:
+  - mike
   - include-markdown
   - search
