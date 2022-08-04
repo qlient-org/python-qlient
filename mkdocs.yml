@@ -32,6 +32,7 @@ theme:
       accent: cyan
 
 markdown_extensions:
+  - admonition
   - pymdownx.highlight
   - pymdownx.superfences
   - pymdownx.extra
